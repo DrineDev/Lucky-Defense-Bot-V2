@@ -1,5 +1,5 @@
 Lucky-Defense-Bot-V2
-Turned project from python to java
+Turned project from python to jave
 Based from: https://gitlab.com/wislearn/lucky-defense-bot
 Main code in dev branch
 
