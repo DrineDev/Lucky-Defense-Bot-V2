@@ -18,4 +18,4 @@ Requirements
 
 Installation
 
-git clone 
+git clone https://github.com/DrineDev/Lucky-Defense-Bot-V2.git
