@@ -1,8 +1,10 @@
 package Home;
 
+import Basic.Coordinates;
+
 import java.io.IOException;
 
-public class ButtonsHome {
+public class buttonsHome {
 
     static Process process;
 

@@ -1,4 +1,4 @@
-package Home;
+package Basic;
 
 import java.util.Random;
 public class Coordinates {
