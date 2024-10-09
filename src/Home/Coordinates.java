@@ -25,7 +25,7 @@ public class Coordinates {
         return temp;
     }
 
-    public  int getX() {
+    public int getX() {
         return X;
     }
 
