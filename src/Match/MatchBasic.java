@@ -59,4 +59,11 @@ public class MatchBasic {
         String action = "Pressing Golem";
         Press.press(topLeft, bottomRight, action);
     }
+
+    public static void pressChallenge() {
+        Coordinates topLeft = new Coordinates(448, 178);
+        Coordinates bottomRight = new Coordinates(514, 239);
+        String action = "Pressing Golem";
+        Press.press(topLeft, bottomRight, action);
+    }
 }
