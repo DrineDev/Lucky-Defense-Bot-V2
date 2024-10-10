@@ -6,7 +6,8 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import java.io.FileInputStream;
 import java.io.IOException;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PixelColorChecker {
 
@@ -39,5 +40,25 @@ public class PixelColorChecker {
         int blueDiff = Math.abs(pixelColor.getBlue() - expectedColor.getBlue());
 
         return redDiff <= tolerance && greenDiff <= tolerance && blueDiff <= tolerance;
+    }
+
+    private static final Logger LOGGER = Logger.getLogger(PixelColorChecker.class.getName());
+    public static boolean checkColorMatch(Coordinates coordinates, Color expectedColor, String screenshotPath, int tolerance) {
+        try {
+            Color pixelColor = PixelColorChecker.getPixelColor(screenshotPath, coordinates);
+
+            if (pixelColor != null) {
+                boolean isMatch = PixelColorChecker.isMatchingColor(pixelColor, expectedColor, tolerance);
+                LOGGER.info(String.format("Color match: %b, Expected: %s, Actual: %s", isMatch, expectedColor, pixelColor));
+                return isMatch;
+            } else {
+                LOGGER.warning("Failed to get pixel color");
+            }
+
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Error checking color match", e);
+        }
+
+        return false;
     }
 }

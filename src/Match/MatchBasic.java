@@ -2,33 +2,10 @@ package Match;
 
 import Basic.Coordinates;
 import Basic.PixelColorChecker;
-import java.io.IOException;
+import Basic.Press;
 import java.awt.Color;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MatchBasic {
-    private static final Logger LOGGER = Logger.getLogger(MatchBasic.class.getName());
-
-    // check if color is a match
-    public static boolean checkColorMatch(Coordinates coordinates, Color expectedColor, String screenshotPath, int tolerance) {
-        try {
-            Color pixelColor = PixelColorChecker.getPixelColor(screenshotPath, coordinates);
-
-            if (pixelColor != null) {
-                boolean isMatch = PixelColorChecker.isMatchingColor(pixelColor, expectedColor, tolerance);
-                LOGGER.info(String.format("Color match: %b, Expected: %s, Actual: %s", isMatch, expectedColor, pixelColor));
-                return isMatch;
-            } else {
-                LOGGER.warning("Failed to get pixel color");
-            }
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error checking color match", e);
-        }
-
-        return false;
-    }
 
     public static boolean is90enemies() {
         Coordinates coordinates = new Coordinates(315, 122);
@@ -36,15 +13,50 @@ public class MatchBasic {
         String screenshotPath = "Resources/GameState.png";
         int tolerance = 5;
 
-        return checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
 
     public static boolean isGolemPresent() {
-        Coordinates coordinates = new Coordinates(315, 122);
-        Color expectedColor = new Color(194, 64, 73);
+        Coordinates coordinates = new Coordinates(481, 223);
+        Color expectedColor = new Color(93, 71, 61);
         String screenshotPath = "Resources/GameState.png";
-        int tolerance = 5;
+        int tolerance = 20;
 
-        return checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+    }
+
+    public static void pressSummon() {
+        Coordinates topLeft = new Coordinates(175, 789);
+        Coordinates bottomRight = new Coordinates(364, 880);
+        String action = "Pressing Summon";
+        Press.press(topLeft, bottomRight, action);
+    }
+
+    public static void pressGamble() {
+        Coordinates topLeft = new Coordinates(410, 806);
+        Coordinates bottomRight = new Coordinates(488, 875);
+        String action = "Pressing Gamble";
+        Press.press(topLeft, bottomRight, action);
+    }
+
+    public static void pressMythic() {
+        Coordinates topLeft = new Coordinates(52, 805);
+        Coordinates bottomRight = new Coordinates(130, 874);
+        String action = "Pressing Mythic";
+        Press.press(topLeft, bottomRight, action);
+    }
+
+    public static void pressUpgrade() {
+        Coordinates topLeft = new Coordinates(175, 898);
+        Coordinates bottomRight = new Coordinates(365, 946);
+        String action = "Pressing Upgrade";
+        Press.press(topLeft, bottomRight, action);
+    }
+
+    public static void pressGolem() {
+        Coordinates topLeft = new Coordinates(448, 178);
+        Coordinates bottomRight = new Coordinates(514, 239);
+        String action = "Pressing Golem";
+        Press.press(topLeft, bottomRight, action);
     }
 }
