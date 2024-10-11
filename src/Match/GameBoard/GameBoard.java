@@ -7,6 +7,4 @@ public class GameBoard {
     GameBoard() {
         gameBoard = new Square[3][6];
     }
-
-
 }
