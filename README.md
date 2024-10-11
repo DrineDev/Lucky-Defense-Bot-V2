@@ -3,11 +3,6 @@ Turned project from python to jave
 Based from: https://gitlab.com/wislearn/lucky-defense-bot
 Main code in dev branch
 
-To Do
-
-More research
-
-
 Requirements
 
 1. Mumu Player12 - https://www.mumuplayer.com/index.html
@@ -17,6 +12,6 @@ Requirements
 3. JavaFX - in lib (also add to project structure)
 4. Android Debug Bridge - set to environment path
 
-Installation
 
-git clone https://github.com/DrineDev/Lucky-Defense-Bot-V2.git
+Installation
+git clone -b dev https://github.com/DrineDev/Lucky-Defense-Bot-V2.git
