@@ -34,6 +34,7 @@ public class PlayGame {
             System.out.println("Waiting for Golem...");
         }
 
-
+        System.out.println("Golem can be challenged!");
+        MatchBasic.pressGolem();
     }
 }

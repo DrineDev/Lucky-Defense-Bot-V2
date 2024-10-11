@@ -16,7 +16,7 @@ public class LegendaryUnit extends Unit {
         quantity = 0;
     }
 
-    public LegendaryUnit isWhatUnit() {
+    public static LegendaryUnit isWhatUnit() {
         BufferedImage subImage = null;
         try {
             subImage = ImageIO.read(new File("Resources/GameState.png"));
@@ -32,6 +32,7 @@ public class LegendaryUnit extends Unit {
                 // Point to the new directory structure
                 String imagePath = String.format("Resources/Units/Legendary/%s%d.png", unitName, quantity);
                 if (CompareImage.compareImage(subImage, imagePath)) {
+                    System.out.println("Match found: " + unitName + " " + quantity + "x");
                     temp.setName(unitName);
                     temp.setQuantity(quantity);
                     return temp;

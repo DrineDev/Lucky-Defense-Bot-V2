@@ -22,12 +22,4 @@ public class Screenshot {
             throw new IOException("ADB command was interrupted", e);
         }
     }
-
-    public static void main(String[] args) {
-        try {
-            screenshotGameState();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

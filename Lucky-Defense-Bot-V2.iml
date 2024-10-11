@@ -94,5 +94,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="google.code.gson" level="project" />
   </component>
 </module>

@@ -15,7 +15,7 @@ public class CommonUnit extends Unit {
         quantity = 0;
     }
 
-    public CommonUnit isWhatUnit() {
+    public static CommonUnit isWhatUnit() {
         BufferedImage subImage = null;
         try {
             subImage = ImageIO.read(new File("Resources/GameState.png"));
@@ -31,6 +31,7 @@ public class CommonUnit extends Unit {
                 // Point to the new directory structure
                 String imagePath = String.format("Resources/Units/Common/%s%d.png", unitName, quantity);
                 if (CompareImage.compareImage(subImage, imagePath)) {
+                    System.out.println("Match found: " + unitName + " " + quantity + "x");
                     temp.setName(unitName);
                     temp.setQuantity(quantity);
                     return temp;
