@@ -1,17 +1,62 @@
 package Match.Units;
 
-public abstract class Unit {
+import Basic.Coordinates;
+import Basic.PixelColorChecker;
+
+import java.awt.*;
+import java.io.IOException;
+
+public class Unit {
     protected String name;
-    protected Rarity rarity;
     protected int quantity;
-    protected int value;
+    // protected int value;
 
-    public Unit(String name, Rarity rarity) {
-        this.name = name;
-        this.rarity = rarity;
+    public Unit() {
+        name = "";
+        quantity = 0;
     }
 
-    public enum Rarity {
-        COMMON, UNCOMMON, EPIC, LEGENDARY, MYTHICAL
+    public static int isWhatRarity() {
+        // MYTHICAL = 5
+        // LEGENDARY = 4;
+        // EPIC = 3;
+        // UNCOMMON = 2;
+        // COMMON = 1
+        // MUST PRESS UNIT IN SQUARE BEFORE EXECUTING
+
+        // RARITY COLORS
+        Color mythicalColor = new Color(181, 90, 45);
+        Color commonColor = new Color(176, 165, 136);
+        Color uncommonColor = new Color(59, 76, 136);
+        Color epicColor = new Color(111, 56, 146);
+        Color legendaryColor = new Color(219, 161, 50);
+
+        Coordinates checkCoordinates = new Coordinates(63, 147);
+
+        try {
+            Color currentColor = PixelColorChecker.getPixelColor("Resources/GameState.png", checkCoordinates);
+            assert currentColor != null;
+
+            if(PixelColorChecker.isMatchingColor(mythicalColor, currentColor, 0))
+                return 5;
+            if(PixelColorChecker.isMatchingColor(legendaryColor, currentColor, 0))
+                return 4;
+            if(PixelColorChecker.isMatchingColor(epicColor, currentColor, 0))
+                return 3;
+            if(PixelColorChecker.isMatchingColor(uncommonColor, currentColor, 0))
+                return 2;
+            if(PixelColorChecker.isMatchingColor(commonColor, currentColor, 0))
+                return 1;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return 0; // error
     }
+
+    // GETTERS & SETTERS
+    public void setName(String name) { this.name = name; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public String getName() { return name; }
+    public int getQuantity() { return quantity; }
 }
