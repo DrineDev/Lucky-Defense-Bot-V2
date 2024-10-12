@@ -1,10 +1,14 @@
 To do
+1. AUTO SHOP YAWA NI
+2. Merge Units
+3. Mythic Crafter
+4. Swap Units
 
-1. Auto Shop
-2. Auto Recruit
-3. Auto Upgrade??
+MUST HAVE
+1. Unit value algorithm
 
-4. Merge Units
-5. Board Calculations
-6. Mythic Crafter
-7. Swap Units
+Eventually
+1. Auto Upgrade
+2. Auto Quest
+3. Auto Hunt Pass
+4. Auto Dailies (free gems and coins)
