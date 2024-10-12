@@ -36,5 +36,11 @@ public class PlayGame {
 
         System.out.println("Golem can be challenged!");
         MatchBasic.pressGolem();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        MatchBasic.challengeGolem();
     }
 }

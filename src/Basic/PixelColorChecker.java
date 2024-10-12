@@ -34,6 +34,7 @@ public class PixelColorChecker {
         return new Color(pixel);
     }
 
+    // SINGLE PIXEL COMPAIRSON
     public static boolean isMatchingColor(Color pixelColor, Color expectedColor, int tolerance) {
         int redDiff = Math.abs(pixelColor.getRed() - expectedColor.getRed());
         int greenDiff = Math.abs(pixelColor.getGreen() - expectedColor.getGreen());
@@ -42,6 +43,7 @@ public class PixelColorChecker {
         return redDiff <= tolerance && greenDiff <= tolerance && blueDiff <= tolerance;
     }
 
+    // IMAGE COMPARISON
     private static final Logger LOGGER = Logger.getLogger(PixelColorChecker.class.getName());
     public static boolean checkColorMatch(Coordinates coordinates, Color expectedColor, String screenshotPath, int tolerance) {
         try {

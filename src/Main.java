@@ -1,20 +1,18 @@
-import Match.Units.CommonUnit;
-import Match.Units.MythicalUnit;
+import Basic.Coordinates;
+import Basic.ImageReader;
+import Basic.Screenshot;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) {
-        MythicalUnit unit = MythicalUnit.isWhatUnit();
-        System.out.println(unit.getName());
-        try {
-            BufferedImage newImage = ImageIO.read(new File("Resources/GameState.png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static void main(String[] args) throws IOException {
+        Screenshot.screenshotGameState();
+        Coordinates topLeft1 = new Coordinates(257, 620);
+        Coordinates bottomRight1 = new Coordinates(310, 642);
+
+        String text = ImageReader.readImage(topLeft1, bottomRight1);
+
+        System.out.println(text);
     }
 }

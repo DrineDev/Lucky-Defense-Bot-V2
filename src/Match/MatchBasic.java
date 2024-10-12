@@ -60,6 +60,13 @@ public class MatchBasic {
         Press.press(topLeft, bottomRight, action);
     }
 
+    public static void challengeGolem() {
+        Coordinates topLeft = new Coordinates(181, 550);
+        Coordinates bottomRight = new Coordinates(358, 621);
+        String action = "Challenging Golem";
+        Press.press(topLeft, bottomRight, action);
+    }
+
     public static void pressChallenge() {
         Coordinates topLeft = new Coordinates(448, 178);
         Coordinates bottomRight = new Coordinates(514, 239);
