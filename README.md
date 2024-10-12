@@ -10,6 +10,7 @@ Requirements
   - https://www.youtube.com/watch?v=TsUhEuySano&t=213s
 3. JavaFX - in lib (also add to project structure)
 4. Android Debug Bridge - set to environment path
+5. TesseractOCR - in lib
 
 
 Installation
