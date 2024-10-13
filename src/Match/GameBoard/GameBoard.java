@@ -10,13 +10,13 @@ public class GameBoard {
 
     private Square[][] gameBoard = new Square[3][6];
 
-    private Coordinates[][] topLeftCoordinates = {
+    private static Coordinates[][] topLeftCoordinates = {
             { new Coordinates(75, 450), new Coordinates(145, 450), new Coordinates(215, 450), new Coordinates(285, 450), new Coordinates(355, 450), new Coordinates(425, 450) },
             { new Coordinates(75, 501), new Coordinates(145, 501), new Coordinates(215, 501), new Coordinates(285, 501), new Coordinates(355, 501), new Coordinates(425, 501) },
             { new Coordinates(75, 551), new Coordinates(145, 551), new Coordinates(215, 551), new Coordinates(285, 551), new Coordinates(355, 551), new Coordinates(425, 551) }
     };
 
-    private Coordinates[][] bottomRightCoordinates = {
+    private static Coordinates[][] bottomRightCoordinates = {
             { new Coordinates(143, 500), new Coordinates(213, 500), new Coordinates(283, 500), new Coordinates(353, 500), new Coordinates(423, 500), new Coordinates(493, 500) },
             { new Coordinates(143, 551), new Coordinates(213, 551), new Coordinates(283, 551), new Coordinates(353, 551), new Coordinates(423, 551), new Coordinates(493, 551) },
             { new Coordinates(143, 601), new Coordinates(213, 601), new Coordinates(283, 601), new Coordinates(353, 601), new Coordinates(423, 601), new Coordinates(493, 601) }
@@ -59,9 +59,12 @@ public class GameBoard {
         System.out.println("Board saved to json...");
     }
 
-    public static void main(String[] args) {
-        GameBoard game = new GameBoard();
-        game.saveBoardState();
+    public static void moveUnit(int i1, int j1, int i2, int j2) throws IOException, InterruptedException {
+        Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i1][j1], bottomRightCoordinates[i1][j1]);
+        Coordinates toRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i2][j2], bottomRightCoordinates[i2][j2]);
+        Process process = Runtime.getRuntime()
+                .exec("adb shell input draganddropp " + fromRandomCoordinates.toString() + " " + toRandomCoordinates.toString());
+        Thread.sleep(3000);
     }
 }
 

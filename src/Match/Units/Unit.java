@@ -54,6 +54,7 @@ public class Unit {
         return 0; // error
     }
 
+
     // GETTERS & SETTERS
     public void setName(String name) { this.name = name; }
     public void setQuantity(int quantity) { this.quantity = quantity; }

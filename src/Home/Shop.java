@@ -14,7 +14,7 @@ public class Shop {
 
     private static final int MAX_ITEMS = 5;
     private static final int MAX_RETRIES = 3;
-    private static final int WAIT_TIME = 2000; // 2 seconds
+    private static final int WAIT_TIME = 3000; // 2 seconds
 
     // Not really shop related
     public static void receiveMailBox() throws IOException, InterruptedException {
@@ -46,11 +46,34 @@ public class Shop {
 
     public static void swipeToShop() throws IOException {
         try {
-            Process process = Runtime.getRuntime().exec("adb shell input touchscreen swipe 260 850 260 230 750");
-            Thread.sleep(WAIT_TIME);
+            Process process = Runtime.getRuntime().exec("adb shell input touchscreen swipe 260 850 260 0 7500");
+            Thread.sleep(10000);
+            process = Runtime.getRuntime().exec("adb shell input touchscreen swipe 260 850 260 775 7500");
+            Thread.sleep(10000);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+        Screenshot.screenshotGameState();
+    }
+
+    public static void swipeToTop() throws IOException {
+        try {
+            Process process = Runtime.getRuntime().exec("adb shell input touchscreen swipe 260 300 260 850");
+            Thread.sleep(5000);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        Screenshot.screenshotGameState();
+    }
+
+    public static void swipeToKeys() throws IOException {
+        try {
+            swipeToShop();
+            Process process = Runtime.getRuntime().exec("adb shell input touchscreen swipe 260 850 260 45 7500");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         Screenshot.screenshotGameState();
     }
 
@@ -60,15 +83,18 @@ public class Shop {
         swipeToShop();
         Thread.sleep(WAIT_TIME);
 
-        for (int itemIndex = 1; itemIndex <= MAX_ITEMS; itemIndex++) {
-            processItem(itemIndex, parameter);
-        }
+        for(int i = 0; i < MAX_RETRIES; i++) {
+            for (int itemIndex = 1; itemIndex <= MAX_ITEMS; itemIndex++) {
+                processItem(itemIndex, parameter);
+            }
 
-        ButtonsHome.pressReset();
+            ++i;
+            ButtonsHome.pressReset();
+        }
     }
 
     private static void processItem(int itemIndex, int parameter) throws IOException, InterruptedException {
-        for (int retry = 0; retry < MAX_RETRIES; retry++) {
+        while(true) {
             ButtonsHome.checkItem(itemIndex);
             Thread.sleep(WAIT_TIME);
 
@@ -96,7 +122,7 @@ public class Shop {
             if (intPrice == -1) {
                 System.out.println("Invalid price for item " + itemIndex + ". Skipping...");
                 ButtonsHome.closeItem();
-                return;
+                break;
             }
 
             if (shouldPurchase(intPrice, parameter)) {
@@ -161,21 +187,24 @@ public class Shop {
         return PixelColorChecker.isMatchingColor(expectedColor, currentColor, 5);
     }
 
-    public static void main(String[] args) {
-        System.out.println("Starting Auto Shop process...");
-
-        try {
-            // Buy all items that cost coins only
-            System.out.println("Buying all items that cost coins only...");
-            autoShop(3);
-
-            System.out.println("Auto Shop process completed successfully.");
-        } catch (IOException e) {
-            System.err.println("An IO error occurred: " + e.getMessage());
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            System.err.println("The process was interrupted: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws IOException {
+//        System.out.println("Starting Auto Shop process...");
+//
+//        try {
+//            // Buy all items that cost coins only
+//            System.out.println("Buying all items that cost coins only...");
+//            autoShop(3);
+//
+//            System.out.println("Auto Shop process completed successfully.");
+//        } catch (IOException e) {
+//            System.err.println("An IO error occurred: " + e.getMessage());
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            System.err.println("The process was interrupted: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+        swipeToShop();
+        swipeToTop();
+        swipeToKeys();
     }
 }
