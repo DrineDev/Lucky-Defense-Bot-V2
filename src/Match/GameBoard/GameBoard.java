@@ -10,13 +10,13 @@ public class GameBoard {
 
     private Square[][] gameBoard = new Square[3][6];
 
-    private static Coordinates[][] topLeftCoordinates = {
+    private final static Coordinates[][] topLeftCoordinates = {
             { new Coordinates(75, 450), new Coordinates(145, 450), new Coordinates(215, 450), new Coordinates(285, 450), new Coordinates(355, 450), new Coordinates(425, 450) },
             { new Coordinates(75, 501), new Coordinates(145, 501), new Coordinates(215, 501), new Coordinates(285, 501), new Coordinates(355, 501), new Coordinates(425, 501) },
             { new Coordinates(75, 551), new Coordinates(145, 551), new Coordinates(215, 551), new Coordinates(285, 551), new Coordinates(355, 551), new Coordinates(425, 551) }
     };
 
-    private static Coordinates[][] bottomRightCoordinates = {
+    private final static Coordinates[][] bottomRightCoordinates = {
             { new Coordinates(143, 500), new Coordinates(213, 500), new Coordinates(283, 500), new Coordinates(353, 500), new Coordinates(423, 500), new Coordinates(493, 500) },
             { new Coordinates(143, 551), new Coordinates(213, 551), new Coordinates(283, 551), new Coordinates(353, 551), new Coordinates(423, 551), new Coordinates(493, 551) },
             { new Coordinates(143, 601), new Coordinates(213, 601), new Coordinates(283, 601), new Coordinates(353, 601), new Coordinates(423, 601), new Coordinates(493, 601) }
@@ -66,5 +66,8 @@ public class GameBoard {
                 .exec("adb shell input draganddropp " + fromRandomCoordinates.toString() + " " + toRandomCoordinates.toString());
         Thread.sleep(3000);
     }
+
+    public static Coordinates[][] getTopLeftCoordinates() { return topLeftCoordinates; }
+    public static Coordinates[][] getBottomRightCoordinates() { return bottomRightCoordinates; }
 }
 
