@@ -1,7 +1,6 @@
 package Home;
 
 import Basic.Coordinates;
-import Basic.ImageReader;
 import Basic.PixelColorChecker;
 import Basic.Screenshot;
 
@@ -38,12 +37,6 @@ public class Shop {
         System.out.println("MailBox receiving failed...");
     }
 
-    public static String readPrice() throws IOException {
-        Coordinates topLeft = new Coordinates(224, 620);
-        Coordinates bottomRight = new Coordinates(315, 642);
-        return ImageReader.readImage(topLeft, bottomRight);
-    }
-
     public static void swipeToShop() throws IOException {
         try {
             Process process = Runtime.getRuntime().exec("adb shell input touchscreen swipe 260 850 260 0 7500");
@@ -77,66 +70,6 @@ public class Shop {
         Screenshot.screenshotGameState();
     }
 
-    public static void autoShop(int parameter) throws IOException, InterruptedException {
-        ButtonsHome.pressShop();
-        Thread.sleep(WAIT_TIME);
-        swipeToShop();
-        Thread.sleep(WAIT_TIME);
-
-        for(int i = 0; i < MAX_RETRIES; i++) {
-            for (int itemIndex = 1; itemIndex <= MAX_ITEMS; itemIndex++) {
-                processItem(itemIndex, parameter);
-            }
-
-            ++i;
-            ButtonsHome.pressReset();
-        }
-    }
-
-    private static void processItem(int itemIndex, int parameter) throws IOException, InterruptedException {
-        while(true) {
-            ButtonsHome.checkItem(itemIndex);
-            Thread.sleep(WAIT_TIME);
-
-            if (isUnitPressed()) {
-                ButtonsHome.closeUnit();
-                Thread.sleep(WAIT_TIME);
-                continue;
-            }
-
-            if (isArtifactPressed()) {
-                ButtonsHome.closeArtifact();
-                Thread.sleep(WAIT_TIME);
-                continue;
-            }
-
-            String price = readPrice();
-            if (price == null || price.isEmpty()) {
-                System.out.println("Failed to read price for item " + itemIndex + ". Retrying...");
-                continue;
-            }
-
-            int intPrice = extractNumericValue(price);
-            System.out.println("Extracted price for item " + itemIndex + ": " + intPrice);
-
-            if (intPrice == -1) {
-                System.out.println("Invalid price for item " + itemIndex + ". Skipping...");
-                ButtonsHome.closeItem();
-                break;
-            }
-
-            if (shouldPurchase(intPrice, parameter)) {
-                purchase(intPrice);
-            } else {
-                ButtonsHome.closeItem();
-            }
-            return; // Successfully processed the item
-        }
-
-        System.out.println("Failed to process item " + itemIndex + " after " + MAX_RETRIES + " attempts. Skipping...");
-        ButtonsHome.closeItem();
-    }
-
     private static boolean shouldPurchase(int price, int parameter) {
         switch (parameter) {
             case 1: // Buy all invitations
@@ -158,21 +91,6 @@ public class Shop {
         Thread.sleep(WAIT_TIME);
         ButtonsHome.pressAnywhere();
         Thread.sleep(WAIT_TIME);
-    }
-
-    private static int extractNumericValue(String value) {
-        Pattern pattern = Pattern.compile("\\d+");
-        Matcher matcher = pattern.matcher(value);
-        if (matcher.find()) {
-            try {
-                return Integer.parseInt(matcher.group());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid numeric value after extraction: " + matcher.group());
-            }
-        } else {
-            System.out.println("No numeric value found in: " + value);
-        }
-        return -1;
     }
 
     private static boolean isUnitPressed() throws IOException {

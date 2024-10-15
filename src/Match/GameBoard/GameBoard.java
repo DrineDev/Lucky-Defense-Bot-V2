@@ -3,6 +3,8 @@ package Match.GameBoard;
 import Basic.Coordinates;
 import Basic.Press;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -48,7 +50,7 @@ public class GameBoard {
 
     public void saveBoardState() {
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(this.gameBoard);
 
         try (FileWriter writer = new FileWriter("Resources/gameBoardState.json")) {
