@@ -2,6 +2,7 @@ package Match.Units;
 
 import Basic.Coordinates;
 import Basic.PixelColorChecker;
+import Basic.Screenshot;
 
 import java.awt.*;
 import java.io.IOException;
@@ -16,7 +17,7 @@ public class Unit {
         quantity = 0;
     }
 
-    public static int isWhatRarity() {
+    public static int isWhatRarity() throws IOException {
         // MYTHICAL = 5
         // LEGENDARY = 4;
         // EPIC = 3;
@@ -33,6 +34,7 @@ public class Unit {
         Color legendaryColor = new Color(219, 161, 50);
 
         Coordinates checkCoordinates = new Coordinates(64, 147);
+        Screenshot.screenshotGameState();
 
         try {
             Color currentColor = PixelColorChecker.getPixelColor("Resources/GameState.png", checkCoordinates);

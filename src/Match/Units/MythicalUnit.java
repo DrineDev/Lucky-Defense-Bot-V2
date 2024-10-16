@@ -2,29 +2,36 @@ package Match.Units;
 
 import Basic.CompareImage;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 public class MythicalUnit extends Unit {
-    int form;
-
-    public MythicalUnit() {
-        name = "";
-        quantity = 0;
-        form = 0;
-    }
+    private static final Logger LOGGER = Logger.getLogger(MythicalUnit.class.getName());
+    int form = 0;
 
     public static MythicalUnit isWhatUnit() {
         BufferedImage subImage = null;
         try {
-            subImage = ImageIO.read(new File("Resources/GameState.png"));
-            subImage = subImage.getSubimage(52, 46, 113, 112);
+            File gameStateFile = new File("Resources/GameState.png");
+            LOGGER.info("GameState file exists: " + gameStateFile.exists());
+            LOGGER.info("GameState file path: " + gameStateFile.getAbsolutePath());
+
+            BufferedImage fullImage = ImageIO.read(gameStateFile);
+            subImage = fullImage.getSubimage(52, 46, 113, 112);
+            LOGGER.info("Subimage extracted successfully. Size: " + subImage.getWidth() + "x" + subImage.getHeight());
+
+            // Save subimage for debugging
+            ImageIO.write(subImage, "png", new File("Resources/Debug_Subimage.png"));
+            LOGGER.info("Debug subimage saved to Resources/Debug_Subimage.png");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.severe("Error reading GameState image: " + e.getMessage());
+            e.printStackTrace();
+            return null;
         }
 
         MythicalUnit temp = new MythicalUnit();
@@ -37,11 +44,11 @@ public class MythicalUnit extends Unit {
                 "Pulse Generator", "Rocket Chu", "Vayne", "Watt"
         );
 
-        // Debugging: Check regular mythical units
+        // Check regular mythical units
         for (String unitName : unitNames) {
             String imagePath = "Resources/Units/Mythical/" + unitName + ".png";
             if (CompareImage.compareImage(subImage, imagePath)) {
-                System.out.println("Match found: " + unitName); // Debugging output
+                LOGGER.info("Match found: " + unitName);
                 temp.setName(unitName);
                 temp.setQuantity(1); // Mythical units always have 1 quantity
                 return temp;
@@ -51,8 +58,8 @@ public class MythicalUnit extends Unit {
         // Special case for BatMan
         for (int form = 1; form <= 4; form++) {
             String imagePath = String.format("Resources/Units/Mythical/BatMan%d.png", form);
-
             if (CompareImage.compareImage(subImage, imagePath)) {
+                LOGGER.info("Match found: BatMan Form " + form);
                 temp.setName("BatMan");
                 temp.setQuantity(1);
                 temp.setForm(form);
@@ -63,9 +70,8 @@ public class MythicalUnit extends Unit {
         // Special case for Tar
         for (int form = 1; form <= 3; form++) {
             String imagePath = String.format("Resources/Units/Mythical/Tar%d.png", form);
-
             if (CompareImage.compareImage(subImage, imagePath)) {
-                System.out.println("Match found: Tar Form " + form); // Debugging output
+                LOGGER.info("Match found: Tar Form " + form);
                 temp.setName("Tar");
                 temp.setQuantity(1);
                 temp.setForm(form);
@@ -74,17 +80,13 @@ public class MythicalUnit extends Unit {
         }
 
         // Default fallback: No match found
-        if (temp.getName().equals("")) {
-            System.out.println("No match found, setting default: Tar with Form 4");
-            temp.setName("Tar");
-            temp.setQuantity(1);
-            temp.setForm(4);
+        LOGGER.warning("No match found, setting default: Tar with Form 4");
+        temp.setName("Tar");
+        temp.setQuantity(1);
+        temp.setForm(4);
 
-            return temp;
-        }
-
-        return null; // If nothing matched
+        return temp;
     }
 
-    public void setForm(int form) { this.form = form; }
+    public void setForm(int i) { form = 1; }
 }

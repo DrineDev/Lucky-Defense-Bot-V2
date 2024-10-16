@@ -1,26 +1,124 @@
-[
-  [
-    {"unit": {"name": "Tiger Master", "quantity": 1}},
-    {"unit": {"name": "Tree", "quantity": 1}},
-    {"unit": {"name": "Thrower", "quantity": 1}},
-    {"unit": {"name": "Thrower", "quantity": 1}},
-    {"unit": {"name": "Bandit", "quantity": 1}},
-    {"unit": {"name": "Barbarian", "quantity": 1}}
-  ],
-  [
-    {"unit": {"name": "Hunter", "quantity": 1}},
-    {"unit": {"name": "Eagle General", "quantity": 1}},
-    {"unit": {"name": "Bandit", "quantity": 1}},
-    {"unit": {"name": "Electro Robot", "quantity": 1}},
-    {"unit": {"name": "Wolf Warrior", "quantity": 1}},
-    {"unit": {"name": "Paladin", "quantity": 1}}
-  ],
-  [
-    {"unit": {"name": "Storm Giant", "quantity": 1}},
-    {"unit": {"name": "Water Elemental", "quantity": 1}},
-    {"unit": {"name": "Sandman", "quantity": 1}},
-    {"unit": {"name": "Demon Soldier", "quantity": 1}},
-    {"unit": {"name": "Archer", "quantity": 1}},
-    {"unit": {"name": "Shock Robot", "quantity": 1}}
+{
+  "gameBoard": [
+    [
+      {
+        "unit": {
+          "form": 0,
+          "name": "Monopoly Man",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "form": 0,
+          "name": "Monopoly Man",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "form": 0,
+          "name": "Monopoly Man",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "form": 1,
+          "name": "BatMan",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "Electro Robot",
+          "quantity": 3
+        }
+      },
+      {
+        "unit": {
+          "name": "Tree",
+          "quantity": 2
+        }
+      }
+    ],
+    [
+      {
+        "unit": {
+          "form": 0,
+          "name": "Monopoly Man",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "form": 1,
+          "name": "Tar",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "Eagle General",
+          "quantity": 2
+        }
+      },
+      {
+        "unit": {
+          "name": "Shock Robot",
+          "quantity": 3
+        }
+      },
+      {
+        "unit": {
+          "name": "Hunter",
+          "quantity": 3
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      }
+    ],
+    [
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "Shock Robot",
+          "quantity": 2
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      }
+    ]
   ]
-]
+}
