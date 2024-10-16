@@ -1,19 +1,43 @@
 package Home;
 
+import Basic.CompareImage;
 import Basic.Coordinates;
 import Basic.PixelColorChecker;
 import Basic.Screenshot;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.List;
 
 public class Shop {
 
     private static final int MAX_ITEMS = 5;
     private static final int MAX_RETRIES = 3;
     private static final int WAIT_TIME = 3000; // 2 seconds
+
+    private static Coordinates[] topLeftCoordinates = {
+            new Coordinates(223, 324), // AREA 1
+            new Coordinates(384, 324), // AREA 2
+            new Coordinates(60, 568),  // AREA 3
+            new Coordinates(222, 568), // AREA 4
+            new Coordinates(384, 568)  // AREA 5
+    };
+
+    private static Coordinates[] bottomRightCoordinates = {
+            new Coordinates(315, 424), // AREA 1
+            new Coordinates(478, 424), // AREA 2
+            new Coordinates(154, 668), // AREA 3
+            new Coordinates(316, 668), // AREA 4
+            new Coordinates(478, 668)  // AREA 5
+    };
+
+    private static final List<String> shopImages = Arrays.asList(
+            "300", "100", "30", "Key", "Bandits", "Safebox", "MoneyGun"
+    );
 
     // Not really shop related
     public static void receiveMailBox() throws IOException, InterruptedException {
@@ -70,29 +94,6 @@ public class Shop {
         Screenshot.screenshotGameState();
     }
 
-    private static boolean shouldPurchase(int price, int parameter) {
-        switch (parameter) {
-            case 1: // Buy all invitations
-                return price == 42 || price == 140 || price == 420 || price == 960 || price == 2800 || price == 3200 || price == 8400 || price == 9600;
-            case 2: // Buy all invitations with coins only
-                return price == 960 || price == 2800 || price == 3200 || price == 8400 || price == 9600;
-            case 3: // Buy all items that cost coins only
-                return price >= 960; // Ensure this condition checks correctly
-            case 4: // Buy all items
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private static void purchase(int price) throws IOException, InterruptedException {
-        System.out.println("Purchasing item for " + price + "...");
-        ButtonsHome.purchaseItem();
-        Thread.sleep(WAIT_TIME);
-        ButtonsHome.pressAnywhere();
-        Thread.sleep(WAIT_TIME);
-    }
-
     private static boolean isUnitPressed() throws IOException {
         Color expectedColor = new Color(98, 115, 143);
         Color currentColor = PixelColorChecker.getPixelColor("Resources/GameState.png", new Coordinates(490, 104));
@@ -105,24 +106,59 @@ public class Shop {
         return PixelColorChecker.isMatchingColor(expectedColor, currentColor, 5);
     }
 
+    public static void autoShop() throws IOException, InterruptedException {
+        // You can press reset a maximum of 3 times, so loop through it 3 times
+        for (int attempt = 0; attempt < 3; attempt++) {
+            processShopItems();
+            ButtonsHome.pressReset();
+        }
+    }
+
+    private static void processShopItems() throws IOException, InterruptedException {
+        BufferedImage gameStateImage = loadGameStateImage();
+        for (int i = 0; i < topLeftCoordinates.length; i++) {
+            BufferedImage croppedImage = cropImage(gameStateImage, topLeftCoordinates[i], bottomRightCoordinates[i]);
+            checkAndBuyItem(croppedImage, i);
+        }
+    }
+
+    // TODO : MOVE TO DIFFERENT CLASS...
+    private static BufferedImage loadGameStateImage() throws IOException {
+        try {
+            return ImageIO.read(new File("Resources/GameState.png"));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load GameState.png", e);
+        }
+    }
+
+    // TODO : MOVE TO DIFFERENT CLASS...
+    private static BufferedImage cropImage(BufferedImage image, Coordinates topLeft, Coordinates bottomRight) {
+        int x = topLeft.getX();
+        int y = topLeft.getY();
+        int width = bottomRight.getX() - x;
+        int height = bottomRight.getY() - y;
+        return image.getSubimage(x, y, width, height);
+    }
+
+    private static void checkAndBuyItem(BufferedImage croppedImage, int areaIndex) throws IOException, InterruptedException {
+        for (String shopImage : shopImages) {
+            String imagePath = String.format("Resources/ShopFiles/%s.png", shopImage);
+            if (CompareImage.compareImage(croppedImage, imagePath)) {
+                System.out.println("Match found in Area " + (areaIndex + 1) + " for shop item: " + shopImage);
+                buyItem(areaIndex);
+                break; // Exit loop after a successful match
+            }
+        }
+    }
+
+    private static void buyItem(int areaIndex) throws InterruptedException, IOException {
+        ButtonsHome.pressItem(areaIndex);   // Press the shop item
+        Thread.sleep(500);                  // Wait for a moment
+        ButtonsHome.purchaseItem();         // Purchase the item
+        ButtonsHome.pressAnywhere();        // Press anywhere to dismiss the dialog
+    }
+
     public static void main(String[] args) throws IOException {
-//        System.out.println("Starting Auto Shop process...");
-//
-//        try {
-//            // Buy all items that cost coins only
-//            System.out.println("Buying all items that cost coins only...");
-//            autoShop(3);
-//
-//            System.out.println("Auto Shop process completed successfully.");
-//        } catch (IOException e) {
-//            System.err.println("An IO error occurred: " + e.getMessage());
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            System.err.println("The process was interrupted: " + e.getMessage());
-//            e.printStackTrace();
-//        }
         swipeToShop();
-        swipeToTop();
-        swipeToKeys();
     }
 }

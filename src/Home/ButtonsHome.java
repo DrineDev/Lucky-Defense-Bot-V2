@@ -103,9 +103,25 @@ public class ButtonsHome {
         Screenshot.screenshotGameState();
     }
 
-    public static void checkItem(int itemIndex) throws IOException {
+    public static void pressItem(int itemIndex) throws IOException {
         Coordinates topLeft, bottomRight;
         String itemName;
+
+        // Restricted Areas MUST NOT PRESS
+        Coordinates[] restrictedTopLeftCoordinates = {
+                new Coordinates(223, 324), // AREA 1
+                new Coordinates(384, 324), // AREA 2
+                new Coordinates(60, 568),  // AREA 3
+                new Coordinates(222, 568), // AREA 4
+                new Coordinates(384, 568)  // AREA 5
+        };
+        Coordinates[] restrictedBottomRightCoordinates = {
+                new Coordinates(315, 424), // AREA 1
+                new Coordinates(478, 424), // AREA 2
+                new Coordinates(154, 668), // AREA 3
+                new Coordinates(316, 668), // AREA 4
+                new Coordinates(478, 668)  // AREA 5
+        };
 
         switch (itemIndex) {
             case 1:
@@ -137,7 +153,16 @@ public class ButtonsHome {
                 throw new IllegalArgumentException("Invalid item index: " + itemIndex);
         }
 
-        Press.press(topLeft, bottomRight, "Opening " + itemName);
+        // Generate a random press coordinate and check it doesn't overlap with restricted areas
+        Coordinates pressCoordinate;
+        do {
+            pressCoordinate = Coordinates.makeRandomCoordinate(topLeft, bottomRight);
+        } while (Coordinates.isCoordinateInRestrictedArea(pressCoordinate, restrictedTopLeftCoordinates, restrictedBottomRightCoordinates));
+
+        // Perform the press using the valid coordinate
+        Press.press(pressCoordinate, "Opening " + itemName);
+
+        // Take a screenshot after pressing
         Screenshot.screenshotGameState();
     }
 

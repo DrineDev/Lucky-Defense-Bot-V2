@@ -25,6 +25,20 @@ public class Coordinates {
         return temp;
     }
 
+    public static boolean isCoordinateInRestrictedArea(Coordinates coord, Coordinates[] restrictedTopLeft, Coordinates[] restrictedBottomRight) {
+        for (int i = 0; i < restrictedTopLeft.length; i++) {
+            Coordinates topLeft = restrictedTopLeft[i];
+            Coordinates bottomRight = restrictedBottomRight[i];
+
+            // Check if the coordinate falls within any restricted region
+            if (coord.getX() >= topLeft.getX() && coord.getX() <= bottomRight.getX() &&
+                    coord.getY() >= topLeft.getY() && coord.getY() <= bottomRight.getY()) {
+                return true; // Coordinate is in a restricted area
+            }
+        }
+        return false; // Coordinate is safe to press
+    }
+
     public int getX() {
         return X;
     }
