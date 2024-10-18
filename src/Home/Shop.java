@@ -109,6 +109,7 @@ public class Shop {
     public static void autoShop() throws IOException, InterruptedException {
         // You can press reset a maximum of 3 times, so loop through it 3 times
         for (int attempt = 0; attempt < 3; attempt++) {
+            Screenshot.screenshotGameState();
             processShopItems();
             ButtonsHome.pressReset();
         }
@@ -144,7 +145,7 @@ public class Shop {
         for (String shopImage : shopImages) {
             String imagePath = String.format("Resources/ShopFiles/%s.png", shopImage);
             if (CompareImage.compareImage(croppedImage, imagePath)) {
-                System.out.println("Match found in Area " + (areaIndex + 1) + " for shop item: " + shopImage);
+                System.out.println("Match found in Area " + (areaIndex) + " for shop item: " + shopImage);
                 buyItem(areaIndex);
                 break; // Exit loop after a successful match
             }
@@ -153,12 +154,14 @@ public class Shop {
 
     private static void buyItem(int areaIndex) throws InterruptedException, IOException {
         ButtonsHome.pressItem(areaIndex);   // Press the shop item
-        Thread.sleep(500);                  // Wait for a moment
+        Thread.sleep(1000);                  // Wait for a moment
         ButtonsHome.purchaseItem();         // Purchase the item
+        Thread.sleep(1000);
         ButtonsHome.pressAnywhere();        // Press anywhere to dismiss the dialog
     }
 
-    public static void main(String[] args) throws IOException {
-        swipeToShop();
+    public static void main(String[] args) throws IOException, InterruptedException {
+        Thread.sleep(2000);
+        autoShop();
     }
 }
