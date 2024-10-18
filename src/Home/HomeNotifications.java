@@ -62,4 +62,19 @@ public class HomeNotifications {
         Coordinates coordinates = new Coordinates(463, 267);
         return checkNotification(coordinates);
     }
+
+    public static boolean checkTopQuestNotification() {
+        Coordinates coordinates = new Coordinates(464, 334);
+        return checkNotification(coordinates);
+    }
+
+    public static boolean checkAchievementNotification() {
+        Coordinates coordinates = new Coordinates(483, 783);
+        return checkNotification(coordinates);
+    }
+
+    public static boolean checkTopAchievementNotification() {
+        Coordinates coordinates = new Coordinates(463, 204);
+        return checkNotification(coordinates);
+    }
 }

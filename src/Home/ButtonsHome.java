@@ -124,29 +124,29 @@ public class ButtonsHome {
         };
 
         switch (itemIndex) {
-            case 1:
+            case 0: // AREA 1
                 topLeft = new Coordinates(205, 270);
                 bottomRight = new Coordinates(338, 442);
                 itemName = "Item 1";
                 break;
-            case 2:
-                topLeft = new Coordinates(365, 270);
-                bottomRight = new Coordinates(500, 442);
+            case 1: // AREA 2
+                topLeft = new Coordinates(359, 279);
+                bottomRight = new Coordinates(507, 493);
                 itemName = "Item 2";
                 break;
-            case 3:
-                topLeft = new Coordinates(38, 511);
-                bottomRight = new Coordinates(172, 692);
+            case 2: // AREA 3
+                topLeft = new Coordinates(33, 522);
+                bottomRight = new Coordinates(180, 738);
                 itemName = "Item 3";
                 break;
-            case 4:
-                topLeft = new Coordinates(205, 511);
-                bottomRight = new Coordinates(335, 692);
+            case 3: // AREA 4
+                topLeft = new Coordinates(195, 522);
+                bottomRight = new Coordinates(342, 736);
                 itemName = "Item 4";
                 break;
-            case 5:
-                topLeft = new Coordinates(365, 511);
-                bottomRight = new Coordinates(500, 692);
+            case 4: // AREA 5
+                topLeft = new Coordinates(355, 524);
+                bottomRight = new Coordinates(503, 736);
                 itemName = "Item 5";
                 break;
             default:
@@ -154,7 +154,7 @@ public class ButtonsHome {
         }
 
         // Generate a random press coordinate and check it doesn't overlap with restricted areas
-        Coordinates pressCoordinate;
+        Coordinates pressCoordinate = new Coordinates();
         do {
             pressCoordinate = Coordinates.makeRandomCoordinate(topLeft, bottomRight);
         } while (Coordinates.isCoordinateInRestrictedArea(pressCoordinate, restrictedTopLeftCoordinates, restrictedBottomRightCoordinates));
@@ -190,5 +190,21 @@ public class ButtonsHome {
         Press.press(new Coordinates(456, 237), new Coordinates(493, 270), "Closing artifact");
         Screenshot.screenshotGameState();
     }
+
+    public static void pressTopQuest() throws IOException {
+        Press.press(new Coordinates(71, 330), new Coordinates(468, 410), "Top Quest");
+        Screenshot.screenshotGameState();
+    }
+
+    public static void pressAchievement() throws IOException {
+        Press.press(new Coordinates(273, 780), new Coordinates(484, 825), "Achievements");
+        Screenshot.screenshotGameState();
+    }
+
+    public static void pressTopAchievement() throws IOException {
+        Press.press(new Coordinates(70, 200), new Coordinates(468, 293), "Top Achievements");
+        Screenshot.screenshotGameState();
+    }
+
 }
 

@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import Basic.Coordinates;
+import Basic.Press;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -182,8 +184,6 @@ public class MythicBuilder {
         return requirements;
     }
 
-
-
     // Helper method to flatten the game board and extract all units
     private static Map<String, Integer> getAllUnitsFromBoard(List<List<Map<String, Object>>> gameBoard) {
         Map<String, Integer> units = new HashMap<>();
@@ -211,6 +211,14 @@ public class MythicBuilder {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    // TODO : BUILD MYTHICAL IN GAME FUNCTIONS...
+    public static void buildMythic(String unit) {
+        if(canBuild(unit)) {
+            Press.press(new Coordinates(), new Coordinates(), "Building " + unit);
+
         }
     }
 

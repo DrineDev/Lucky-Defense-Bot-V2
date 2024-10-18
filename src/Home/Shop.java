@@ -40,9 +40,9 @@ public class Shop {
     );
 
     // Not really shop related
+    // TODO : MOVE TO A DIFFERENT CLASS...
     public static void receiveMailBox() throws IOException, InterruptedException {
         Screenshot.screenshotGameState();
-
         if (HomeNotifications.checkInboxNotification()) {
             ButtonsHome.pressOptions();
             Thread.sleep(WAIT_TIME);
@@ -57,7 +57,6 @@ public class Shop {
             System.out.println("MailBox received...");
             return;
         }
-
         System.out.println("MailBox receiving failed...");
     }
 
@@ -106,6 +105,7 @@ public class Shop {
         return PixelColorChecker.isMatchingColor(expectedColor, currentColor, 5);
     }
 
+    // MAIN FUNCTION
     public static void autoShop() throws IOException, InterruptedException {
         // You can press reset a maximum of 3 times, so loop through it 3 times
         for (int attempt = 0; attempt < 3; attempt++) {
