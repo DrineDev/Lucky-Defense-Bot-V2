@@ -109,7 +109,7 @@ public class GameBoard {
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i1][j1], bottomRightCoordinates[i1][j1]);
         Coordinates toRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i2][j2], bottomRightCoordinates[i2][j2]);
         Process process = Runtime.getRuntime()
-                .exec("adb shell input draganddropp " + fromRandomCoordinates.toString() + " " + toRandomCoordinates.toString());
+                .exec("adb shell input draganddrop " + fromRandomCoordinates.toString() + " " + toRandomCoordinates.toString());
         Thread.sleep(3000);
     }
 

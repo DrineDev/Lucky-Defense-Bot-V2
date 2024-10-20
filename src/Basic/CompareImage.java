@@ -5,7 +5,11 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 public class CompareImage {
 
@@ -58,17 +62,56 @@ public class CompareImage {
         }
     }
 
-    // FIND subImage coordinates from GameState.png
     public Coordinates findImageInMainImage(BufferedImage subImage, int width, int height) throws IOException {
-        Coordinates coordinates= new Coordinates(0, 0);
+        Screenshot.screenshotGameState();
+        Coordinates coordinates = new Coordinates(-1, -1);  // -1, -1 indicates no match found
         BufferedImage mainImage = ImageIO.read(new File("Resources/GameState.png"));
-        // TODO : LOGIC FOR FINDING OFFSET
-        for(int y = 960; y >= 0; y--) {
-            for(int x = 540; x >= 0; x--) {
 
+        // Iterate from the bottom left (0, 960) upwards to (0, 540)
+        for (int y = 960; y >= 540; y--) {
+            for (int x = 0; x <= mainImage.getWidth() - width; x++) {
+                if (isMatchingRegion(mainImage, subImage, x, y, width, height)) {
+                    return new Coordinates(x, y);
+                }
             }
         }
-
         return coordinates;
+    }
+
+    // Helper function to check if a region in the main image matches the subImage
+    private boolean isMatchingRegion(BufferedImage mainImage, BufferedImage subImage, int startX, int startY, int width, int height) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int mainImagePixel = mainImage.getRGB(startX + x, startY + y);
+                int subImagePixel = subImage.getRGB(x, y);
+
+                // Compare pixels, you can add tolerance if needed
+                if (mainImagePixel != subImagePixel) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public Coordinates findRefreshButtonsInMainImage() throws IOException {
+        Path refreshButtonsDir = Paths.get("Resources/RefreshButtons");
+
+        try (Stream<Path> paths = Files.walk(refreshButtonsDir)) {
+            return paths.filter(Files::isRegularFile)
+                    .filter(path -> path.toString().toLowerCase().endsWith(".png"))
+                    .map(path -> {
+                        try {
+                            BufferedImage subImage = ImageIO.read(path.toFile());
+                            return findImageInMainImage(subImage, subImage.getWidth(), subImage.getHeight());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            return new Coordinates(-1, -1);
+                        }
+                    })
+                    .filter(coordinates -> coordinates.getX() != -1 && coordinates.getY() != -1) // Only keep valid matches
+                    .findFirst()
+                    .orElse(new Coordinates(-1, -1)); // Return -1, -1 if no match is found
+        }
     }
 }

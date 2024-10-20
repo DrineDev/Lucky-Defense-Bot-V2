@@ -107,30 +107,36 @@ public class ButtonsHome {
         Coordinates topLeft, bottomRight;
         String itemName;
 
+        int topLeftRefresh = Shop.findTopLeft();
+        int Offset01 = topLeftRefresh - 244;
+        int Offset234 = topLeftRefresh - 65;
+        int Offset01Top = Offset01 - 45;
+        int Offset234Top = Offset234 - 46;
+
         switch (itemIndex) {
             case 0: // AREA 1
-                topLeft = new Coordinates(195, 444);
-                bottomRight = new Coordinates(343, 490);
+                topLeft = new Coordinates(197, Offset01Top);
+                bottomRight = new Coordinates(341, Offset01);
                 itemName = "Item 1";
                 break;
             case 1: // AREA 2
-                topLeft = new Coordinates(359, 445);
-                bottomRight = new Coordinates(505, 492);
+                topLeft = new Coordinates(360, Offset01Top);
+                bottomRight = new Coordinates(504, Offset01);
                 itemName = "Item 2";
                 break;
             case 2: // AREA 3
-                topLeft = new Coordinates(34, 689);
-                bottomRight = new Coordinates(180, 735);
+                topLeft = new Coordinates(35, Offset234Top);
+                bottomRight = new Coordinates(179, Offset234);
                 itemName = "Item 3";
                 break;
             case 3: // AREA 4
-                topLeft = new Coordinates(197, 689);
-                bottomRight = new Coordinates(342, 735);
+                topLeft = new Coordinates(197, Offset234Top);
+                bottomRight = new Coordinates(341, Offset234);
                 itemName = "Item 4";
                 break;
             case 4: // AREA 5
-                topLeft = new Coordinates(359, 689);
-                bottomRight = new Coordinates(505, 736);
+                topLeft = new Coordinates(360, Offset234Top);
+                bottomRight = new Coordinates(504, Offset234);
                 itemName = "Item 5";
                 break;
             default:
@@ -152,7 +158,7 @@ public class ButtonsHome {
     }
 
     public static void pressReset() throws IOException {
-        Press.press(new Coordinates(254, 784), new Coordinates(403, 826), "Resetting shop");
+        Press.press(new Coordinates(254, 809), new Coordinates(403, 863), "Resetting shop");
         Screenshot.screenshotGameState();
     }
 

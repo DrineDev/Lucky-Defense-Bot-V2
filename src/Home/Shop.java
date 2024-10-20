@@ -13,27 +13,44 @@ import java.util.List;
 public class Shop {
 
     private static final int WAIT_TIME = 3000; // 2 seconds
+    static int topLeftRefresh;
+
+    static {
+        try {
+            topLeftRefresh = Shop.findTopLeft();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static int Offset01 = topLeftRefresh - 375;
+    static int Offset234 = topLeftRefresh - 131;
+    static int Offset01Top = Offset01 - 99;
+    static int Offset234Top = Offset234 - 98;
 
     // COORDINATES OF ITEM IMAGES
     private static final Coordinates[] topLeftCoordinates = {
-            new Coordinates(223, 324), // AREA 1
-            new Coordinates(384, 324), // AREA 2
-            new Coordinates(60, 568),  // AREA 3
-            new Coordinates(222, 568), // AREA 4
-            new Coordinates(384, 568)  // AREA 5
+            new Coordinates(223, Offset01Top), // AREA 1
+            new Coordinates(385, Offset01Top), // AREA 2
+            new Coordinates(61, Offset234Top),  // AREA 3
+            new Coordinates(223, Offset234Top), // AREA 4
+            new Coordinates(385, Offset234Top)  // AREA 5
     };
 
     private static final Coordinates[] bottomRightCoordinates = {
-            new Coordinates(317, 424), // AREA 1
-            new Coordinates(478, 424), // AREA 2
-            new Coordinates(154, 668), // AREA 3
-            new Coordinates(316, 668), // AREA 4
-            new Coordinates(478, 668)  // AREA 5
+            new Coordinates(316, Offset01), // AREA 1
+            new Coordinates(478, Offset01), // AREA 2
+            new Coordinates(154, Offset234), // AREA 3
+            new Coordinates(316, Offset234), // AREA 4
+            new Coordinates(478, Offset234)  // AREA 5
     };
 
     private static final List<String> shopImages = Arrays.asList(
             "300", "100", "30", "Key", "Bandits", "Safebox", "MoneyGun"
     );
+
+    public Shop() throws IOException {
+    }
 
     // Not really shop related
     // TODO : MOVE TO A DIFFERENT CLASS...
@@ -56,12 +73,10 @@ public class Shop {
         System.out.println("MailBox receiving failed...");
     }
 
-    public static void swipeToShop() throws IOException {
+    public static void swipeToShop() throws IOException, InterruptedException {
         try {
             Process process = Runtime.getRuntime().exec("adb shell input touchscreen swipe 260 850 260 0 7500");
-            Thread.sleep(10000);
-            process = Runtime.getRuntime().exec("adb shell input touchscreen swipe 260 850 260 775 7500");
-            Thread.sleep(10000);
+            Thread.sleep(7500);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -78,13 +93,9 @@ public class Shop {
         Screenshot.screenshotGameState();
     }
 
-    public static void swipeToKeys() throws IOException {
-        try {
-            swipeToShop();
-            Process process = Runtime.getRuntime().exec("adb shell input touchscreen swipe 260 850 260 45 7500");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static void swipeToKeys() throws IOException, InterruptedException {
+        swipeToShop();
+        Process process = Runtime.getRuntime().exec("adb shell input touchscreen swipe 260 850 260 45 7500");
 
         Screenshot.screenshotGameState();
     }
@@ -114,8 +125,10 @@ public class Shop {
     private static void processShopItems() throws IOException, InterruptedException {
         BufferedImage gameStateImage = loadGameStateImage();
         for (int i = 0; i < topLeftCoordinates.length; i++) {
+            System.out.println("Processing item " + i + "...");
             BufferedImage croppedImage = cropImage(gameStateImage, topLeftCoordinates[i], bottomRightCoordinates[i]);
             checkAndBuyItem(croppedImage, i);
+            Thread.sleep(WAIT_TIME);
         }
     }
 
@@ -171,10 +184,20 @@ public class Shop {
         Thread.sleep(WAIT_TIME);
     }
 
+    public static int findTopLeft() throws IOException {
+        CompareImage compareImage = new CompareImage();
+        Coordinates topLeft = compareImage.findRefreshButtonsInMainImage();
+
+        if (topLeft.getX() != -1 && topLeft.getY() != -1) {
+            System.out.println("Found image at: " + topLeft.getX() + ", " + topLeft.getY());
+        } else {
+            System.out.println("No image found.");
+        }
+
+        return topLeft.getY();
+    }
+
     public static void main(String[] args) throws IOException, InterruptedException {
-        ButtonsHome.pressShop();
         swipeToShop();
-        Thread.sleep(5000);
-        autoShop();
     }
 }
