@@ -103,67 +103,42 @@ public class ButtonsHome {
         Screenshot.screenshotGameState();
     }
 
-    public static void pressItem(int itemIndex) throws IOException {
+    public static void pressItem(int itemIndex) throws IOException, InterruptedException {
         Coordinates topLeft, bottomRight;
         String itemName;
 
-        // Restricted Areas MUST NOT PRESS
-        Coordinates[] restrictedTopLeftCoordinates = {
-                new Coordinates(223, 324), // AREA 1
-                new Coordinates(384, 324), // AREA 2
-                new Coordinates(60, 568),  // AREA 3
-                new Coordinates(222, 568), // AREA 4
-                new Coordinates(384, 568)  // AREA 5
-        };
-        Coordinates[] restrictedBottomRightCoordinates = {
-                new Coordinates(315, 424), // AREA 1
-                new Coordinates(478, 424), // AREA 2
-                new Coordinates(154, 668), // AREA 3
-                new Coordinates(316, 668), // AREA 4
-                new Coordinates(478, 668)  // AREA 5
-        };
-
         switch (itemIndex) {
             case 0: // AREA 1
-                topLeft = new Coordinates(205, 270);
-                bottomRight = new Coordinates(338, 442);
+                topLeft = new Coordinates(195, 444);
+                bottomRight = new Coordinates(343, 490);
                 itemName = "Item 1";
                 break;
             case 1: // AREA 2
-                topLeft = new Coordinates(359, 279);
-                bottomRight = new Coordinates(507, 493);
+                topLeft = new Coordinates(359, 445);
+                bottomRight = new Coordinates(505, 492);
                 itemName = "Item 2";
                 break;
             case 2: // AREA 3
-                topLeft = new Coordinates(33, 522);
-                bottomRight = new Coordinates(180, 738);
+                topLeft = new Coordinates(34, 689);
+                bottomRight = new Coordinates(180, 735);
                 itemName = "Item 3";
                 break;
             case 3: // AREA 4
-                topLeft = new Coordinates(195, 522);
-                bottomRight = new Coordinates(342, 736);
+                topLeft = new Coordinates(197, 689);
+                bottomRight = new Coordinates(342, 735);
                 itemName = "Item 4";
                 break;
             case 4: // AREA 5
-                topLeft = new Coordinates(355, 524);
-                bottomRight = new Coordinates(503, 736);
+                topLeft = new Coordinates(359, 689);
+                bottomRight = new Coordinates(505, 736);
                 itemName = "Item 5";
                 break;
             default:
                 throw new IllegalArgumentException("Invalid item index: " + itemIndex);
         }
 
-        // Generate a random press coordinate and check it doesn't overlap with restricted areas
-        Coordinates pressCoordinate = new Coordinates();
-        do {
-            pressCoordinate = Coordinates.makeRandomCoordinate(topLeft, bottomRight);
-        } while (Coordinates.isCoordinateInRestrictedArea(pressCoordinate, restrictedTopLeftCoordinates, restrictedBottomRightCoordinates));
-
-        // Perform the press using the valid coordinate
-        Press.press(pressCoordinate, "Opening " + itemName);
-
-        // Take a screenshot after pressing
-        Screenshot.screenshotGameState();
+        Press.press(topLeft, bottomRight, itemName);
+        Thread.sleep(5000);
     }
 
     public static void purchaseItem() throws IOException {

@@ -1,9 +1,6 @@
 package Home;
 
-import Basic.CompareImage;
-import Basic.Coordinates;
-import Basic.PixelColorChecker;
-import Basic.Screenshot;
+import Basic.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,11 +12,10 @@ import java.util.List;
 
 public class Shop {
 
-    private static final int MAX_ITEMS = 5;
-    private static final int MAX_RETRIES = 3;
     private static final int WAIT_TIME = 3000; // 2 seconds
 
-    private static Coordinates[] topLeftCoordinates = {
+    // COORDINATES OF ITEM IMAGES
+    private static final Coordinates[] topLeftCoordinates = {
             new Coordinates(223, 324), // AREA 1
             new Coordinates(384, 324), // AREA 2
             new Coordinates(60, 568),  // AREA 3
@@ -27,8 +23,8 @@ public class Shop {
             new Coordinates(384, 568)  // AREA 5
     };
 
-    private static Coordinates[] bottomRightCoordinates = {
-            new Coordinates(315, 424), // AREA 1
+    private static final Coordinates[] bottomRightCoordinates = {
+            new Coordinates(317, 424), // AREA 1
             new Coordinates(478, 424), // AREA 2
             new Coordinates(154, 668), // AREA 3
             new Coordinates(316, 668), // AREA 4
@@ -147,21 +143,38 @@ public class Shop {
             if (CompareImage.compareImage(croppedImage, imagePath)) {
                 System.out.println("Match found in Area " + (areaIndex) + " for shop item: " + shopImage);
                 buyItem(areaIndex);
-                break; // Exit loop after a successful match
+                break;
             }
         }
     }
 
     private static void buyItem(int areaIndex) throws InterruptedException, IOException {
-        ButtonsHome.pressItem(areaIndex);   // Press the shop item
-        Thread.sleep(1000);                  // Wait for a moment
-        ButtonsHome.purchaseItem();         // Purchase the item
-        Thread.sleep(1000);
-        ButtonsHome.pressAnywhere();        // Press anywhere to dismiss the dialog
+        // Press the yellow area below the item instead of the item itself
+        ButtonsHome.pressItem(areaIndex);
+        Thread.sleep(WAIT_TIME);
+
+        // Check if we unintentionally opened an artifact or unit
+        if (isArtifactPressed() || isUnitPressed()) {
+            System.out.println("Unintended press detected. Closing and retrying.");
+            if (isArtifactPressed()) {
+                ButtonsHome.closeArtifact();
+            } else {
+                ButtonsHome.closeUnit();
+            }
+            Thread.sleep(WAIT_TIME);
+            return;
+        }
+
+        ButtonsHome.purchaseItem();
+        Thread.sleep(WAIT_TIME);
+        ButtonsHome.pressAnywhere();
+        Thread.sleep(WAIT_TIME);
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        Thread.sleep(2000);
+        ButtonsHome.pressShop();
+        swipeToShop();
+        Thread.sleep(5000);
         autoShop();
     }
 }
