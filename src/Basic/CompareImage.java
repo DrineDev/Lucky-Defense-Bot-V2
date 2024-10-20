@@ -8,14 +8,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+import java.util.List;
 
 public class CompareImage {
 
     private static final Logger LOGGER = Logger.getLogger(CompareImage.class.getName());
     private static final double SIMILARITY_THRESHOLD = 0.70; // 95% similarity required
     private static final int COLOR_TOLERANCE = 30; // Using the same tolerance as in your PixelColorChecker
+    private static final List<String> REFRESH_BUTTON_FILES = Arrays.asList(
+            "Shop1_cropped.png", "Shop2_cropped.png", "Shop3_cropped.png", "Shop4_cropped.png"
+    );
 
     public static boolean compareImage(BufferedImage mainImage, String path) {
         try {
@@ -62,24 +67,27 @@ public class CompareImage {
         }
     }
 
-    public Coordinates findImageInMainImage(BufferedImage subImage, int width, int height) throws IOException {
-        Screenshot.screenshotGameState();
-        Coordinates coordinates = new Coordinates(-1, -1);  // -1, -1 indicates no match found
-        BufferedImage mainImage = ImageIO.read(new File("Resources/GameState.png"));
+    public static Coordinates findImageInMainImage(BufferedImage mainImage, BufferedImage subImage) {
+        int subWidth = subImage.getWidth();
+        int subHeight = subImage.getHeight();
+        int mainWidth = mainImage.getWidth();
+        int mainHeight = mainImage.getHeight();
 
-        // Iterate from the bottom left (0, 960) upwards to (0, 540)
-        for (int y = 960; y >= 540; y--) {
-            for (int x = 0; x <= mainImage.getWidth() - width; x++) {
-                if (isMatchingRegion(mainImage, subImage, x, y, width, height)) {
+        // Iterate from the bottom right to the top left
+        for (int y = mainHeight - subHeight; y >= 0; y--) {
+            for (int x = mainWidth - subWidth; x >= 0; x--) {
+                if (isMatchingRegion(mainImage, subImage, x, y, subWidth, subHeight)) {
+                    System.out.println("Match found at: " + x + ", " + y);
                     return new Coordinates(x, y);
                 }
             }
         }
-        return coordinates;
+        System.out.println("No match found for this subimage");
+        return new Coordinates(-1, -1);
     }
 
     // Helper function to check if a region in the main image matches the subImage
-    private boolean isMatchingRegion(BufferedImage mainImage, BufferedImage subImage, int startX, int startY, int width, int height) {
+    private static boolean isMatchingRegion(BufferedImage mainImage, BufferedImage subImage, int startX, int startY, int width, int height) {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int mainImagePixel = mainImage.getRGB(startX + x, startY + y);
@@ -94,24 +102,27 @@ public class CompareImage {
         return true;
     }
 
-    public Coordinates findRefreshButtonsInMainImage() throws IOException {
-        Path refreshButtonsDir = Paths.get("Resources/RefreshButtons");
+    public static Coordinates findRefreshButtonsInGameState(String dirPath) throws IOException {
+        BufferedImage mainImage = ImageIO.read(new File("Resources/GameState.png"));
+        System.out.println("Main image size: " + mainImage.getWidth() + "x" + mainImage.getHeight());
 
-        try (Stream<Path> paths = Files.walk(refreshButtonsDir)) {
-            return paths.filter(Files::isRegularFile)
-                    .filter(path -> path.toString().toLowerCase().endsWith(".png"))
-                    .map(path -> {
-                        try {
-                            BufferedImage subImage = ImageIO.read(path.toFile());
-                            return findImageInMainImage(subImage, subImage.getWidth(), subImage.getHeight());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            return new Coordinates(-1, -1);
-                        }
-                    })
-                    .filter(coordinates -> coordinates.getX() != -1 && coordinates.getY() != -1) // Only keep valid matches
-                    .findFirst()
-                    .orElse(new Coordinates(-1, -1)); // Return -1, -1 if no match is found
+        for (String fileName : REFRESH_BUTTON_FILES) {
+            File file = new File(dirPath, fileName);
+            if (!file.exists()) {
+                System.out.println("File not found: " + file.getAbsolutePath());
+                continue;
+            }
+
+            BufferedImage subImage = ImageIO.read(file);
+            System.out.println("Checking refresh button: " + fileName + " (size: " + subImage.getWidth() + "x" + subImage.getHeight() + ")");
+
+            Coordinates coords = findImageInMainImage(mainImage, subImage);
+            if (coords.getX() != -1 && coords.getY() != -1) {
+                return coords;
+            }
         }
+
+        System.out.println("No refresh button found in any of the specified images.");
+        return new Coordinates(-1, -1);
     }
 }

@@ -12,42 +12,57 @@ import java.util.List;
 
 public class Shop {
 
-    private static final int WAIT_TIME = 3000; // 2 seconds
-    static int topLeftRefresh;
-
-    static {
-        try {
-            topLeftRefresh = Shop.findTopLeft();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    static int Offset01 = topLeftRefresh - 375;
-    static int Offset234 = topLeftRefresh - 131;
-    static int Offset01Top = Offset01 - 99;
-    static int Offset234Top = Offset234 - 98;
+    private static final int WAIT_TIME = 3000; // 3 seconds
+    private static int topLeftRefresh;
+    private static int Offset01;
+    private static int Offset234;
+    private static int Offset01Top;
+    private static int Offset234Top;
+    private static boolean isInitialized = false;
 
     // COORDINATES OF ITEM IMAGES
-    private static final Coordinates[] topLeftCoordinates = {
-            new Coordinates(223, Offset01Top), // AREA 1
-            new Coordinates(385, Offset01Top), // AREA 2
-            new Coordinates(61, Offset234Top),  // AREA 3
-            new Coordinates(223, Offset234Top), // AREA 4
-            new Coordinates(385, Offset234Top)  // AREA 5
-    };
-
-    private static final Coordinates[] bottomRightCoordinates = {
-            new Coordinates(316, Offset01), // AREA 1
-            new Coordinates(478, Offset01), // AREA 2
-            new Coordinates(154, Offset234), // AREA 3
-            new Coordinates(316, Offset234), // AREA 4
-            new Coordinates(478, Offset234)  // AREA 5
-    };
+    private static Coordinates[] topLeftCoordinates;
+    private static Coordinates[] bottomRightCoordinates;
 
     private static final List<String> shopImages = Arrays.asList(
             "300", "100", "30", "Key", "Bandits", "Safebox", "MoneyGun"
     );
+
+    static {
+        try {
+            initializeCoordinates();
+            isInitialized = true;
+        } catch (IOException e) {
+            System.err.println("Failed to initialize coordinates: " + e.getMessage());
+        }
+    }
+
+    private static void initializeCoordinates() throws IOException {
+        topLeftRefresh = findTopLeft();
+        if (topLeftRefresh == -1) {
+            throw new IOException("Failed to find RefreshButton");
+        }
+        Offset01 = topLeftRefresh - 375;
+        Offset234 = topLeftRefresh - 131;
+        Offset01Top = Offset01 - 99;
+        Offset234Top = Offset234 - 98;
+
+        topLeftCoordinates = new Coordinates[]{
+                new Coordinates(223, Offset01Top), // AREA 1
+                new Coordinates(385, Offset01Top), // AREA 2
+                new Coordinates(61, Offset234Top),  // AREA 3
+                new Coordinates(223, Offset234Top), // AREA 4
+                new Coordinates(385, Offset234Top)  // AREA 5
+        };
+
+        bottomRightCoordinates = new Coordinates[]{
+                new Coordinates(316, Offset01), // AREA 1
+                new Coordinates(478, Offset01), // AREA 2
+                new Coordinates(154, Offset234), // AREA 3
+                new Coordinates(316, Offset234), // AREA 4
+                new Coordinates(478, Offset234)  // AREA 5
+        };
+    }
 
     public Shop() throws IOException {
     }
@@ -114,6 +129,9 @@ public class Shop {
 
     // MAIN FUNCTION
     public static void autoShop() throws IOException, InterruptedException {
+        if (!isInitialized) {
+            throw new IllegalStateException("Shop coordinates not initialized properly");
+        }
         // You can press reset a maximum of 3 times, so loop through it 3 times
         for (int attempt = 0; attempt < 3; attempt++) {
             Screenshot.screenshotGameState();
@@ -185,19 +203,22 @@ public class Shop {
     }
 
     public static int findTopLeft() throws IOException {
-        CompareImage compareImage = new CompareImage();
-        Coordinates topLeft = compareImage.findRefreshButtonsInMainImage();
+        String refreshButtonsPath = "Resources/RefreshButtons/";
+        Coordinates topLeft = CompareImage.findRefreshButtonsInGameState(refreshButtonsPath);
 
         if (topLeft.getX() != -1 && topLeft.getY() != -1) {
-            System.out.println("Found image at: " + topLeft.getX() + ", " + topLeft.getY());
+            System.out.println("Found refresh button at: " + topLeft.getX() + ", " + topLeft.getY());
+            return topLeft.getY();
         } else {
-            System.out.println("No image found.");
+            System.out.println("No refresh button found. Please check the following:");
+            System.out.println("1. Ensure 'Resources/GameState.png' is up to date and contains the shop screen.");
+            System.out.println("2. Verify that all refresh button images (Shop1_cropped.png to Shop4_cropped.png) are present in " + refreshButtonsPath);
+            System.out.println("3. Make sure the refresh button images accurately represent what's in the GameState.png");
+            return -1;
         }
-
-        return topLeft.getY();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        swipeToShop();
+
     }
 }
