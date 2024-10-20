@@ -57,4 +57,18 @@ public class CompareImage {
             return false;
         }
     }
+
+    // FIND subImage coordinates from GameState.png
+    public Coordinates findImageInMainImage(BufferedImage subImage, int width, int height) throws IOException {
+        Coordinates coordinates= new Coordinates(0, 0);
+        BufferedImage mainImage = ImageIO.read(new File("Resources/GameState.png"));
+        // TODO : LOGIC FOR FINDING OFFSET
+        for(int y = 960; y >= 0; y--) {
+            for(int x = 540; x >= 0; x--) {
+
+            }
+        }
+
+        return coordinates;
+    }
 }
