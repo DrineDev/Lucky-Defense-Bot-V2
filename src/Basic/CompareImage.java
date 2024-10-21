@@ -67,22 +67,20 @@ public class CompareImage {
         }
     }
 
-    public static Coordinates findImageInMainImage(BufferedImage mainImage, BufferedImage subImage) {
-        int subWidth = subImage.getWidth();
-        int subHeight = subImage.getHeight();
+    private static Coordinates findImageInMainImage(BufferedImage mainImage, BufferedImage subImage) {
         int mainWidth = mainImage.getWidth();
         int mainHeight = mainImage.getHeight();
+        int subWidth = subImage.getWidth();
+        int subHeight = subImage.getHeight();
 
-        // Iterate from the bottom right to the top left
-        for (int y = mainHeight - subHeight; y >= 0; y--) {
-            for (int x = mainWidth - subWidth; x >= 0; x--) {
+        // Adjust search area to avoid going out of bounds
+        for (int y = Math.min(960, mainHeight - subHeight); y >= Math.max(540, 0); y--) {
+            for (int x = 0; x <= mainWidth - subWidth; x++) {
                 if (isMatchingRegion(mainImage, subImage, x, y, subWidth, subHeight)) {
-                    System.out.println("Match found at: " + x + ", " + y);
                     return new Coordinates(x, y);
                 }
             }
         }
-        System.out.println("No match found for this subimage");
         return new Coordinates(-1, -1);
     }
 
@@ -102,27 +100,48 @@ public class CompareImage {
         return true;
     }
 
-    public static Coordinates findRefreshButtonsInGameState(String dirPath) throws IOException {
-        BufferedImage mainImage = ImageIO.read(new File("Resources/GameState.png"));
-        System.out.println("Main image size: " + mainImage.getWidth() + "x" + mainImage.getHeight());
+    public static Coordinates findRefreshButtonInGameState(String dirPath) throws IOException {
+        File gameStateFile = new File("Resources/GameState.png");
+        if (!gameStateFile.exists()) {
+            LOGGER.severe("GameState.png does not exist at: " + gameStateFile.getAbsolutePath());
+            throw new IOException("GameState.png not found");
+        }
 
-        for (String fileName : REFRESH_BUTTON_FILES) {
-            File file = new File(dirPath, fileName);
-            if (!file.exists()) {
-                System.out.println("File not found: " + file.getAbsolutePath());
-                continue;
-            }
+        BufferedImage mainImage;
+        try {
+            mainImage = ImageIO.read(gameStateFile);
+        } catch (IOException e) {
+            LOGGER.severe("Failed to read GameState.png: " + e.getMessage());
+            throw e;
+        }
 
-            BufferedImage subImage = ImageIO.read(file);
-            System.out.println("Checking refresh button: " + fileName + " (size: " + subImage.getWidth() + "x" + subImage.getHeight() + ")");
+        File dir = new File(dirPath);
+        if (!dir.exists() || !dir.isDirectory()) {
+            LOGGER.severe("RefreshButtons directory does not exist or is not a directory: " + dir.getAbsolutePath());
+            throw new IOException("Invalid RefreshButtons directory");
+        }
 
-            Coordinates coords = findImageInMainImage(mainImage, subImage);
-            if (coords.getX() != -1 && coords.getY() != -1) {
-                return coords;
+        File[] directoryListing = dir.listFiles((d, name) -> name.toLowerCase().endsWith(".png"));
+        if (directoryListing == null || directoryListing.length == 0) {
+            LOGGER.warning("No PNG files found in RefreshButtons directory: " + dir.getAbsolutePath());
+            return new Coordinates(-1, -1);
+        }
+
+        for (File file : directoryListing) {
+            try {
+                BufferedImage subImage = ImageIO.read(file);
+                Coordinates coords = findImageInMainImage(mainImage, subImage);
+                if (coords.getX() != -1 && coords.getY() != -1) {
+                    LOGGER.info("Found refresh button using: " + file.getName());
+                    return coords;
+                }
+            } catch (IOException e) {
+                LOGGER.warning("Failed to read refresh button image: " + file.getName() + ". Error: " + e.getMessage());
             }
         }
 
-        System.out.println("No refresh button found in any of the specified images.");
+        LOGGER.warning("No matching refresh button found in any of the images.");
         return new Coordinates(-1, -1);
     }
+
 }
