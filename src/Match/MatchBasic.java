@@ -3,9 +3,20 @@ package Match;
 import Basic.Coordinates;
 import Basic.PixelColorChecker;
 import Basic.Press;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.imgcodecs.Imgcodecs;
+
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 
 public class MatchBasic {
+    static {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+    }
 
     public static boolean is90enemies() {
         Coordinates coordinates = new Coordinates(315, 122);
@@ -74,4 +85,111 @@ public class MatchBasic {
         Press.press(topLeft, bottomRight, action);
     }
 
+    public static void pressUncommonGamble() {
+        Coordinates topLeft = new Coordinates(103, 831);
+        Coordinates bottomRight = new Coordinates(194, 867);
+        String action = "Pressing Uncommon Gamble";
+        Press.press(topLeft, bottomRight, action);
+    }
+
+    public static void pressEpicGamble() {
+        Coordinates topLeft = new Coordinates(223, 831);
+        Coordinates bottomRight = new Coordinates(315, 867);
+        String action = "Pressing Epic Gamble";
+        Press.press(topLeft, bottomRight, action);
+    }
+
+    public static void pressLegendaryGamble() {
+        Coordinates topLeft = new Coordinates(346, 831);
+        Coordinates bottomRight = new Coordinates(437, 867);
+        String action = "Pressing Legendary Gamble";
+        Press.press(topLeft, bottomRight, action);
+    }
+
+    public static void pressUpgradeMythic() {
+        Press.press(new Coordinates(285, 821), new Coordinates(375, 857), "Upgrading Mythic");
+    }
+
+    public static void pressUpgradeSummoning() {
+        Press.press(new Coordinates(409, 822), new Coordinates(502, 857), "Upgrading Summoning");
+    }
+
+    public static void pressUpgradeEpic() {
+        Press.press(new Coordinates(161, 821), new Coordinates(254, 858), "Upgrading Epic");
+    }
+
+    public static void pressUpgradeCommon() {
+        Press.press(new Coordinates(39, 823), new Coordinates(129, 858), "Upgrading Common");
+    }
+
+    public static int checkLuckyStones() {
+//        pressUpgrade();
+
+        // Load the GameState image
+        Mat gameState = Imgcodecs.imread("Resources/GameState.png");
+
+        // Define the coordinates for the sub-image
+        // Replace these with your actual coordinates
+        int topLeftX = 305; // Example X coordinate for the top-left corner
+        int topLeftY = 645; // Example Y coordinate for the top-left corner
+        int bottomRightX = 393; // Example X coordinate for the bottom-right corner
+        int bottomRightY = 674; // Example Y coordinate for the bottom-right corner
+
+        // Create a rectangle based on the coordinates
+        Rect roi = new Rect(topLeftX, topLeftY, bottomRightX - topLeftX, bottomRightY - topLeftY);
+
+        // Crop the sub-image
+        Mat subImage = new Mat(gameState, roi);
+
+        // Process the sub-image and convert it to an int
+        int luckyStonesValue = processSubImage(subImage);
+
+        return luckyStonesValue;
+    }
+
+    private static int processSubImage(Mat subImage) {
+        // Convert the Mat to BufferedImage
+        BufferedImage bufferedImage = matToBufferedImage(subImage);
+
+        // Initialize Tesseract
+        Tesseract tesseract = new Tesseract();
+        tesseract.setDatapath("lib/Tess4j/tessdata"); // Set the path to the tessdata directory
+        tesseract.setLanguage("eng"); // Set the language you want to use
+
+        String extractedText = "";
+        try {
+            // Perform OCR on the buffered image
+            extractedText = tesseract.doOCR(bufferedImage);
+        } catch (TesseractException e) {
+            e.printStackTrace();
+        }
+
+        // Parse the extracted text into an integer
+        // You may need to adjust this logic based on the format of the extracted text
+        try {
+            return Integer.parseInt(extractedText.trim());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return 0; // or some default value/error code
+        }
+    }
+
+    private static BufferedImage matToBufferedImage(Mat matrix) {
+        int type = BufferedImage.TYPE_BYTE_GRAY;
+        if (matrix.channels() > 1) {
+            type = BufferedImage.TYPE_3BYTE_BGR;
+        }
+        int bufferSize = matrix.channels() * matrix.cols() * matrix.rows();
+        byte[] b = new byte[bufferSize];
+        matrix.get(0, 0, b); // get all the pixels
+        BufferedImage image = new BufferedImage(matrix.cols(), matrix.rows(), type);
+        image.getRaster().setDataElements(0, 0, matrix.cols(), matrix.rows(), b);
+        return image;
+    }
+
+    public static void main(String[] args) {
+        int temp = checkLuckyStones();
+
+        System.out.println(temp);
+    }
 }

@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 public class Shop {
     private static final Logger LOGGER = Logger.getLogger(Shop.class.getName());
     private static final int WAIT_TIME = 3000; // 3 seconds
-    private static String baseResourcePath = "/Users/macbookpro/Lucky-Defense-Bot-V2/Resources/";
+    private static String baseResourcePath = "Resources/";
 
     // COORDINATES OF ITEM IMAGES
     private static Coordinates[] topLeftCoordinates;
@@ -141,46 +141,34 @@ public class Shop {
     }
 
     public static int findTopLeft() throws IOException {
-        try {
-            String refreshButtonPath = "Resources/RefreshButtons/3xRefresh.png"; // Provide the correct path
-            String gameStatePath = "Resources/GameState.png"; // Provide the correct path
+        // Array of possible refresh button image paths in order of likelihood (or any order you prefer)
+        String[] refreshButtonPaths = {
+                "Resources/RefreshButtons/3xRefresh.png",
+                "Resources/RefreshButtons/2xRefresh.png",
+                "Resources/RefreshButtons/1xRefresh.png",
+                "Resources/RefreshButtons/0xRefresh.png"
+        };
 
-            Coordinates coords = CompareImage.findRefreshButtonInGameState(refreshButtonPath, gameStatePath);
-            if (coords.getX() != -1 && coords.getY() != -1) {
-                return coords.getY();
-            } else {
-                System.out.println("No refresh button found.");
+        for (String refreshButtonPath : refreshButtonPaths) {
+            try {
+                String gameStatePath = "Resources/GameState.png"; // Provide the correct path
+
+                Coordinates coords = CompareImage.findRefreshButtonInGameState(refreshButtonPath, gameStatePath);
+                if (coords.getX() != -1 && coords.getY() != -1) {
+                    System.out.println("Found refresh button: " + refreshButtonPath);
+                    return coords.getY();
+                }
+            } catch (IOException e) {
+                System.err.println("Error reading refresh button: " + refreshButtonPath);
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
+        System.out.println("No refresh button found.");
         return -1;
     }
 
     public static void main(String[] args) throws IOException {
-//        logEnvironmentInfo();
-//
-//        // Uncomment and modify this line if you need to set a custom resource path
-//        // baseResourcePath = "/Users/macbookpro/Lucky-Defense-Bot-V2/Resources/";
-//
-//        if (!verifyResources()) {
-//            LOGGER.severe("Required resources are missing or inaccessible. Please check the resource directories and files.");
-//            return;
-//        }
-//
-//        try {
-//            autoShop();
-//        } catch (IOException e) {
-//            LOGGER.severe("IO error occurred during shop automation: " + e.getMessage());
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            LOGGER.severe("Shop automation was interrupted: " + e.getMessage());
-//            e.printStackTrace();
-//        } catch (IllegalStateException e) {
-//            LOGGER.severe("Shop automation failed due to initialization error: " + e.getMessage());
-//            e.printStackTrace();
-//        }
         File gameStateFile = new File(baseResourcePath + "GameState.png");
         System.out.println("Absolute path to GameState.png: " + gameStateFile.getAbsolutePath());
 

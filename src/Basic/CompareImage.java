@@ -5,12 +5,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 import java.util.List;
 
 public class CompareImage {
@@ -69,12 +65,19 @@ public class CompareImage {
 
     // Helper function to check if a region in the main image matches the subImage
     private static boolean isMatchingRegion(BufferedImage mainImage, BufferedImage subImage, int startX, int startY) {
-        int width = subImage.getWidth();
-        int height = subImage.getHeight();
+        int subImageWidth = subImage.getWidth();
+        int subImageHeight = subImage.getHeight();
+        int mainImageWidth = mainImage.getWidth();
+        int mainImageHeight = mainImage.getHeight();
+
+        // Check if the subImage fits within the bounds of the mainImage at the specified position
+        if (startX + subImageWidth > mainImageWidth || startY + subImageHeight > mainImageHeight) {
+            return false; // The region exceeds the bounds of the main image
+        }
 
         // Compare each pixel in the subImage with the corresponding pixel in the mainImage
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for (int y = 0; y < subImageHeight; y++) {
+            for (int x = 0; x < subImageWidth; x++) {
                 Color mainColor = new Color(mainImage.getRGB(startX + x, startY + y));
                 Color subColor = new Color(subImage.getRGB(x, y));
 
@@ -88,30 +91,32 @@ public class CompareImage {
     }
 
     public static Coordinates findRefreshButtonInGameState(String refreshButtonPath, String gameStatePath) throws IOException {
-        BufferedImage refreshButtonImage;
-        BufferedImage gameStateImage;
+        System.out.println("Attempting to load GameState from: " + gameStatePath);
+        BufferedImage gameState = ImageIO.read(new File(gameStatePath));
 
-        // Load the images
-        try {
-            refreshButtonImage = ImageIO.read(new File(refreshButtonPath));
-            gameStateImage = ImageIO.read(new File(gameStatePath));
-        } catch (IOException e) {
-            LOGGER.severe("Failed to load images: " + e.getMessage());
-            throw e;
+        System.out.println("Attempting to load RefreshButton from: " + refreshButtonPath);
+        BufferedImage refreshButton = ImageIO.read(new File(refreshButtonPath));
+
+        if (gameState == null) {
+            throw new IOException("GameState image is null!");
+        }
+
+        if (refreshButton == null) {
+            throw new IOException("RefreshButton image is null!");
         }
 
         // Get dimensions
-        int buttonWidth = refreshButtonImage.getWidth();
-        int buttonHeight = refreshButtonImage.getHeight();
-        int gameStateWidth = gameStateImage.getWidth();
-        int gameStateHeight = gameStateImage.getHeight();
+        int buttonWidth = refreshButton.getWidth();
+        int buttonHeight = refreshButton.getHeight();
+        int gameStateWidth = gameState.getWidth();
+        int gameStateHeight = gameState.getHeight();
 
         LOGGER.info("Searching GameState (" + gameStateWidth + "x" + gameStateHeight + ") for RefreshButton (" + buttonWidth + "x" + buttonHeight + ")");
 
         // Iterate over every pixel in GameState, treating each as a possible top-left corner of the button
         for (int y = 0; y <= gameStateHeight - buttonHeight; y++) {
             for (int x = 0; x <= gameStateWidth - buttonWidth; x++) {
-                if (isMatchingRegion(gameStateImage, refreshButtonImage, x, y)) {
+                if (isMatchingRegion(gameState, refreshButton, x, y)) {
                     LOGGER.info("Found matching RefreshButton at (" + x + ", " + y + ")");
                     return new Coordinates(x, y);
                 }
