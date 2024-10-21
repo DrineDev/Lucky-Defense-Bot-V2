@@ -16,6 +16,10 @@ public class EpicUnit extends Unit {
         quantity = 0;
     }
 
+    /**
+     * isWhatUnit function to check what kind of Epic Unit is in, to be called by Square
+     * @return
+     */
     public static EpicUnit isWhatUnit() {
         BufferedImage subImage = null;
         try {

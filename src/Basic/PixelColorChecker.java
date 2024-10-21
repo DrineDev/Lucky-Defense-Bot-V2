@@ -11,7 +11,13 @@ import java.util.logging.Logger;
 
 public class PixelColorChecker {
 
-
+    /**
+     * return Color from image in resourcePath and coordinates
+     * @param resourcePath
+     * @param coordinates
+     * @return
+     * @throws IOException
+     */
     public static Color getPixelColor(String resourcePath, Coordinates coordinates) throws IOException {
         // Load the image from the resources using class loader
         File file = new File(resourcePath);
@@ -35,7 +41,13 @@ public class PixelColorChecker {
         return new Color(pixel);
     }
 
-    // SINGLE PIXEL COMPAIRSON
+    /**
+     * return true if pixelColor matches expectedColor within tolerance
+     * @param pixelColor
+     * @param expectedColor
+     * @param tolerance
+     * @return
+     */
     public static boolean isMatchingColor(Color pixelColor, Color expectedColor, int tolerance) {
         int redDiff = Math.abs(pixelColor.getRed() - expectedColor.getRed());
         int greenDiff = Math.abs(pixelColor.getGreen() - expectedColor.getGreen());
@@ -44,8 +56,16 @@ public class PixelColorChecker {
         return redDiff <= tolerance && greenDiff <= tolerance && blueDiff <= tolerance;
     }
 
-    // IMAGE COMPARISON
     private static final Logger LOGGER = Logger.getLogger(PixelColorChecker.class.getName());
+
+    /**
+     * Check if color matches but with more parameters
+     * @param coordinates
+     * @param expectedColor
+     * @param screenshotPath
+     * @param tolerance
+     * @return
+     */
     public static boolean checkColorMatch(Coordinates coordinates, Color expectedColor, String screenshotPath, int tolerance) {
         try {
             Color pixelColor = PixelColorChecker.getPixelColor(screenshotPath, coordinates);

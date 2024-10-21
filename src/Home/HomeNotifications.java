@@ -7,12 +7,20 @@ import java.awt.*;
 
 public class HomeNotifications {
 
-    // General function to check if there is a notification
+    /**
+     * General function to check for coordinates
+     * @param coordinates
+     * @return
+     */
     private static boolean checkNotification(Coordinates coordinates) {
         Color notificationColor = new Color(247, 30, 81);
         return PixelColorChecker.checkColorMatch(coordinates, notificationColor, "Resources/GameState.png", 5);
     }
 
+    /**
+     * Specific function for each Notification types
+     * @return
+     */
     public static boolean checkQuestNotification() {
         Coordinates coordinates = new Coordinates(516, 181);
         return checkNotification(coordinates);

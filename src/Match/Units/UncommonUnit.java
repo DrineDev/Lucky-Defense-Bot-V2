@@ -15,7 +15,10 @@ public class UncommonUnit extends Unit {
         name = "";
         quantity = 0;
     }
-
+    /**
+     * isWhatUnit function to check what kind of Uncommon Unit is in, to be called by Square
+     * @return
+     */
     public static UncommonUnit isWhatUnit() {
         BufferedImage subImage = null;
         try {

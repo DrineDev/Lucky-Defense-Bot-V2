@@ -29,6 +29,13 @@ public class Square {
         return unit;
     }
 
+    /**
+     * update square to add unitName and unitQuantity, to be called by GameBoard
+     * @param topLeft
+     * @param bottomRight
+     * @param action
+     * @throws IOException
+     */
     public void updateSquare(Coordinates topLeft, Coordinates bottomRight, String action) throws IOException {
         Press.press(topLeft, bottomRight, action);
         int rarity = Unit.isWhatRarity();

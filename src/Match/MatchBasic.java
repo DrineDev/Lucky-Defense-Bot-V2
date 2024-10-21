@@ -18,6 +18,10 @@ public class MatchBasic {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
     }
 
+    /**
+     * Check if there are 90 enemies
+     * @return
+     */
     public static boolean is90enemies() {
         Coordinates coordinates = new Coordinates(315, 122);
         Color expectedColor = new Color(194, 64, 73);
@@ -27,6 +31,10 @@ public class MatchBasic {
         return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
 
+    /**
+     * Check if Golem can be summoned
+     * @return
+     */
     public static boolean isGolemPresent() {
         Coordinates coordinates = new Coordinates(481, 223);
         Color expectedColor = new Color(93, 71, 61);
@@ -36,6 +44,7 @@ public class MatchBasic {
         return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
 
+    /** Press functions */
     public static void pressSummon() {
         Coordinates topLeft = new Coordinates(175, 789);
         Coordinates bottomRight = new Coordinates(364, 880);

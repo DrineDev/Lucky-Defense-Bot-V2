@@ -6,6 +6,10 @@ import Match.GameBoard.GameBoard;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Supposed to return recommended positions of each unit
+ * Should only be updated when using other strats
+ */
 public class RecommendedPositions {
     public List<Integer> Batman = Arrays.asList();
     public List<Integer> Blob = Arrays.asList();

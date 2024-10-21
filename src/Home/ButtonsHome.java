@@ -8,11 +8,12 @@ import java.io.IOException;
 
 public class ButtonsHome {
 
-    // Specific actions with top-left and bottom-right coordinates
-    /*
-    format is (topLeft, bottomRight, actionName)
-    just presses buttons
+    /**
+     * Specific actions with top-left and bottom-right coordinates
+     * Format is topLeft, bottomRight, string
+     * @throws IOException
      */
+
     public static void pressBattle() throws IOException {
         Press.press(new Coordinates(215, 875), new Coordinates(300, 951), "Battle");
         Screenshot.screenshotGameState();

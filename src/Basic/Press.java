@@ -3,7 +3,12 @@ package Basic;
 import java.io.IOException;
 
 public class Press {
-    // press for topLeft and bottomRight, then generate random
+    /**
+     * Press within random coordinates in topLeft and bottomRight
+     * @param topLeft
+     * @param bottomRight
+     * @param actionName
+     */
     public static void press(Coordinates topLeft, Coordinates bottomRight, String actionName) {
         Process process;
         Coordinates temp = Coordinates.makeRandomCoordinate(topLeft, bottomRight);
@@ -15,7 +20,11 @@ public class Press {
         }
     }
 
-    // press for Coordinates only
+    /**
+     * Press coordinates instantly
+     * @param coordinates
+     * @param actionName
+     */
     public static void press(Coordinates coordinates, String actionName) {
         Process process;
         try {

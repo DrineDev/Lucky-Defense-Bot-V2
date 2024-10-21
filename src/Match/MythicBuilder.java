@@ -16,7 +16,7 @@ import java.util.List;
 
 public class MythicBuilder {
 
-    // ALL MYTHICS ELEMENT
+    /** All MYTHICS ELEMENTS */
     private List<String> Batman = Arrays.asList("Tiger Master", "Tree", "Thrower", "Thrower");
     private List<String> Blob = Arrays.asList("Hunter", "Eagle General", "Bandit");
     private List<String> Bomba = Arrays.asList("Tiger Master", "Wolf Warrior", "Barbarian");
@@ -38,6 +38,11 @@ public class MythicBuilder {
     private List<String> KittyMage = Arrays.asList("Eagle General", "Archer", "Water Elemental", "Water Elemental");
     private List<String> FrogPrince = Arrays.asList("Wolf Warrior", "Tree", "Barbarian", "Thrower");
 
+    /**
+     * Check if a Mythic can be built by reading the GameBoardState.Json
+     * @param name
+     * @return
+     */
     public static boolean canBuild(String name) {
         // Load the game board from JSON
         List<List<Map<String, Object>>> gameBoard = loadGameBoardState();
@@ -73,14 +78,18 @@ public class MythicBuilder {
         return true; // All required units and their quantities are available
     }
 
-    // Helper method to get requirements based on the unit name
+    /**
+     * Helper method to check if Mythic ca nbe built, to be called by canBuild()
+     * @param name
+     * @return
+     */
     private static Map<String, Integer> getRequirementsForUnit(String name) {
         Map<String, Integer> requirements = new HashMap<>();
         switch (name) {
             case "Batman":
                 requirements.put("Tiger Master", 1);
                 requirements.put("Tree", 1);
-                requirements.put("Thrower", 2); // Need 2 Throwers
+                requirements.put("Thrower", 2);
                 break;
             case "Blob":
                 requirements.put("Hunter", 1);
@@ -103,7 +112,7 @@ public class MythicBuilder {
                 requirements.put("Water Elemental", 1);
                 break;
             case "Dragon":
-                requirements.put("Eagle General", 2); // Need 2 Eagle Generals
+                requirements.put("Eagle General", 2);
                 requirements.put("Water Elemental", 1);
                 break;
             case "Ninja":
@@ -119,7 +128,7 @@ public class MythicBuilder {
             case "PulseGenerator":
                 requirements.put("Electro Robot", 1);
                 requirements.put("Tree", 1);
-                requirements.put("Archer", 2); // Need 2 Archers
+                requirements.put("Archer", 2);
                 break;
             case "Indy":
                 requirements.put("Sheriff", 1);
@@ -140,7 +149,7 @@ public class MythicBuilder {
             case "Graviton":
                 requirements.put("Electro Robot", 1);
                 requirements.put("Shock Robot", 1);
-                requirements.put("Thrower", 2); // Need 2 Throwers
+                requirements.put("Thrower", 2);
                 break;
             case "RocketChu":
                 requirements.put("War Machine", 1);
@@ -160,7 +169,7 @@ public class MythicBuilder {
                 break;
             case "IronMeow":
                 requirements.put("War Machine", 1);
-                requirements.put("Bandit", 2); // Need 2 Bandits
+                requirements.put("Bandit", 2);
                 break;
             case "Lancelot":
                 requirements.put("Sheriff", 1);
@@ -170,7 +179,7 @@ public class MythicBuilder {
             case "KittyMage":
                 requirements.put("Eagle General", 1);
                 requirements.put("Archer", 1);
-                requirements.put("Water Elemental", 2); // Need 2 Water Elementals
+                requirements.put("Water Elemental", 2);
                 break;
             case "FrogPrince":
                 requirements.put("Wolf Warrior", 1);
@@ -184,7 +193,11 @@ public class MythicBuilder {
         return requirements;
     }
 
-    // Helper method to flatten the game board and extract all units
+    /**
+     * Helper method to flatten gameBoard and get all the units
+     * @param gameBoard
+     * @return
+     */
     private static Map<String, Integer> getAllUnitsFromBoard(List<List<Map<String, Object>>> gameBoard) {
         Map<String, Integer> units = new HashMap<>();
         for (List<Map<String, Object>> row : gameBoard) {
@@ -201,7 +214,10 @@ public class MythicBuilder {
         return units;
     }
 
-    // Method to load the game board state from a JSON file
+    /**
+     * Load game board from Json to memory
+     * @return
+     */
     private static List<List<Map<String, Object>>> loadGameBoardState() {
         Gson gson = new Gson();
         Path path = Paths.get("Resources/gameBoardState.json").toAbsolutePath();

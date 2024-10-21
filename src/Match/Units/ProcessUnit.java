@@ -24,9 +24,13 @@ public class ProcessUnit {
         Cell[][] gameBoard; // 2D array kay 3x6 mn ang board
     }
 
+    /**
+     * Detect units in gameBoardState.json and process.
+     * @return
+     */
     public static Boolean DetectUnitPlusProcess() {
         Gson gson = new Gson();
-        String filePath = "C:/Users/Owner/Lucky-Defense-Bot-V2/Resources/gameBoardState.json";
+        String filePath = "Resources/gameBoardState.json";
 
         // HashMap for unit rarity with compiled patterns
         // ang keys sa hashmap kay ang rarity nya ang value kay ang regex pattern
@@ -97,6 +101,14 @@ public class ProcessUnit {
     }
 
 
+    /**
+     * Check what to do for Mythical Units
+     * @param unit
+     * @param i
+     * @param j
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static void processUnitLegendary(Unit unit, int i, int j) throws IOException, InterruptedException {
         String unitName = unit.name;
 
@@ -138,6 +150,12 @@ public class ProcessUnit {
         }
     }
 
+    /**
+     * Check what to do for Epic Units
+     * @param unit
+     * @param i
+     * @param j
+     */
     public static void processUnitEpic(Unit unit, int i, int j)
     {
         String unitName = unit.name;
@@ -162,10 +180,24 @@ public class ProcessUnit {
                 System.out.println("No specific handling for: " + unitName);
         }
     }
+
+    /**
+     * Check what to do for Rare/Uncommon Units
+     * @param unit
+     * @param i
+     * @param j
+     */
     public static void processUnitRare(Unit unit, int i, int j)
     {
         // TODO: Implement rare unit process
     }
+
+    /**
+     * Check what to do for Common Units
+     * @param unit
+     * @param i
+     * @param j
+     */
     public static void processUnitCommon(Unit unit, int i, int j)
     {
         // TODO: Implement common unit process

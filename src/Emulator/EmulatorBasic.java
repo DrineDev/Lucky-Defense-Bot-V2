@@ -4,6 +4,9 @@ import java.io.IOException;
 
 public class EmulatorBasic {
 
+    /**
+     * Open emulator
+     */
     public static void openEmulator() { // open emulator
         try {
             Process process;

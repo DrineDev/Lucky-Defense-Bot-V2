@@ -5,6 +5,12 @@ import Basic.Screenshot;
 import java.io.IOException;
 
 public class Quest {
+
+    /**
+     * Automates quest reward retrieval
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static void autoQuest() throws IOException, InterruptedException {
         Screenshot.screenshotGameState();
         if(!HomeNotifications.checkQuestNotification()) {
@@ -42,9 +48,5 @@ public class Quest {
         }
 
         System.out.println("Auto quests complete...");
-    }
-
-    public static void main(String[] args) throws IOException, InterruptedException {
-        autoQuest();
     }
 }

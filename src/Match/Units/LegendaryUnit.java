@@ -16,6 +16,10 @@ public class LegendaryUnit extends Unit {
         quantity = 0;
     }
 
+    /**
+     * isWhatUnit function to check what kind of Legendar Unit is in, to be called by Square
+     * @return
+     */
     public static LegendaryUnit isWhatUnit() {
         BufferedImage subImage = null;
         try {

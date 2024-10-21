@@ -11,13 +11,20 @@ import static java.lang.Thread.sleep;
 
 public class Recruit {
 
-    // in case if allowed to do more
+    /**
+     * Check if can press One More
+     * @return
+     */
     public static boolean checkOneMore() {
         Color color = new Color(50, 145, 219);
         Coordinates coordinates = new Coordinates(177, 777);
         return PixelColorChecker.checkColorMatch(coordinates, color, "Resources/GameState.png", 5);
     }
 
+    /**
+     * Recruit 1X
+     * @throws IOException
+     */
     public static void recruit1X() throws IOException {
         Screenshot.screenshotGameState();
         if(HomeNotifications.checkRecruitNotification()) {
@@ -49,6 +56,10 @@ public class Recruit {
         Screenshot.screenshotGameState();
     }
 
+    /**
+     * Recruit 10X
+     * @throws IOException
+     */
     public static void recruit10X() throws IOException {
         Screenshot.screenshotGameState();
         if(HomeNotifications.checkRecruitNotification()) {

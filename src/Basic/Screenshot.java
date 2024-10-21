@@ -7,6 +7,10 @@ import java.nio.file.Paths;
 public class Screenshot {
     private static final String SCREENSHOT_PATH = "Resources/GameState.png";
 
+    /**
+     * Screenshot game then store to Resources/GameState.png for processing
+     * @throws IOException
+     */
     public static void screenshotGameState() throws IOException {
         Path outputPath = Paths.get(SCREENSHOT_PATH).toAbsolutePath();
         ProcessBuilder pb = new ProcessBuilder("adb", "exec-out", "screencap", "-p");

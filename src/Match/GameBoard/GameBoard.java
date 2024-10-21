@@ -28,10 +28,16 @@ public class GameBoard {
             { new Coordinates(135, 601), new Coordinates(200, 601), new Coordinates(265, 601), new Coordinates(330, 601), new Coordinates(395, 601), new Coordinates(460, 601) }
     };
 
+    /**
+     * Construct gameBoard
+     */
     public GameBoard() {
         initializeGameBoard();
     }
 
+    /**
+     * Construct the 3x6 squares
+     */
     private void initializeGameBoard() {
         System.out.println("Initializing game board...");
         gameBoard = new Square[3][6];
@@ -44,6 +50,11 @@ public class GameBoard {
         System.out.println("Game board initialization complete.");
     }
 
+    /**
+     * Keep the values to 3x6 Squares
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public void updateBoard() throws IOException, InterruptedException {
 
         if (gameBoard == null) {
@@ -64,6 +75,9 @@ public class GameBoard {
         System.out.println("Board updated...");
     }
 
+    /**
+     * Save board state to JSON
+     */
     public void saveBoardState() {
         if (gameBoard == null) {
             System.out.println("Error: gameBoard is null. Cannot save board state.");
@@ -105,6 +119,15 @@ public class GameBoard {
         }
     }
 
+    /**
+     * Move units
+     * @param i1
+     * @param j1
+     * @param i2
+     * @param j2
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static void moveUnit(int i1, int j1, int i2, int j2) throws IOException, InterruptedException {
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i1][j1], bottomRightCoordinates[i1][j1]);
         Coordinates toRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i2][j2], bottomRightCoordinates[i2][j2]);
@@ -113,22 +136,33 @@ public class GameBoard {
         Thread.sleep(3000);
     }
 
+    /**
+     * GETTERS
+     * @return
+     */
     public static Coordinates[][] getTopLeftCoordinates() { return topLeftCoordinates; }
     public static Coordinates[][] getBottomRightCoordinates() { return bottomRightCoordinates; }
     public Square[][] getGameBoard() {
         return gameBoard;
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        System.out.println("Starting main method...");
-        GameBoard gameBoard1 = new GameBoard();
-        System.out.println("GameBoard created.");
-        gameBoard1.updateBoard();
-        System.out.println("Board updated.");
-        gameBoard1.saveBoardState();
-        System.out.println("Board state saved.");
-    }
+//    public static void main(String[] args) throws IOException, InterruptedException {
+//        System.out.println("Starting main method...");
+//        GameBoard gameBoard1 = new GameBoard();
+//        System.out.println("GameBoard created.");
+//        gameBoard1.updateBoard();
+//        System.out.println("Board updated.");
+//        gameBoard1.saveBoardState();
+//        System.out.println("Board state saved.");
+//    }
 
+    /**
+     * Sell units
+     * @param i
+     * @param j
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static void sellUnit(int i, int j) throws IOException, InterruptedException {
         // Click the unit at the specified game board coordinates
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j], bottomRightCoordinates[i][j]);
@@ -160,6 +194,13 @@ public class GameBoard {
         Thread.sleep(500);
     }
 
+    /**
+     * Merge units
+     * @param i
+     * @param j
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static void mergeUnit(int i, int j) throws IOException, InterruptedException {
         //Location sa specific unit e merge sa gameboard
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j], bottomRightCoordinates[i][j]);
@@ -191,6 +232,13 @@ public class GameBoard {
         Thread.sleep(500);
     }
 
+    /**
+     * Upgrade units for mythics like Batman, Tar, Lancelot, etc.
+     * @param i
+     * @param j
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static void upgradeUnit(int i, int j) throws IOException, InterruptedException {
         //Location sa specific unit e merge sa gameboard
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j], bottomRightCoordinates[i][j]);

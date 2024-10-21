@@ -14,10 +14,15 @@ public class CompareImage {
     private static final Logger LOGGER = Logger.getLogger(CompareImage.class.getName());
     private static final double SIMILARITY_THRESHOLD = 0.70; // 95% similarity required
     private static final int COLOR_TOLERANCE = 30; // Using the same tolerance as in your PixelColorChecker
-    private static final List<String> REFRESH_BUTTON_FILES = Arrays.asList(
-            "3xRefresh.png", "2xRefresh.png", "1xRefresh.png", "0xRefresh.png"
-    );
 
+    /** Takes a BufferedImage and a string path to the image to compare against
+    *  Checks if the specified path exists,
+    *  Reads the comparison image into a BufferedImage,
+    *  Checks dimensions and must have the same dimensions else return
+    *  Iterates through each pixel in the images,
+    *  Calculates the similarity percentage
+    *  Returns true if the similarity meets or exceeds the threshold
+    *  */
     public static boolean compareImage(BufferedImage mainImage, String path) {
         try {
             File imageFile = new File(path);
@@ -63,7 +68,10 @@ public class CompareImage {
         }
     }
 
-    // Helper function to check if a region in the main image matches the subImage
+    /** Takes the mainImage, a sub-image(image to match) and the starting coordinates(topLeft) for comparison
+    *  Checks that the sub-image fits within the bounds of the main image
+    *  Compares each pixel in the sub-image with the corresponding pixel in the main image using PixelColorChecker
+    * */
     private static boolean isMatchingRegion(BufferedImage mainImage, BufferedImage subImage, int startX, int startY) {
         int subImageWidth = subImage.getWidth();
         int subImageHeight = subImage.getHeight();
@@ -90,6 +98,12 @@ public class CompareImage {
         return true; // The region matches
     }
 
+    /**  Takes the paths to the refreshButton images and GameState image
+    *   Loads both images and checks for null values
+    *   Logs the dimensions of both images
+    *   Iterates over each pixel in the game state and considers it as a possible top-left corner for the refresh button
+    *   Calls isMatchingRegion to check if the sub-image matches at that position
+    *   If a match is found, return coordinates, else return (-1, -1) */
     public static Coordinates findRefreshButtonInGameState(String refreshButtonPath, String gameStatePath) throws IOException {
         System.out.println("Attempting to load GameState from: " + gameStatePath);
         BufferedImage gameState = ImageIO.read(new File(gameStatePath));

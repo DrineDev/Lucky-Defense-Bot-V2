@@ -7,6 +7,9 @@ import Basic.Screenshot;
 import java.awt.*;
 import java.io.IOException;
 
+/**
+ * General class
+ */
 public class Unit {
     protected String name;
     protected int quantity;
@@ -17,6 +20,11 @@ public class Unit {
         quantity = 0;
     }
 
+    /**
+     * Function to check for rarity for easy Unit searching
+     * @return
+     * @throws IOException
+     */
     public static int isWhatRarity() throws IOException {
         // MYTHICAL = 5
         // LEGENDARY = 4;
@@ -57,7 +65,7 @@ public class Unit {
     }
 
 
-    // GETTERS & SETTERS
+    /** GETTERS & SETTERS */
     public void setName(String name) { this.name = name; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
     public String getName() { return name; }

@@ -1,6 +1,10 @@
 package Basic;
 
 import java.util.Random;
+
+/**
+ * Coordinates class containing coordinates X and Y
+ */
 public class Coordinates {
     private int X;
     private int Y;

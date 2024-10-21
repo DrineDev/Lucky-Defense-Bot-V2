@@ -15,6 +15,10 @@ public class CommonUnit extends Unit {
         quantity = 0;
     }
 
+    /**
+     * isWhatUnit function to check what kind of Common Unit is in, to be called by Square
+     * @return
+     */
     public static CommonUnit isWhatUnit() {
         BufferedImage subImage = null;
         try {

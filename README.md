@@ -1,7 +1,6 @@
 To do
-1. Test autoShop
-3. Game Algorithm (play game fr)
-4. Mythic Crafter (find, then craft)
+1. Fix autoShop
+2. Game Algorithm (play game fr)
 
 Eventually
 1. Auto Hunt Pass (collect hunt pass)
