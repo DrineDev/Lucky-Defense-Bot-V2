@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 public class PixelColorChecker {
 
+
     public static Color getPixelColor(String resourcePath, Coordinates coordinates) throws IOException {
         // Load the image from the resources using class loader
         File file = new File(resourcePath);
