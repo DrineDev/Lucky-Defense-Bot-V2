@@ -1,19 +1,25 @@
 package Home;
 
+import Basic.Screenshot;
+
 import java.io.IOException;
 
 public class Quest {
     public static void autoQuest() throws IOException, InterruptedException {
+        Screenshot.screenshotGameState();
         if(!HomeNotifications.checkQuestNotification()) {
             System.out.println("No quest notifications...");
             return;
         }
 
         ButtonsHome.pressQuest();
-        Thread.sleep(1000);
+        Thread.sleep(3000);
+        Screenshot.screenshotGameState();
+
         while(HomeNotifications.checkTopQuestNotification()) {
             ButtonsHome.pressTopQuest();
-            Thread.sleep(1000);
+            Thread.sleep(3000);
+            Screenshot.screenshotGameState();
         }
 
         // TODO : PRESS TREASURE CHESTS
@@ -23,6 +29,9 @@ public class Quest {
 
         if(!HomeNotifications.checkAchievementNotification()) {
             System.out.println("No achievement notifications...");
+            ButtonsHome.closeQuest();
+            Thread.sleep(3000);
+            Screenshot.screenshotGameState();
             return;
         }
 
@@ -33,5 +42,9 @@ public class Quest {
         }
 
         System.out.println("Auto quests complete...");
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        autoQuest();
     }
 }

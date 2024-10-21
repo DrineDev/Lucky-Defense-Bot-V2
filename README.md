@@ -1,6 +1,5 @@
 To do
 1. Test autoShop
-2. Test autoQuest
 3. Game Algorithm (play game fr)
 4. Mythic Crafter (find, then craft)
 
