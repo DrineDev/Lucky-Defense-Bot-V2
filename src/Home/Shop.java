@@ -49,11 +49,11 @@ public class Shop {
     private static void initializeCoordinates() throws IOException {
         try {
             // Find the refresh button's coordinates in the game state image
-            Coordinates refreshCoords = CompareImage.findRefreshButtonInGameState("Resources/RefreshButtons/", "Resources/GameState.png");
-            if (refreshCoords.getY() == -1) {
-                throw new IOException("Failed to find RefreshButton");
-            }
-            int topLeftRefresh = refreshCoords.getY(); // Get the y-coordinate of the refresh button
+//            Coordinates refreshCoords = CompareImage.findRefreshButtonInGameState("Resources/RefreshButtons/", "Resources/GameState.png");
+//            if (refreshCoords.getY() == -1) {
+//                throw new IOException("Failed to find RefreshButton");
+//            }
+            int topLeftRefresh = findTopLeft(); // Get the y-coordinate of the refresh button
 
             // Calculate offsets for the coordinates of shop items based on the refresh button position
             int Offset01 = topLeftRefresh - 375;
@@ -233,16 +233,86 @@ public class Shop {
     }
 
     /**
+     * Temporary cropImage function for shop use
+     * TODO : MOVE TO DIFFERENT CLASS
+     * @param image
+     * @param topLeft
+     * @param bottomRight
+     * @return
+     */
+    private static BufferedImage cropImage(BufferedImage image, Coordinates topLeft, Coordinates bottomRight) {
+        int x = topLeft.getX();
+        int y = topLeft.getY();
+        int width = bottomRight.getX() - x;
+        int height = bottomRight.getY() - y;
+        return image.getSubimage(x, y, width, height);
+    }
+
+    /**
+     * Process shopItems and see if it should be purchased, if purchaseable then buy
+     * @param croppedImage
+     * @param areaIndex
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    private static void checkAndBuyItem(BufferedImage croppedImage, int areaIndex) throws IOException, InterruptedException {
+        for (String shopImage : shopImages) {
+            String imagePath = String.format("Resources/ShopFiles/%s.png", shopImage);
+            if (CompareImage.compareImage(croppedImage, imagePath)) {
+                System.out.println("Match found in Area " + (areaIndex) + " for shop item: " + shopImage);
+                buyItem(areaIndex);
+                break; // Exit loop after a successful match
+            }
+        }
+    }
+
+    /**
+     * Helper function to buy items
+     * @param areaIndex
+     * @throws InterruptedException
+     * @throws IOException
+     */
+    private static void buyItem(int areaIndex) throws InterruptedException, IOException {
+        ButtonsHome.pressItem(areaIndex);   // Press the shop item
+        Thread.sleep(1000);                  // Wait for a moment
+        ButtonsHome.purchaseItem();         // Purchase the item
+        Thread.sleep(1000);
+        ButtonsHome.pressAnywhere();        // Press anywhere to dismiss the dialog
+    }
+
+    /**
+     * Helper function to check if an item should be purchased
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    private static void processShopItems() throws IOException, InterruptedException {
+        BufferedImage gameStateImage = loadGameStateImage();
+        for (int i = 0; i < topLeftCoordinates.length; i++) {
+            BufferedImage croppedImage = cropImage(gameStateImage, topLeftCoordinates[i], bottomRightCoordinates[i]);
+            checkAndBuyItem(croppedImage, i);
+        }
+    }
+
+    /**
+     * MAIN FUNCTION for autoshop
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static void autoShop() throws IOException, InterruptedException {
+        // You can press reset a maximum of 3 times, so loop through it 3 times
+        for (int attempt = 0; attempt < 3; attempt++) {
+            Screenshot.screenshotGameState();
+            processShopItems();
+            ButtonsHome.pressReset();
+        }
+    }
+
+    /**
      * Main method for testing the Shop class functionality.
-     *
      * @param args Command line arguments (not used).
      * @throws IOException If there is an error during execution.
      */
-    public static void main(String[] args) throws IOException {
-        File gameStateFile = new File(baseResourcePath + "GameState.png");
-        System.out.println("Absolute path to GameState.png: " + gameStateFile.getAbsolutePath()); // Log the absolute path of GameState.png
+    public static void main(String[] args) throws IOException, InterruptedException {
 
-        int temp = findTopLeft(); // Find the top-left position of the refresh button
-        System.out.println(temp); // Print the result
     }
 }

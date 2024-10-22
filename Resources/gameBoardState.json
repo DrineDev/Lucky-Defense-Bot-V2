@@ -3,23 +3,8 @@
     [
       {
         "unit": {
-          "form": 0,
-          "name": "Monopoly Man",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "form": 0,
-          "name": "Monopoly Man",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "form": 0,
-          "name": "Monopoly Man",
-          "quantity": 1
+          "name": "",
+          "quantity": 0
         }
       },
       {
@@ -37,86 +22,96 @@
       },
       {
         "unit": {
-          "name": "Tree",
-          "quantity": 2
+          "name": "Electro Robot",
+          "quantity": 3
+        }
+      },
+      {
+        "unit": {
+          "name": "Electro Robot",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
         }
       }
     ],
     [
       {
         "unit": {
-          "form": 0,
-          "name": "Monopoly Man",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "form": 1,
-          "name": "Tar",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "name": "Eagle General",
+          "name": "Wolf Warrior",
           "quantity": 2
         }
       },
       {
         "unit": {
-          "name": "Shock Robot",
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "War Machine",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      }
+    ],
+    [
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "Bandit",
           "quantity": 3
+        }
+      },
+      {
+        "unit": {
+          "name": "Bandit",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "Archer",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
         }
       },
       {
         "unit": {
           "name": "Hunter",
-          "quantity": 3
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      }
-    ],
-    [
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "Shock Robot",
           "quantity": 2
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
         }
       }
     ]

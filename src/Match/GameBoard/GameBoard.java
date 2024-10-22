@@ -3,6 +3,7 @@ package Match.GameBoard;
 import Basic.Coordinates;
 import Basic.Press;
 import Basic.Screenshot;
+import Match.Units.ProcessUnit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -67,6 +68,7 @@ public class GameBoard {
             for(int j = 0; j < 6; j++) {
                 String action = "Checking square " + i + ", " + j;
                 Press.press(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
+                Thread.sleep(1000);
                 Screenshot.screenshotGameState();
                 Thread.sleep(750);
                 gameBoard[i][j].updateSquare(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
@@ -268,6 +270,30 @@ public class GameBoard {
         System.out.println("Merging the unit at: " + mergeRandomCoordinates);
         Process process2 = Runtime.getRuntime().exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
         Thread.sleep(500);
+    }
+
+    public Square getSquare(int row, int column) {
+        // Check for out-of-bounds access
+        if (row >= 0 && row < gameBoard.length && column >= 0 && column < gameBoard[0].length) {
+            return gameBoard[row][column];
+        } else {
+            return null; // Return null if the indices are out of bounds
+        }
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        GameBoard gameBoard1 = new GameBoard();
+        gameBoard1.updateBoard();
+        gameBoard1.saveBoardState();
+
+        boolean success = ProcessUnit.DetectUnitPlusProcess();
+
+        // Check the result and print whether processing was successful
+        if (success) {
+            System.out.println("Unit processing completed successfully.");
+        } else {
+            System.out.println("Unit processing failed.");
+        }
     }
 }
 
