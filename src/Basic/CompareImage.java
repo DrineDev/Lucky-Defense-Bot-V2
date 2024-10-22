@@ -5,9 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.logging.Logger;
-import java.util.List;
 
 public class CompareImage {
 
@@ -25,6 +23,11 @@ public class CompareImage {
     *  */
     public static boolean compareImage(BufferedImage mainImage, String path) {
         try {
+            // TEST CODE TODO : REMOVE
+            File mainImageFile = new File("Resources/savedImages(Temp)/test.png");
+            ImageIO.write(mainImage, "png", mainImageFile);
+            LOGGER.info("Main image saved at: " + mainImageFile.getAbsolutePath());
+
             File imageFile = new File(path);
             if (!imageFile.exists()) {
                 LOGGER.warning("Image file does not exist: " + path);
@@ -32,6 +35,11 @@ public class CompareImage {
             }
 
             BufferedImage imageToCompare = ImageIO.read(imageFile);
+            // TEST CODE TODO : REMOVE
+            File compareImageFile = new File("Resources/savedImages(Temp)/compareImage.png");
+            ImageIO.write(imageToCompare, "png", compareImageFile);
+            LOGGER.info("Comparison image saved at: " + compareImageFile.getAbsolutePath());
+
 
             // Check if dimensions are the same
             if (mainImage.getWidth() != imageToCompare.getWidth() ||
@@ -73,10 +81,10 @@ public class CompareImage {
     *  Compares each pixel in the sub-image with the corresponding pixel in the main image using PixelColorChecker
     * */
     private static boolean isMatchingRegion(BufferedImage mainImage, BufferedImage subImage, int startX, int startY) {
-        int subImageWidth = subImage.getWidth();
-        int subImageHeight = subImage.getHeight();
         int mainImageWidth = mainImage.getWidth();
         int mainImageHeight = mainImage.getHeight();
+        int subImageWidth = subImage.getWidth();
+        int subImageHeight = subImage.getHeight();
 
         // Check if the subImage fits within the bounds of the mainImage at the specified position
         if (startX + subImageWidth > mainImageWidth || startY + subImageHeight > mainImageHeight) {
@@ -104,38 +112,52 @@ public class CompareImage {
     *   Iterates over each pixel in the game state and considers it as a possible top-left corner for the refresh button
     *   Calls isMatchingRegion to check if the sub-image matches at that position
     *   If a match is found, return coordinates, else return (-1, -1) */
-    public static Coordinates findRefreshButtonInGameState(String refreshButtonPath, String gameStatePath) throws IOException {
-        System.out.println("Attempting to load GameState from: " + gameStatePath);
-        BufferedImage gameState = ImageIO.read(new File(gameStatePath));
-
-        System.out.println("Attempting to load RefreshButton from: " + refreshButtonPath);
-        BufferedImage refreshButton = ImageIO.read(new File(refreshButtonPath));
+    public static Coordinates findRefreshButtonInGameState(String refreshButtonPath, int startX, int endX, int startY, int endY) throws IOException {
+        System.out.println("Attempting to load GameState from: Resources/GameState.png");
+        BufferedImage gameState = ImageIO.read(new File("Resources/GameState.png"));
 
         if (gameState == null) {
             throw new IOException("GameState image is null!");
         }
 
+        // Get dimensions of the GameState image
+        int gameStateWidth = gameState.getWidth();
+        int gameStateHeight = gameState.getHeight();
+
+        // Iterate over each refreshButton image path
+        System.out.println("Attempting to load RefreshButton from: " + refreshButtonPath);
+        BufferedImage refreshButton = ImageIO.read(new File(refreshButtonPath));
+
         if (refreshButton == null) {
             throw new IOException("RefreshButton image is null!");
         }
 
-        // Get dimensions
+        // Get dimensions of the current RefreshButton
         int buttonWidth = refreshButton.getWidth();
         int buttonHeight = refreshButton.getHeight();
-        int gameStateWidth = gameState.getWidth();
-        int gameStateHeight = gameState.getHeight();
 
-        LOGGER.info("Searching GameState (" + gameStateWidth + "x" + gameStateHeight + ") for RefreshButton (" + buttonWidth + "x" + buttonHeight + ")");
+        // Validate input ranges for the current button
+        if (startX < 0 || startX + buttonWidth > gameStateWidth || startY < 0 || startY + buttonHeight > gameStateHeight) {
+            throw new IllegalArgumentException("Specified range exceeds GameState image bounds for " + refreshButtonPath);
+        }
 
-        // Iterate over every pixel in GameState, treating each as a possible top-left corner of the button
-        for (int y = 0; y <= gameStateHeight - buttonHeight; y++) {
-            for (int x = 0; x <= gameStateWidth - buttonWidth; x++) {
+        LOGGER.info("Searching GameState (" + gameStateWidth + "x" + gameStateHeight + ") for RefreshButton (" + buttonWidth + "x" + buttonHeight + ") within x: " + startX + " to " + endX + " and y: " + startY + " to " + endY);
+
+        // Iterate over the specified range in the GameState image
+        for (int y = startY; y <= endY; y++) {
+            for (int x = startX; x <= endX; x++) {
+                // Check if the current region matches the refresh button
                 if (isMatchingRegion(gameState, refreshButton, x, y)) {
-                    LOGGER.info("Found matching RefreshButton at (" + x + ", " + y + ")");
+                    LOGGER.info("Found matching RefreshButton at (" + x + ", " + y + ") for image " + refreshButtonPath);
                     return new Coordinates(x, y);
                 }
             }
         }
+
+        // Save the GameState image for manual inspection if no match is found
+        File gameStateFile = new File("Resources/gameStateFile.png");
+        ImageIO.write(gameState, "png", gameStateFile);
+        LOGGER.info("GameState image saved at: " + gameStateFile.getAbsolutePath());
 
         LOGGER.warning("No matching refresh button found in the game state.");
         return new Coordinates(-1, -1); // No match found

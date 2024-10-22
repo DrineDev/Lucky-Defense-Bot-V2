@@ -18,7 +18,12 @@ import java.util.logging.Logger;
 public class Shop {
     private static final Logger LOGGER = Logger.getLogger(Shop.class.getName());
     private static final int WAIT_TIME = 3000; // Wait time in milliseconds (3 seconds) for certain operations
-    private static String baseResourcePath = "Resources/"; // Base path for resource files
+    private static String[] refreshButtonPaths = {
+            "Resources/RefreshButtons/3xRefresh.png",
+            "Resources/RefreshButtons/2xRefresh.png",
+            "Resources/RefreshButtons/1xRefresh.png",
+            "Resources/RefreshButtons/0xRefresh.png"
+    };
 
     // COORDINATES OF ITEM IMAGES
     private static Coordinates[] topLeftCoordinates; // Array to store top-left coordinates of item images
@@ -49,7 +54,14 @@ public class Shop {
     private static void initializeCoordinates() throws IOException {
         try {
             // Find the refresh button's coordinates in the game state image
-            Coordinates refreshCoords = CompareImage.findRefreshButtonInGameState("Resources/RefreshButtons/", "Resources/GameState.png");
+            Coordinates refreshCoords = new Coordinates();
+            for(String refreshButton : refreshButtonPaths) {
+                refreshCoords = CompareImage.findRefreshButtonInGameState(refreshButton, 252, 404, 0, 0);
+
+                if(refreshCoords.getY() != -1) {
+                    break;
+                }
+            }
             if (refreshCoords.getY() == -1) {
                 throw new IOException("Failed to find RefreshButton");
             }
@@ -203,21 +215,11 @@ public class Shop {
      * @throws IOException If there is an error reading the images or processing the results.
      */
     public static int findTopLeft() throws IOException {
-        // Array of possible refresh button image paths in order of likelihood (or any order you prefer)
-        String[] refreshButtonPaths = {
-                "Resources/RefreshButtons/3xRefresh.png",
-                "Resources/RefreshButtons/2xRefresh.png",
-                "Resources/RefreshButtons/1xRefresh.png",
-                "Resources/RefreshButtons/0xRefresh.png"
-        };
-
         // Iterate through the array of refresh button image paths
         for (String refreshButtonPath : refreshButtonPaths) {
             try {
-                String gameStatePath = "Resources/GameState.png"; // Provide the correct path
-
                 // Find the coordinates of the refresh button in the game state image
-                Coordinates coords = CompareImage.findRefreshButtonInGameState(refreshButtonPath, gameStatePath);
+                Coordinates coords = CompareImage.findRefreshButtonInGameState(refreshButtonPath, 252, 404, 0, 0);
                 if (coords.getX() != -1 && coords.getY() != -1) {
                     System.out.println("Found refresh button: " + refreshButtonPath); // Log the found refresh button
                     return coords.getY(); // Return the y-coordinate of the found refresh button
@@ -239,7 +241,7 @@ public class Shop {
      * @throws IOException If there is an error during execution.
      */
     public static void main(String[] args) throws IOException {
-        File gameStateFile = new File(baseResourcePath + "GameState.png");
+        File gameStateFile = new File("Resources/GameState.png");
         System.out.println("Absolute path to GameState.png: " + gameStateFile.getAbsolutePath()); // Log the absolute path of GameState.png
 
         int temp = findTopLeft(); // Find the top-left position of the refresh button

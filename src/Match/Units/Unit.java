@@ -13,11 +13,13 @@ import java.io.IOException;
 public class Unit {
     protected String name;
     protected int quantity;
+    protected int form;
     // protected int value;
 
     public Unit() {
         name = "";
         quantity = 0;
+        form = 0;
     }
 
     /**

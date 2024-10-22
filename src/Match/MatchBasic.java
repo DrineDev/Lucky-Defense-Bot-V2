@@ -131,8 +131,12 @@ public class MatchBasic {
         Press.press(new Coordinates(39, 823), new Coordinates(129, 858), "Upgrading Common");
     }
 
+    /**
+     * Check game for Lucky Stones quantity then return
+     * @return
+     */
     public static int checkLuckyStones() {
-//        pressUpgrade();
+        pressUpgrade();
 
         // Load the GameState image
         Mat gameState = Imgcodecs.imread("Resources/GameState.png");
@@ -156,6 +160,11 @@ public class MatchBasic {
         return luckyStonesValue;
     }
 
+    /**
+     * Helper function to process subImage and return the read text as int
+     * @param subImage
+     * @return
+     */
     private static int processSubImage(Mat subImage) {
         // Convert the Mat to BufferedImage
         BufferedImage bufferedImage = matToBufferedImage(subImage);
@@ -183,6 +192,11 @@ public class MatchBasic {
         }
     }
 
+    /**
+     * Helper function to turn matrix to BufferedImage then return the image
+     * @param matrix
+     * @return
+     */
     private static BufferedImage matToBufferedImage(Mat matrix) {
         int type = BufferedImage.TYPE_BYTE_GRAY;
         if (matrix.channels() > 1) {
@@ -196,6 +210,10 @@ public class MatchBasic {
         return image;
     }
 
+    /**
+     * Test function for checking Lucky Stones... Comment out
+     * @param args
+     */
     public static void main(String[] args) {
         int temp = checkLuckyStones();
 

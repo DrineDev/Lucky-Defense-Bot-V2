@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 
 public class MythicalUnit extends Unit {
     private static final Logger LOGGER = Logger.getLogger(MythicalUnit.class.getName());
-    int form = 0;
 
     /**
      * isWhatUnit function to check what kind of Mythical Unit is in, to be called by Square
