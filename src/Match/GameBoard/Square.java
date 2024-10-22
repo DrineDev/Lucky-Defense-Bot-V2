@@ -29,7 +29,7 @@ public class Square {
         return unit;
     }
 
-    /**
+    /*
      * update square to add unitName and unitQuantity, to be called by GameBoard
      * @param topLeft
      * @param bottomRight

@@ -3,76 +3,32 @@
     [
       {
         "unit": {
-          "form": 0,
-          "name": "Monopoly Man",
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "Archer",
           "quantity": 1
         }
       },
       {
         "unit": {
-          "form": 0,
-          "name": "Monopoly Man",
-          "quantity": 1
+          "name": "",
+          "quantity": 0
         }
       },
       {
         "unit": {
-          "form": 0,
-          "name": "Monopoly Man",
-          "quantity": 1
+          "name": "",
+          "quantity": 0
         }
       },
       {
         "unit": {
-          "form": 1,
-          "name": "BatMan",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "name": "Electro Robot",
-          "quantity": 3
-        }
-      },
-      {
-        "unit": {
-          "name": "Tree",
-          "quantity": 2
-        }
-      }
-    ],
-    [
-      {
-        "unit": {
-          "form": 0,
-          "name": "Monopoly Man",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "form": 1,
-          "name": "Tar",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "name": "Eagle General",
-          "quantity": 2
-        }
-      },
-      {
-        "unit": {
-          "name": "Shock Robot",
-          "quantity": 3
-        }
-      },
-      {
-        "unit": {
-          "name": "Hunter",
-          "quantity": 3
+          "name": "",
+          "quantity": 0
         }
       },
       {
@@ -103,8 +59,46 @@
       },
       {
         "unit": {
-          "name": "Shock Robot",
-          "quantity": 2
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      }
+    ],
+    [
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
         }
       },
       {

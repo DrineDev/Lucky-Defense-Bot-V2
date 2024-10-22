@@ -1,5 +1,5 @@
 package Match.GameBoard;
-
+import Match.Units.ProcessUnit;
 import Basic.Coordinates;
 import Basic.Press;
 import Basic.Screenshot;
@@ -28,14 +28,14 @@ public class GameBoard {
             { new Coordinates(135, 601), new Coordinates(200, 601), new Coordinates(265, 601), new Coordinates(330, 601), new Coordinates(395, 601), new Coordinates(460, 601) }
     };
 
-    /**
+    /*
      * Construct gameBoard
      */
     public GameBoard() {
         initializeGameBoard();
     }
 
-    /**
+    /*
      * Construct the 3x6 squares
      */
     private void initializeGameBoard() {
@@ -50,7 +50,7 @@ public class GameBoard {
         System.out.println("Game board initialization complete.");
     }
 
-    /**
+    /*
      * Keep the values to 3x6 Squares
      * @throws IOException
      * @throws InterruptedException
@@ -75,7 +75,7 @@ public class GameBoard {
         System.out.println("Board updated...");
     }
 
-    /**
+    /*
      * Save board state to JSON
      */
     public void saveBoardState() {
@@ -119,7 +119,7 @@ public class GameBoard {
         }
     }
 
-    /**
+    /*
      * Move units
      * @param i1
      * @param j1
@@ -136,7 +136,7 @@ public class GameBoard {
         Thread.sleep(3000);
     }
 
-    /**
+    /*
      * GETTERS
      * @return
      */
@@ -268,6 +268,31 @@ public class GameBoard {
         System.out.println("Merging the unit at: " + mergeRandomCoordinates);
         Process process2 = Runtime.getRuntime().exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
         Thread.sleep(500);
+    }
+    // get a single square in the gameboard
+    public Square getSquare(int row, int column) {
+        // Check for out-of-bounds access
+        if (row >= 0 && row < gameBoard.length && column >= 0 && column < gameBoard[0].length) {
+            return gameBoard[row][column];
+        } else {
+            return null; // Return null if the indices are out of bounds
+        }
+    }
+    public static void main(String[]args) throws IOException, InterruptedException {
+        // Create a new GameBoard object
+        GameBoard gameBoard = new GameBoard();
+        // Update the board with real-time data, assuming the updateBoard method handles the scanning
+        gameBoard.updateBoard();
+        gameBoard.saveBoardState();
+        // Process the units in the game board
+        boolean success = ProcessUnit.DetectUnitPlusProcess();
+
+        // Check the result and print whether processing was successful
+        if (success) {
+            System.out.println("Unit processing completed successfully.");
+        } else {
+            System.out.println("Unit processing failed.");
+        }
     }
 }
 
