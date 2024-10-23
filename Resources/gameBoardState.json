@@ -3,66 +3,26 @@
     [
       {
         "unit": {
-          "name": "Bandit",
+          "name": "Archer",
           "quantity": 3
         }
       },
       {
         "unit": {
-          "name": "Bandit",
-          "quantity": 3
-        }
-      },
-      {
-        "unit": {
-          "name": "Electro Robot",
-          "quantity": 3
-        }
-      },
-      {
-        "unit": {
-          "name": "Shock Robot",
+          "name": "Thrower",
           "quantity": 2
         }
       },
       {
         "unit": {
-          "name": "Storm Giant",
-          "quantity": 1
+          "name": "",
+          "quantity": 0
         }
       },
       {
         "unit": {
-          "name": "Hunter",
-          "quantity": 2
-        }
-      }
-    ],
-    [
-      {
-        "unit": {
-          "form": 0,
-          "name": "Monopoly Man",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "name": "Bandit",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "form": 0,
-          "name": "Dragon",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "name": "Electro Robot",
-          "quantity": 1
+          "name": "",
+          "quantity": 0
         }
       },
       {
@@ -74,15 +34,58 @@
       {
         "unit": {
           "name": "Tree",
-          "quantity": 1
+          "quantity": 2
         }
       }
     ],
     [
       {
         "unit": {
-          "form": 0,
-          "name": "Monopoly Man",
+          "name": "Bandit",
+          "quantity": 3
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      }
+    ],
+    [
+      {
+        "unit": {
+          "name": "Bandit",
+          "quantity": 2
+        }
+      },
+      {
+        "unit": {
+          "name": "Water Elemental",
           "quantity": 1
         }
       },
@@ -94,14 +97,8 @@
       },
       {
         "unit": {
-          "name": "Archer",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "name": "Bandit",
-          "quantity": 1
+          "name": "",
+          "quantity": 0
         }
       },
       {

@@ -175,38 +175,18 @@ public class ProcessUnit {
         }
 
     }
-    
+
     public static void processUnitLegendary(Unit unit, int i, int j) throws IOException, InterruptedException {
         String unitName = unit.name;
 
         switch (unitName) {
             case "War Machine":
-                if (MythicBuilder.canBuild("RocketChu")) {
-                    MythicBuilder.buildMythic("RocketChu");
-                } else {
-                    sellUnit(gameboard, i, j);
-                }
                 break;
             case "Storm Giant":
-                if (MythicBuilder.canBuild("Coldy")) {
-                    MythicBuilder.buildMythic("Coldy");
-                } else {
-                    sellUnit(gameboard, i, j);
-                }
                 break;
             case "Sheriff":
-                if (MythicBuilder.canBuild("Lancelot")) {
-                    MythicBuilder.buildMythic("Lancelot");
-                } else {
-                    sellUnit(gameboard, i, j);
-                }
                 break;
             case "Tiger Master":
-                if (MythicBuilder.canBuild("Batman")) {
-                    MythicBuilder.buildMythic("Batman");
-                } else {
-                    gameboard.moveUnit(gameboard, i,j,0,1);
-                }
                 break;
             default:
                 System.out.println("No specific handling for: " + unitName);
@@ -288,46 +268,50 @@ public class ProcessUnit {
         String unitName = unit.name;
         switch (unitName){
             case "Bandit":
+
                 Unit unit1 = gameboard.getSquare(1,0).getUnit();
                 Unit unit2 = gameboard.getSquare(2,0).getUnit();
                 boolean canMerge = false;
                 boolean shouldMove = false;
                 boolean shouldSell = false;
                 boolean processed = false;
-                if(unit1.name.equals("Bandit")) {
-                    if(unit1.quantity==3){
-                        if(unit.quantity==3)
+
+                if(unit1.getName().equals("Bandit")) {
+                    if(unit1.getQuantity() == 3){
+                        if(unit.getQuantity() == 3)
                             canMerge = true;
                         else
                             shouldSell = true;
-                    }else if (unit1.quantity< unit.quantity) shouldMove = true;
-                }else{
-                    gameboard.moveUnit(gameboard, i,j,1,0);
+                    } else if (unit1.getQuantity() < unit.getQuantity())
+                        shouldMove = true;
+                } else {
+                    gameboard.moveUnit(gameboard, i, j,1,0);
                     processed = true;
                     break;
                 }
 
                 if(!processed){
-                    if(unit2.name.equals("Bandit")) {
-                        if(unit2.quantity==3){
-                            if(unit.quantity==3)
+                    if(unit2.getName().equals("Bandit")) {
+                        if(unit2.getQuantity() == 3){
+                            if(unit.getQuantity() == 3)
                                 canMerge = true;
                             else
                                 shouldSell = true;
-                        }else if (unit2.quantity< unit.quantity) shouldMove = true;
+                        }else if (unit2.getQuantity() < unit.getQuantity()) shouldMove = true;
                     }else{
                         gameboard.moveUnit(gameboard, i, j, 2, 0);
+                        break;
                     }
                 }
 
                 if(shouldMove){
-                    if(unit1.quantity<unit2.quantity)
+                    if(unit1.getQuantity() < unit2.getQuantity())
                         gameboard.moveUnit(gameboard, i, j, 1, 0);
                     else
                         gameboard.moveUnit(gameboard, i,j,2,0);
                 }else{
                     if(canMerge)
-                        mergeUnit(i,j);
+                        mergeUnit(i, j);
                     else if(shouldSell)
                         for (int Enum = unit1.getQuantity(); Enum >0; --Enum)
                             sellUnit(gameboard, i, j);
@@ -337,18 +321,15 @@ public class ProcessUnit {
             case "Thrower":
                 break;
             case "Archer", "Barbarian", "Water Elemental","Imp":
-                if(unit.quantity==3)
+                if(unit.getQuantity() == 3)
                     mergeUnit(i,j);
-                else if(unit.quantity==2){
+                else if(unit.getQuantity() == 2){
                     sellUnit(gameboard, i, j);
                     sellUnit(gameboard, i, j);
-                }
-                else{
+                } else {
                     sellUnit(gameboard, i, j);
                 }
                 break;
-
-
         }
     }
 }

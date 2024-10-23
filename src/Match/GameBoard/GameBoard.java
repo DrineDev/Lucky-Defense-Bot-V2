@@ -316,9 +316,12 @@ public class GameBoard {
         GameBoard gameBoard1 = new GameBoard();
         gameBoard1.updateBoard();
         gameBoard1.saveBoardState();
-
 //        MythicBuilder.canBuild("Batman");
         boolean success = ProcessUnit.DetectUnitPlusProcess();
+
+        gameBoard1.updateBoard();
+        gameBoard1.saveBoardState();
+        success = ProcessUnit.DetectUnitPlusProcess();
 
         // Check the result and print whether processing was successful
         if (success) {
