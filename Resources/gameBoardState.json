@@ -3,20 +3,13 @@
     [
       {
         "unit": {
-          "name": "",
-          "quantity": 0
+          "name": "Bandit",
+          "quantity": 3
         }
       },
       {
         "unit": {
-          "form": 1,
-          "name": "BatMan",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "name": "Electro Robot",
+          "name": "Bandit",
           "quantity": 3
         }
       },
@@ -28,72 +21,75 @@
       },
       {
         "unit": {
-          "name": "Electro Robot",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      }
-    ],
-    [
-      {
-        "unit": {
-          "name": "Wolf Warrior",
+          "name": "Shock Robot",
           "quantity": 2
         }
       },
       {
         "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "War Machine",
+          "name": "Storm Giant",
           "quantity": 1
         }
       },
       {
         "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
+          "name": "Hunter",
+          "quantity": 2
         }
       }
     ],
     [
       {
         "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "Bandit",
-          "quantity": 3
+          "form": 0,
+          "name": "Monopoly Man",
+          "quantity": 1
         }
       },
       {
         "unit": {
           "name": "Bandit",
           "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "form": 0,
+          "name": "Dragon",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "Electro Robot",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "Tree",
+          "quantity": 1
+        }
+      }
+    ],
+    [
+      {
+        "unit": {
+          "form": 0,
+          "name": "Monopoly Man",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
         }
       },
       {
@@ -104,14 +100,20 @@
       },
       {
         "unit": {
+          "name": "Bandit",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
           "name": "",
           "quantity": 0
         }
       },
       {
         "unit": {
-          "name": "Hunter",
-          "quantity": 2
+          "name": "",
+          "quantity": 0
         }
       }
     ]

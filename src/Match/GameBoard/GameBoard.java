@@ -3,6 +3,7 @@ package Match.GameBoard;
 import Basic.Coordinates;
 import Basic.Press;
 import Basic.Screenshot;
+import Match.MythicBuilder;
 import Match.Units.ProcessUnit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -12,6 +13,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static Match.Units.ProcessUnit.gameboard;
 
 public class GameBoard {
 
@@ -129,6 +132,7 @@ public class GameBoard {
     public static void moveUnit(int i1, int j1, int i2, int j2) throws IOException, InterruptedException {
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i1][j1], bottomRightCoordinates[i1][j1]);
         Coordinates toRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i2][j2], bottomRightCoordinates[i2][j2]);
+        Thread.sleep(2000);
         Process process = Runtime.getRuntime()
                 .exec("adb shell input draganddrop " + fromRandomCoordinates.toString() + " " + toRandomCoordinates.toString());
         Thread.sleep(3000);
@@ -273,6 +277,7 @@ public class GameBoard {
         gameBoard1.updateBoard();
         gameBoard1.saveBoardState();
 
+//        MythicBuilder.canBuild("Batman");
         boolean success = ProcessUnit.DetectUnitPlusProcess();
 
         // Check the result and print whether processing was successful

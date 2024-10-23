@@ -17,7 +17,7 @@ import static Match.GameBoard.GameBoard.*;
 
 public class ProcessUnit {
 
-    static GameBoard gameboard = new GameBoard();
+    public static GameBoard gameboard = new GameBoard();
 
     /*
      * Detect units in gameBoardState.json and process.
@@ -31,13 +31,13 @@ public class ProcessUnit {
             System.out.println("Attempting to read file: " + filePath);
 
             // Convert JSON to GameBoard object
-            GameBoard gameBoardState = gson.fromJson(reader, GameBoard.class);
+            gameboard = gson.fromJson(reader, GameBoard.class);
 
             // Loop through gameBoard to process the units
             for (int i = 0; i < 3; i++) { // 3 rows
                 for (int j = 0; j < 6; j++) { // 6 columns
-                    if (gameBoardState.getSquare(i, j) != null && gameBoardState.getSquare(i, j).getUnit() != null) {
-                        Unit unit = gameBoardState.getSquare(i, j).getUnit();
+                    if (gameboard.getSquare(i, j) != null && gameboard.getSquare(i, j).getUnit() != null) {
+                        Unit unit = gameboard.getSquare(i, j).getUnit();
                         if (unit != null) {
                             String unitName = unit.name;
                             System.out.println("Processing unit: " + unitName + " at position: (" + i + ", " + j + ")");
@@ -220,101 +220,39 @@ public class ProcessUnit {
      */
     public static void processUnitEpic(Unit unit, int i, int j) throws IOException, InterruptedException {
         String unitName = unit.name;
-
-        switch (unitName) {
-            case "Electro Robot":
-                Unit unit1 = gameboard.getSquare(0,2).getUnit();
-                if (unit1.getName().equals("Electro Robot")){
-                    if(unit1.getQuantity()==3)
-                    {
-                        if(unit.quantity==3){
-                            mergeUnit(i,j);
-                        }
-                        else{
-                            sellUnit(i,j);
-                        }
-                    }else{
-                        if(unit1.getQuantity()<unit.quantity){
-                            moveUnit(i,j,0,2);
-                        }else{
-                            sellUnit(i,j);
-                        }
-                    }
-                }
-                break;
-            case "Tree":
-                Unit[] unitsT = new Unit[3];
-                unitsT[0] = gameboard.getSquare(1, 2).getUnit();
-                unitsT[1] = gameboard.getSquare(1, 3).getUnit();
-                unitsT[2] = gameboard.getSquare(1, 4).getUnit();
-
-                boolean canMerge = false;  // Flag to track if we can merge
-                boolean shouldMove = false; // Flag to track if we should move
-                int targetMoveCol = -1;     // Target column to move the unit if needed
-
-                // Evaluate units in the specified squares
-                for (int z = 0; z < 3; ++z) {
-                    if (unitsT[z] != null && unitsT[z].getName().equals("Tree")) {
-                        if (unitsT[z].getQuantity() == 3 && unit.quantity == 3) {
-                            canMerge = true;  // Set the merge flag if quantities match for merging
-                        } else if (unitsT[z].getQuantity() < unit.quantity) {
-                            shouldMove = true;        // Set the move flag if the current unit has more quantity
-                            targetMoveCol = z + 2;   // Set the target column to move to (adjusting for the current index)
-                        }
-                    }
-                }
-
-                // After evaluating all Tree units, make the final decision
-                if (canMerge) {
-                    mergeUnit(i, j);  // Merge if possible
-                } else if (shouldMove && targetMoveCol != -1) {
-                    moveUnit(i, j, 1, targetMoveCol);  // Move the unit if moving is needed
-                } else {
-                    sellUnit(i, j);  // If neither merge nor move is possible, sell the unit
-                }
-
-                break;
+        switch (unitName){
             case "Wolf Warrior", "Eagle General":
-                if(unit.quantity==3)
+                if (unit.quantity==3){
                     mergeUnit(i,j);
-                else {
+                }else if(unit.quantity==2){
+                    sellUnit(i,j);
+                    sellUnit(i,j);
+                }else if(unit.quantity==1){
                     sellUnit(i,j);
                 }
                 break;
+            case "Electro Robot":
+                Unit unit1 = gameboard.getSquare(0,2).getUnit();
+                if(unit1.name.equals("Electro Robot")) {
+                    if(unit1.quantity==3){
+                        if(unit.quantity==3)
+                            mergeUnit(i,j);
+                        else
+                            for (int Enum = unit1.getQuantity(); Enum >0; --Enum)
+                                sellUnit(i, j);
+                    }else if (unit1.quantity< unit.quantity) moveUnit(i,j,0,2);
+                }else{
+                    moveUnit(i,j,0,2);
+                }
+                break;
             case "Hunter":
-                Unit[] unitsH = new Unit[3];
-                unitsH[0] = gameboard.getSquare(0, 5).getUnit();
-                unitsH[1] = gameboard.getSquare(1, 5).getUnit();
-                unitsH[2] = gameboard.getSquare(2, 5).getUnit();
-
-                canMerge = false;
-                shouldMove = false;
-                int targetMoveRow = -1;     // Target row to move the unit if needed
-
-                // Evaluate units in the specified squares
-                for (int x = 0; x < 3; ++x) {
-                    if (unitsH[x] != null && unitsH[x].getName().equals("Hunter")) {
-                        if (unitsH[x].getQuantity() == 3 && unit.quantity == 3) {
-                            canMerge = true;  // Set the merge flag if quantities match for merging
-                        } else if (unitsH[x].getQuantity() < unit.quantity) {
-                            shouldMove = true;        // Set the move flag if the current unit has more quantity
-                            targetMoveRow = x;       // Set the target row to move to
-                        }
-                    }
-                }
-
-                // After evaluating all Hunter units, make the final decision
-                if (canMerge) {
-                    mergeUnit(i, j);  // Merge if possible
-                } else if (shouldMove && targetMoveRow != -1) {
-                    moveUnit(i, j, targetMoveRow, 5);  // Move the unit if moving is needed
-                } else {
-                    sellUnit(i, j);  // If neither merge nor move is possible, sell the unit
-                }
-
+                break;
+            case "Tree":
                 break;
             default:
-                System.out.println("No specific handling for: " + unitName);
+                System.out.println("No specific handling for this "+unitName);
+                break;
+
         }
     }
 
@@ -347,79 +285,69 @@ public class ProcessUnit {
      */
     public static void processUnitCommon(Unit unit, int i, int j) throws IOException, InterruptedException {
         String unitName = unit.name;
-        switch (unitName) {
-            case "Archer", "Barbarian", "Water Elemental":
-                if(unit.quantity==3)
-                    mergeUnit(i,j);
-                else {
-                    sellUnit(i,j);
-                }
-                break;
+        switch (unitName){
             case "Bandit":
-                Unit[] unitsB = new Unit[2];
-                unitsB[0] = gameboard.getSquare(1, 0).getUnit();
-                unitsB[1] = gameboard.getSquare(2, 0).getUnit();
-
-                boolean shouldMove = false;
+                Unit unit1 = gameboard.getSquare(1,0).getUnit();
+                Unit unit2 = gameboard.getSquare(2,0).getUnit();
                 boolean canMerge = false;
-                int targetMoveRow = 0;
-
-                for (int c = 0; c < 2; ++c) {
-                    Unit currentUnit = unitsB[c];
-                    if (currentUnit.getName().equals("Bandit")) {
-                        if (unit.getQuantity() > currentUnit.getQuantity()) {
-                            // Priority: Move the unit if it has a higher quantity than the Bandit in the square
-                            shouldMove = true;
-                            targetMoveRow = c + 1;
-                        }
-                        if (currentUnit.getQuantity() == 3 && unit.getQuantity() == 3) {
-                            // Only check for merging after confirming the quantity is 3
+                boolean shouldMove = false;
+                boolean shouldSell = false;
+                boolean processed = false;
+                if(unit1.name.equals("Bandit")) {
+                    if(unit1.quantity==3){
+                        if(unit.quantity==3)
                             canMerge = true;
-                        }
+                        else
+                            shouldSell = true;
+                    }else if (unit1.quantity< unit.quantity) shouldMove = true;
+                }else{
+                    moveUnit(i,j,1,0);
+                    processed = true;
+                    break;
+                }
+
+                if(!processed){
+                    if(unit2.name.equals("Bandit")) {
+                        if(unit2.quantity==3){
+                            if(unit.quantity==3)
+                                canMerge = true;
+                            else
+                                shouldSell = true;
+                        }else if (unit2.quantity< unit.quantity) shouldMove = true;
+                    }else{
+                        moveUnit(i,j,2,0);
                     }
                 }
 
-                if (shouldMove) {
-                    moveUnit(i, j, targetMoveRow, 0);
-                } else if (canMerge) {
-                    mergeUnit(i, j);
-                } else {
-                    sellUnit(i, j);
+                if(shouldMove){
+                    if(unit1.quantity<unit2.quantity)
+                        moveUnit(i,j,1,0);
+                    else
+                        moveUnit(i,j,2,0);
+                }else{
+                    if(canMerge)
+                        mergeUnit(i,j);
+                    else if(shouldSell)
+                        for (int Enum = unit1.getQuantity(); Enum >0; --Enum)
+                            sellUnit(i,j);
+                        break;
                 }
                 break;
             case "Thrower":
-                Unit[] unitsT = new Unit[2];
-                unitsT[0] = gameboard.getSquare(2, 2).getUnit();
-                unitsT[1] = gameboard.getSquare(2, 3).getUnit();
-
-                canMerge = false;
-                shouldMove = false;
-                int targetMoveColumn = -1;  // Target column to move the unit if needed
-
-                // Evaluate units in the specified squares
-                for (int v = 0; v < 2; ++v) {
-                    if (unitsT[v] != null && unitsT[v].getName().equals("Thrower")) {
-                        if (unitsT[v].getQuantity() == 3 && unit.quantity == 3) {
-                            canMerge = true;  // Set the merge flag if quantities match for merging
-                        } else if (unitsT[v].getQuantity() < unit.quantity) {
-                            shouldMove = true;       // Set the move flag if the current unit has more quantity
-                            targetMoveColumn = v + 2; // Set the target column to move to
-                        }
-                    }
+                break;
+            case "Archer", "Barbarian", "Water Elemental","Imp":
+                if(unit.quantity==3)
+                    mergeUnit(i,j);
+                else if(unit.quantity==2){
+                    sellUnit(i,j);
+                    sellUnit(i,j);
                 }
-                // After evaluating all Thrower units, make the final decision
-                if (canMerge) {
-                    mergeUnit(i, j);  // Merge if possible
-                } else if (shouldMove) {
-                    moveUnit(i, j, 2, targetMoveColumn);  // Move the unit if moving is needed
-                } else {
-                    sellUnit(i, j);  // If neither merge nor move is possible, sell the unit
+                else{
+                    sellUnit(i,j);
                 }
                 break;
-            default:
-                // Handle case where unitName doesn't match any of the cases
-                break;
+
+
         }
-
     }
 }
