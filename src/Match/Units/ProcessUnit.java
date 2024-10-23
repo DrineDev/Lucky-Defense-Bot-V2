@@ -345,19 +345,19 @@ public class ProcessUnit {
      * @param j
      */
     public static void processUnitCommon(Unit unit, int i, int j) throws IOException, InterruptedException {
-        String unitName = unit.name;
+        String unitName = unit.getName();
         switch (unitName) {
             case "Archer", "Barbarian", "Water Elemental":
-                if(unit.quantity==3)
-                    mergeUnit(i,j);
+                if(unit.getQuantity() == 3)
+                    mergeUnit(i, j);
                 else {
-                    sellUnit(i,j);
+                    sellUnit(i, j);
                 }
                 break;
             case "Bandit":
                 Unit[] unitsB = new Unit[2];
-                unitsB[0] = gameboard.getSquare(1,0).getUnit();
-                unitsB[1] = gameboard.getSquare(2,0).getUnit();
+                unitsB[0] = gameboard.getSquare(1, 0).getUnit();
+                unitsB[1] = gameboard.getSquare(2, 0).getUnit();
 
                 boolean canMerge = false;  // Flag to track if we can merge
                 boolean shouldMove = false; // Flag to track if we should move
@@ -365,9 +365,9 @@ public class ProcessUnit {
 
                 for (int c = 0; c < 2; ++c) {
                     if (unitsB[c] != null && unitsB[c].getName().equals("Bandit")) {
-                        if (unitsB[c].getQuantity() == 3 && unit.quantity == 3) {
+                        if (unitsB[c].getQuantity() == 3 && unit.getQuantity() == 3) {
                             canMerge = true;  // Set the merge flag if quantities match for merging
-                        } else if (unitsB[c].getQuantity() < unit.quantity) {
+                        } else if (unitsB[c].getQuantity() < unit.getQuantity()) {
                             shouldMove = true;      // Set the move flag if current unit has more quantity
                             targetMoveRow = c + 1;  // Set the target row to move to
                         }

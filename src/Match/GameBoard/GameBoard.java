@@ -67,10 +67,6 @@ public class GameBoard {
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 6; j++) {
                 String action = "Checking square " + i + ", " + j;
-                Press.press(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
-                Thread.sleep(1000);
-                Screenshot.screenshotGameState();
-                Thread.sleep(750);
                 gameBoard[i][j].updateSquare(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
             }
         }
@@ -148,15 +144,6 @@ public class GameBoard {
         return gameBoard;
     }
 
-//    public static void main(String[] args) throws IOException, InterruptedException {
-//        System.out.println("Starting main method...");
-//        GameBoard gameBoard1 = new GameBoard();
-//        System.out.println("GameBoard created.");
-//        gameBoard1.updateBoard();
-//        System.out.println("Board updated.");
-//        gameBoard1.saveBoardState();
-//        System.out.println("Board state saved.");
-//    }
 
     /**
      * Sell units
