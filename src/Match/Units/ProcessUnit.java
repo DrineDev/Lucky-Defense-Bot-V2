@@ -114,7 +114,7 @@ public class ProcessUnit {
     }
 
 
-    /*
+    /**
      * Check what to do for Mythical Units
      * @param unit
      * @param i
@@ -175,6 +175,7 @@ public class ProcessUnit {
         }
 
     }
+    
     public static void processUnitLegendary(Unit unit, int i, int j) throws IOException, InterruptedException {
         String unitName = unit.name;
 
@@ -183,28 +184,28 @@ public class ProcessUnit {
                 if (MythicBuilder.canBuild("RocketChu")) {
                     MythicBuilder.buildMythic("RocketChu");
                 } else {
-                    sellUnit(i, j);
+                    sellUnit(gameboard, i, j);
                 }
                 break;
             case "Storm Giant":
                 if (MythicBuilder.canBuild("Coldy")) {
                     MythicBuilder.buildMythic("Coldy");
                 } else {
-                    sellUnit(i,j);
+                    sellUnit(gameboard, i, j);
                 }
                 break;
             case "Sheriff":
                 if (MythicBuilder.canBuild("Lancelot")) {
                     MythicBuilder.buildMythic("Lancelot");
                 } else {
-                    sellUnit(i,j);
+                    sellUnit(gameboard, i, j);
                 }
                 break;
             case "Tiger Master":
                 if (MythicBuilder.canBuild("Batman")) {
                     MythicBuilder.buildMythic("Batman");
                 } else {
-                    moveUnit(i,j,0,1);
+                    gameboard.moveUnit(gameboard, i,j,0,1);
                 }
                 break;
             default:
@@ -212,7 +213,7 @@ public class ProcessUnit {
         }
     }
 
-    /*
+    /**
      * Check what to do for Epic Units
      * @param unit
      * @param i
@@ -225,10 +226,10 @@ public class ProcessUnit {
                 if (unit.quantity==3){
                     mergeUnit(i,j);
                 }else if(unit.quantity==2){
-                    sellUnit(i,j);
-                    sellUnit(i,j);
+                    sellUnit(gameboard, i, j);
+                    sellUnit(gameboard, i, j);
                 }else if(unit.quantity==1){
-                    sellUnit(i,j);
+                    sellUnit(gameboard, i, j);
                 }
                 break;
             case "Electro Robot":
@@ -239,10 +240,10 @@ public class ProcessUnit {
                             mergeUnit(i,j);
                         else
                             for (int Enum = unit1.getQuantity(); Enum >0; --Enum)
-                                sellUnit(i, j);
-                    }else if (unit1.quantity< unit.quantity) moveUnit(i,j,0,2);
+                                sellUnit(gameboard, i, j);
+                    }else if (unit1.quantity< unit.quantity) gameboard.moveUnit(gameboard, i,j,0,2);
                 }else{
-                    moveUnit(i,j,0,2);
+                    gameboard.moveUnit(gameboard, i,j,0,2);
                 }
                 break;
             case "Hunter":
@@ -256,7 +257,7 @@ public class ProcessUnit {
         }
     }
 
-    /*
+    /**
      * Check what to do for Rare/Uncommon Units
      * @param unit
      * @param i
@@ -269,7 +270,7 @@ public class ProcessUnit {
                 if(unit.quantity==3)
                     mergeUnit(i,j);
                 else {
-                    sellUnit(i,j);
+                    sellUnit(gameboard, i, j);
                 }
                 break;
             default:
@@ -277,7 +278,7 @@ public class ProcessUnit {
         }
     }
 
-    /*
+    /**
      * Check what to do for Common Units
      * @param unit
      * @param i
@@ -301,7 +302,7 @@ public class ProcessUnit {
                             shouldSell = true;
                     }else if (unit1.quantity< unit.quantity) shouldMove = true;
                 }else{
-                    moveUnit(i,j,1,0);
+                    gameboard.moveUnit(gameboard, i,j,1,0);
                     processed = true;
                     break;
                 }
@@ -315,21 +316,21 @@ public class ProcessUnit {
                                 shouldSell = true;
                         }else if (unit2.quantity< unit.quantity) shouldMove = true;
                     }else{
-                        moveUnit(i,j,2,0);
+                        gameboard.moveUnit(gameboard, i, j, 2, 0);
                     }
                 }
 
                 if(shouldMove){
                     if(unit1.quantity<unit2.quantity)
-                        moveUnit(i,j,1,0);
+                        gameboard.moveUnit(gameboard, i, j, 1, 0);
                     else
-                        moveUnit(i,j,2,0);
+                        gameboard.moveUnit(gameboard, i,j,2,0);
                 }else{
                     if(canMerge)
                         mergeUnit(i,j);
                     else if(shouldSell)
                         for (int Enum = unit1.getQuantity(); Enum >0; --Enum)
-                            sellUnit(i,j);
+                            sellUnit(gameboard, i, j);
                         break;
                 }
                 break;
@@ -339,11 +340,11 @@ public class ProcessUnit {
                 if(unit.quantity==3)
                     mergeUnit(i,j);
                 else if(unit.quantity==2){
-                    sellUnit(i,j);
-                    sellUnit(i,j);
+                    sellUnit(gameboard, i, j);
+                    sellUnit(gameboard, i, j);
                 }
                 else{
-                    sellUnit(i,j);
+                    sellUnit(gameboard, i, j);
                 }
                 break;
 

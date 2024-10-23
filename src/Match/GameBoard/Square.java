@@ -64,4 +64,9 @@ public class Square {
                 break;
         }
     }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
 }
