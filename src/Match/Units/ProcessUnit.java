@@ -1,6 +1,8 @@
 package Match.Units;
 
+
 import Match.GameBoard.GameBoard;
+import Match.GameBoard.Square;
 import Match.MythicBuilder;
 import com.google.gson.Gson;
 
@@ -15,7 +17,7 @@ import static Match.GameBoard.GameBoard.*;
 
 public class ProcessUnit {
 
-     static GameBoard gameboard = new GameBoard();
+    static GameBoard gameboard = new GameBoard();
 
     /*
      * Detect units in gameBoardState.json and process.
@@ -24,15 +26,6 @@ public class ProcessUnit {
     public static Boolean DetectUnitPlusProcess() {
         Gson gson = new Gson();
         String filePath = "Resources/gameBoardState.json";
-
-        // HashMap for unit rarity with compiled patterns
-        // ang keys sa hashmap kay ang rarity nya ang value kay ang regex pattern
-        Map<String, Pattern> rarityPatterns = new HashMap<>();
-        rarityPatterns.put("Legendary", Pattern.compile("War Machine|Storm Giant|Sheriff|Tiger Master"));
-        rarityPatterns.put("Epic", Pattern.compile("Electro Robot|Tree|Wolf Warrior|Hunter|Eagle General"));
-        rarityPatterns.put("Rare", Pattern.compile("Ranger|Sandman|Shock Robot|Paladin|Demon Soldier"));
-        rarityPatterns.put("Common", Pattern.compile("Archer|Barbarian|Bandit|Water Elemental|Thrower"));
-        rarityPatterns.put("Mythic", Pattern.compile("Bat Man|Mama|Ninja|Graviton|Orc Shaman|Kitty Mage|Coldy|Blob|Monopoly Man|Frog Prince|Vayne|Lancelot|Iron Meow|Dragon|Bomba|Pulse Generator|Indy|Watt|Tar|Rocket Chu|King Dian|Overclock Rocket Chu"));
 
         try (FileReader reader = new FileReader(filePath)) {
             System.out.println("Attempting to read file: " + filePath);
@@ -43,25 +36,24 @@ public class ProcessUnit {
             // Loop through gameBoard to process the units
             for (int i = 0; i < 3; i++) { // 3 rows
                 for (int j = 0; j < 6; j++) { // 6 columns
-                    if (gameBoardState.getSquare(i,j) != null && gameBoardState.getSquare(i,j).getUnit() != null) {
-                        Unit unit = gameBoardState.getSquare(i,j).getUnit();
+                    if (gameBoardState.getSquare(i, j) != null && gameBoardState.getSquare(i, j).getUnit() != null) {
+                        Unit unit = gameBoardState.getSquare(i, j).getUnit();
                         if (unit != null) {
                             String unitName = unit.name;
                             System.out.println("Processing unit: " + unitName + " at position: (" + i + ", " + j + ")");
 
-                            // Check for rarity
-                            boolean found = false;
-                            for (Map.Entry<String, Pattern> entry : rarityPatterns.entrySet()) {
-                                String rarity = entry.getKey();
-                                Pattern pattern = entry.getValue();
-                                Matcher matcher = pattern.matcher(unitName);
-                                if (matcher.find()) {
-                                    found = true;
-                                    processUnitByRarity(rarity, unit, i, j);
-                                    break;
-                                }
-                            }
-                            if (!found) {
+                            // Check for rarity using regex matchers
+                            if (isLegendary(unitName)) {
+                                processUnitByRarity("Legendary", unit, i, j);
+                            } else if (isEpic(unitName)) {
+                                processUnitByRarity("Epic", unit, i, j);
+                            } else if (isRare(unitName)) {
+                                processUnitByRarity("Rare", unit, i, j);
+                            } else if (isCommon(unitName)) {
+                                processUnitByRarity("Common", unit, i, j);
+                            } else if (isMythic(unitName)) {
+                                processUnitByRarity("Mythic", unit, i, j);
+                            } else {
                                 System.out.println("No matching rarity for unit: " + unitName);
                             }
                         }
@@ -81,7 +73,25 @@ public class ProcessUnit {
         }
         return false;
     }
+    public static boolean isLegendary(String unitName) {
+        return Pattern.compile("War Machine|Storm Giant|Sheriff|Tiger Master").matcher(unitName).find();
+    }
 
+    public static boolean isEpic(String unitName) {
+        return Pattern.compile("Electro Robot|Tree|Wolf Warrior|Hunter|Eagle General").matcher(unitName).find();
+    }
+
+    public static boolean isRare(String unitName) {
+        return Pattern.compile("Ranger|Sandman|Shock Robot|Paladin|Demon Soldier").matcher(unitName).find();
+    }
+
+    public static boolean isCommon(String unitName) {
+        return Pattern.compile("Archer|Barbarian|Bandit|Water Elemental|Thrower").matcher(unitName).find();
+    }
+
+    public static boolean isMythic(String unitName) {
+        return Pattern.compile("Bat Man|Mama|Ninja|Graviton|Orc Shaman|Kitty Mage|Coldy|Blob|Monopoly Man|Frog Prince|Vayne|Lancelot|Iron Meow|Dragon|Bomba|Pulse Generator|Indy|Watt|Tar|Rocket Chu|King Dian|Overclock Rocket Chu").matcher(unitName).find();
+    }
     public static void processUnitByRarity(String rarity, Unit unit, int i, int j) throws IOException, InterruptedException {
         switch (rarity) {
             case "Legendary":
@@ -254,7 +264,7 @@ public class ProcessUnit {
                     }
                 }
 
-                // After evaluating all `Tree` units, make the final decision
+                // After evaluating all Tree units, make the final decision
                 if (canMerge) {
                     mergeUnit(i, j);  // Merge if possible
                 } else if (shouldMove && targetMoveCol != -1) {
@@ -293,7 +303,7 @@ public class ProcessUnit {
                     }
                 }
 
-                // After evaluating all `Hunter` units, make the final decision
+                // After evaluating all Hunter units, make the final decision
                 if (canMerge) {
                     mergeUnit(i, j);  // Merge if possible
                 } else if (shouldMove && targetMoveRow != -1) {
@@ -301,7 +311,7 @@ public class ProcessUnit {
                 } else {
                     sellUnit(i, j);  // If neither merge nor move is possible, sell the unit
                 }
-        
+
                 break;
             default:
                 System.out.println("No specific handling for: " + unitName);
@@ -347,31 +357,34 @@ public class ProcessUnit {
                 break;
             case "Bandit":
                 Unit[] unitsB = new Unit[2];
-                unitsB[0] = gameboard.getSquare(1,0).getUnit();
-                unitsB[1] = gameboard.getSquare(2,0).getUnit();
+                unitsB[0] = gameboard.getSquare(1, 0).getUnit();
+                unitsB[1] = gameboard.getSquare(2, 0).getUnit();
 
-                boolean canMerge = false;  // Flag to track if we can merge
-                boolean shouldMove = false; // Flag to track if we should move
-                int targetMoveRow = -1;     // Target row to move the unit if needed
+                boolean shouldMove = false;
+                boolean canMerge = false;
+                int targetMoveRow = -1;
 
                 for (int c = 0; c < 2; ++c) {
-                    if (unitsB[c] != null && unitsB[c].getName().equals("Bandit")) {
-                        if (unitsB[c].getQuantity() == 3 && unit.quantity == 3) {
-                            canMerge = true;  // Set the merge flag if quantities match for merging
-                        } else if (unitsB[c].getQuantity() < unit.quantity) {
-                            shouldMove = true;      // Set the move flag if current unit has more quantity
-                            targetMoveRow = c + 1;  // Set the target row to move to
+                    Unit currentUnit = unitsB[c];
+                    if (currentUnit != null && currentUnit.getName().equals("Bandit")) {
+                        if (unit.getQuantity() > currentUnit.getQuantity()) {
+                            // Priority: Move the unit if it has a higher quantity than the Bandit in the square
+                            shouldMove = true;
+                            targetMoveRow = c + 1;
+                        }
+                        if (currentUnit.getQuantity() == 3 && unit.getQuantity() == 3) {
+                            // Only check for merging after confirming the quantity is 3
+                            canMerge = true;
                         }
                     }
                 }
 
-                // After evaluating all `Bandit` units, make the final decision
-                if (canMerge) {
-                    mergeUnit(i, j);  // Merge if possible
-                } else if (shouldMove) {
-                    moveUnit(i, j, targetMoveRow, 0);  // Move the unit if moving is needed
+                if (shouldMove) {
+                    moveUnit(i, j, targetMoveRow, 0);
+                } else if (canMerge) {
+                    mergeUnit(i, j);
                 } else {
-                    sellUnit(i, j);  // If neither merge nor move is possible, sell the unit
+                    sellUnit(i, j);
                 }
                 break;
             case "Thrower":
@@ -394,7 +407,7 @@ public class ProcessUnit {
                         }
                     }
                 }
-                // After evaluating all `Thrower` units, make the final decision
+                // After evaluating all Thrower units, make the final decision
                 if (canMerge) {
                     mergeUnit(i, j);  // Merge if possible
                 } else if (shouldMove) {
