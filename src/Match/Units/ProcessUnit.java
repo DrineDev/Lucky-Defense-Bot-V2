@@ -2,6 +2,7 @@ package Match.Units;
 
 
 import Match.GameBoard.GameBoard;
+import Match.GameBoard.Square;
 import Match.MythicBuilder;
 import com.google.gson.Gson;
 
@@ -18,7 +19,7 @@ public class ProcessUnit {
 
     static GameBoard gameboard = new GameBoard();
 
-    /**
+    /*
      * Detect units in gameBoardState.json and process.
      * @return
      */
@@ -345,13 +346,13 @@ public class ProcessUnit {
      * @param j
      */
     public static void processUnitCommon(Unit unit, int i, int j) throws IOException, InterruptedException {
-        String unitName = unit.getName();
+        String unitName = unit.name;
         switch (unitName) {
             case "Archer", "Barbarian", "Water Elemental":
-                if(unit.getQuantity() == 3)
-                    mergeUnit(i, j);
+                if(unit.quantity==3)
+                    mergeUnit(i,j);
                 else {
-                    sellUnit(i, j);
+                    sellUnit(i,j);
                 }
                 break;
             case "Bandit":
@@ -359,28 +360,31 @@ public class ProcessUnit {
                 unitsB[0] = gameboard.getSquare(1, 0).getUnit();
                 unitsB[1] = gameboard.getSquare(2, 0).getUnit();
 
-                boolean canMerge = false;  // Flag to track if we can merge
-                boolean shouldMove = false; // Flag to track if we should move
-                int targetMoveRow = -1;     // Target row to move the unit if needed
+                boolean shouldMove = false;
+                boolean canMerge = false;
+                int targetMoveRow = -1;
 
                 for (int c = 0; c < 2; ++c) {
-                    if (unitsB[c] != null && unitsB[c].getName().equals("Bandit")) {
-                        if (unitsB[c].getQuantity() == 3 && unit.getQuantity() == 3) {
-                            canMerge = true;  // Set the merge flag if quantities match for merging
-                        } else if (unitsB[c].getQuantity() < unit.getQuantity()) {
-                            shouldMove = true;      // Set the move flag if current unit has more quantity
-                            targetMoveRow = c + 1;  // Set the target row to move to
+                    Unit currentUnit = unitsB[c];
+                    if (currentUnit != null && currentUnit.getName().equals("Bandit")) {
+                        if (unit.getQuantity() > currentUnit.getQuantity()) {
+                            // Priority: Move the unit if it has a higher quantity than the Bandit in the square
+                            shouldMove = true;
+                            targetMoveRow = c + 1;
+                        }
+                        if (currentUnit.getQuantity() == 3 && unit.getQuantity() == 3) {
+                            // Only check for merging after confirming the quantity is 3
+                            canMerge = true;
                         }
                     }
                 }
 
-                // After evaluating all Bandit units, make the final decision
-                if (canMerge) {
-                    mergeUnit(i, j);  // Merge if possible
-                } else if (shouldMove) {
-                    moveUnit(i, j, targetMoveRow, 0);  // Move the unit if moving is needed
+                if (shouldMove) {
+                    moveUnit(i, j, targetMoveRow, 0);
+                } else if (canMerge) {
+                    mergeUnit(i, j);
                 } else {
-                    sellUnit(i, j);  // If neither merge nor move is possible, sell the unit
+                    sellUnit(i, j);
                 }
                 break;
             case "Thrower":
