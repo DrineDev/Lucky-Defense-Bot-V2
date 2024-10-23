@@ -222,13 +222,16 @@ public class ProcessUnit {
                 if (unit.quantity==3){
                     mergeUnit(i,j);
                 }else if(unit.quantity==2){
-                    sellUnit(gameboard, i, j);
-                    sellUnit(gameboard, i, j);
+                    gameboard = sellUnit(gameboard, i, j);
+                    gameboard = sellUnit(gameboard, i, j);
                 }else if(unit.quantity==1){
-                    sellUnit(gameboard, i, j);
+                    gameboard = sellUnit(gameboard, i, j);
                 }
                 break;
             case "Electro Robot":
+                if(i == 0 && j == 2) {
+                    break;
+                }
                 Unit unit1 = gameboard.getSquare(0,2).getUnit();
                 if(unit1.name.equals("Electro Robot")) {
                     if(unit1.quantity==3){
@@ -236,10 +239,10 @@ public class ProcessUnit {
                             mergeUnit(i,j);
                         else
                             for (int Enum = unit1.getQuantity(); Enum >0; --Enum)
-                                sellUnit(gameboard, i, j);
-                    }else if (unit1.quantity< unit.quantity) gameboard.moveUnit(gameboard, i,j,0,2);
+                                gameboard = sellUnit(gameboard, i, j);
+                    }else if (unit1.quantity< unit.quantity) gameboard = gameboard.moveUnit(gameboard, i,j,0,2);
                 }else{
-                    gameboard.moveUnit(gameboard, i,j,0,2);
+                    gameboard = gameboard.moveUnit(gameboard, i,j,0,2);
                 }
                 break;
             case "Hunter":
@@ -260,7 +263,7 @@ public class ProcessUnit {
                     }else if (unit1H.quantity< unit.quantity)
                         shouldMove = true;
                 }else{
-                    gameboard.moveUnit(gameboard, i,j,0,5);
+                    gameboard = gameboard.moveUnit(gameboard, i,j,0,5);
                     processed = true;
                     break;
                 }
@@ -275,7 +278,7 @@ public class ProcessUnit {
                         }else if (unit2H.quantity< unit.quantity)
                             shouldMove = true;
                     }else{
-                        gameboard.moveUnit(gameboard, i, j, 1, 5);
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 1, 5);
                         processed2 = true;
                         break;
                     }
@@ -291,24 +294,24 @@ public class ProcessUnit {
                         }else if (unit3H.quantity< unit.quantity)
                             shouldMove = true;
                     }else{
-                        gameboard.moveUnit(gameboard, i, j, 2, 5);
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 2, 5);
                         break;
                     }
                 }
 
                 if(shouldMove){
                     if(unit1H.quantity< unit2H.quantity && unit1H.quantity<unit3H.quantity)
-                        gameboard.moveUnit(gameboard, i, j, 0, 5);
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 0, 5);
                     else if(unit2H.quantity<unit1H.quantity&& unit2H.quantity<unit3H.quantity)
-                        gameboard.moveUnit(gameboard, i, j, 1, 5);
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 1, 5);
                     else if (unit3H.quantity<unit1H.quantity&&unit3H.quantity<unit2H.quantity)
-                        gameboard.moveUnit(gameboard,i,j,2,5);
+                        gameboard = gameboard.moveUnit(gameboard,i,j,2,5);
                 }else{
                     if(canMerge)
                         mergeUnit(i,j);
                     else if(shouldSell)
                         for (int Enum = unit.getQuantity(); Enum >0; --Enum)
-                            sellUnit(gameboard, i, j);
+                            gameboard = sellUnit(gameboard, i, j);
                     break;
                 }
                 break;
@@ -328,7 +331,7 @@ public class ProcessUnit {
                     }else if (unit1T.quantity< unit.quantity)
                         shouldMove = true;
                 }else{
-                    gameboard.moveUnit(gameboard, i,j,1,3);
+                    gameboard = gameboard.moveUnit(gameboard, i,j,1,3);
                     processed = true;
                     break;
                 }
@@ -343,7 +346,7 @@ public class ProcessUnit {
                         }else if (unit2T.quantity< unit.quantity)
                             shouldMove = true;
                     }else{
-                        gameboard.moveUnit(gameboard, i, j, 1, 4);
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 1, 4);
                         processed = true;
                         break;
                     }
@@ -351,22 +354,21 @@ public class ProcessUnit {
 
                 if(shouldMove){
                     if(unit1T.quantity< unit2T.quantity)
-                        gameboard.moveUnit(gameboard, i, j, 1, 3);
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 1, 3);
                     else
-                        gameboard.moveUnit(gameboard, i, j, 1, 4);
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 1, 4);
                 }else{
                     if(canMerge)
                         mergeUnit(i,j);
                     else if(shouldSell)
                         for (int Enum = unit.getQuantity(); Enum >0; --Enum)
-                            sellUnit(gameboard, i, j);
+                            gameboard = sellUnit(gameboard, i, j);
                     break;
                 }
                 break;
             default:
                 System.out.println("No specific handling for this "+unitName);
                 break;
-
         }
     }
 
@@ -384,7 +386,7 @@ public class ProcessUnit {
                     mergeUnit(i,j);
                 else {
                     for (int Enum = unit.quantity; Enum >0; --Enum)
-                        sellUnit(gameboard, i, j);
+                        gameboard = sellUnit(gameboard, i, j);
                 }
                 break;
             default:
@@ -417,7 +419,7 @@ public class ProcessUnit {
                     }else if (unit1.quantity< unit.quantity)
                         shouldMove = true;
                 }else{
-                    gameboard.moveUnit(gameboard, i,j,1,0);
+                    gameboard = gameboard.moveUnit(gameboard, i,j,1,0);
                     processed = true;
                     break;
                 }
@@ -432,7 +434,7 @@ public class ProcessUnit {
                         }else if (unit2.quantity< unit.quantity)
                             shouldMove = true;
                     }else{
-                        gameboard.moveUnit(gameboard, i, j, 2, 0);
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 2, 0);
                         processed = true;
                         break;
                     }
@@ -440,15 +442,15 @@ public class ProcessUnit {
 
                 if(shouldMove){
                     if(unit1.quantity<unit2.quantity)
-                        gameboard.moveUnit(gameboard, i, j, 1, 0);
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 1, 0);
                     else
-                        gameboard.moveUnit(gameboard, i, j, 2, 0);
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 2, 0);
                 }else{
                     if(canMerge)
                         mergeUnit(i,j);
                     else if(shouldSell)
                         for (int Enum = unit.getQuantity(); Enum >0; --Enum)
-                            sellUnit(gameboard, i, j);
+                            gameboard = sellUnit(gameboard, i, j);
                         break;
                 }
                 break;
@@ -461,24 +463,24 @@ public class ProcessUnit {
                             mergeUnit(i,j);
                         else{
                             for (int Enum = unit.getQuantity(); Enum >0; --Enum)
-                                sellUnit(gameboard, i, j);
+                                gameboard = sellUnit(gameboard, i, j);
                         }
                     }else if (unit1.quantity<unit.quantity)
-                        gameboard.moveUnit(gameboard,i,j,2,3);
+                        gameboard = gameboard.moveUnit(gameboard,i,j,2,3);
                 }else{
-                    gameboard.moveUnit(gameboard, i,j,2,3);
+                    gameboard = gameboard.moveUnit(gameboard, i,j,2,3);
                     break;
                 }
                 break;
             case "Archer", "Barbarian", "Water Elemental","Imp":
                 if(unit.quantity==3)
-                    mergeUnit(i,j);
+                   mergeUnit(i,j);
                 else if(unit.quantity==2){
-                    sellUnit(gameboard, i, j);
-                    sellUnit(gameboard, i, j);
+                    gameboard = sellUnit(gameboard, i, j);
+                    gameboard = sellUnit(gameboard, i, j);
                 }
                 else{
-                    sellUnit(gameboard, i, j);
+                    gameboard = sellUnit(gameboard, i, j);
                 }
                 break;
 

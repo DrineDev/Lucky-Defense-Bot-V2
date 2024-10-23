@@ -1,9 +1,6 @@
 package Match.GameBoard;
 
 import Basic.Coordinates;
-import Basic.Press;
-import Basic.Screenshot;
-import Match.MythicBuilder;
 import Match.Units.ProcessUnit;
 import Match.Units.Unit;
 import com.google.gson.Gson;
@@ -130,7 +127,7 @@ public class GameBoard {
      * @throws IOException
      * @throws InterruptedException
      */
-    public void moveUnit(GameBoard gameBoard, int i1, int j1, int i2, int j2) throws IOException, InterruptedException {
+    public GameBoard moveUnit(GameBoard gameBoard, int i1, int j1, int i2, int j2) throws IOException, InterruptedException {
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i1][j1], bottomRightCoordinates[i1][j1]);
         Coordinates toRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i2][j2], bottomRightCoordinates[i2][j2]);
         Thread.sleep(2000);
@@ -138,7 +135,9 @@ public class GameBoard {
                 .exec("adb shell input draganddrop " + fromRandomCoordinates.toString() + " " + toRandomCoordinates.toString());
         Thread.sleep(3000);
 
-        updateGameBoard(gameBoard, i1, j1, i2, j2);
+        gameBoard = gameBoard.updateGameBoard(gameBoard, i1, j1, i2, j2);
+
+        return gameBoard;
     }
 
     /**
@@ -159,7 +158,7 @@ public class GameBoard {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void sellUnit(GameBoard gameboard, int i, int j) throws IOException, InterruptedException {
+    public static GameBoard sellUnit(GameBoard gameboard, int i, int j) throws IOException, InterruptedException {
         // Click the unit at the specified game board coordinates
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j], bottomRightCoordinates[i][j]);
 
@@ -189,7 +188,9 @@ public class GameBoard {
         Process process2 = Runtime.getRuntime().exec("adb shell input tap " + sellRandomCoordinates.getX() + " " + sellRandomCoordinates.getY());
         Thread.sleep(500);
 
-        gameboard.updateGameBoard(gameboard, i, j, i, j);
+        gameboard = gameboard.updateGameBoard(gameboard, i, j, i, j);
+
+        return gameboard;
     }
 
     /**

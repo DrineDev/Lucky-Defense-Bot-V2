@@ -3,45 +3,7 @@
     [
       {
         "unit": {
-          "name": "Archer",
-          "quantity": 3
-        }
-      },
-      {
-        "unit": {
-          "name": "Thrower",
-          "quantity": 2
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "Tree",
-          "quantity": 2
-        }
-      }
-    ],
-    [
-      {
-        "unit": {
-          "name": "Bandit",
+          "name": "Hunter",
           "quantity": 3
         }
       },
@@ -53,39 +15,7 @@
       },
       {
         "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      }
-    ],
-    [
-      {
-        "unit": {
-          "name": "Bandit",
-          "quantity": 2
-        }
-      },
-      {
-        "unit": {
-          "name": "Water Elemental",
+          "name": "Electro Robot",
           "quantity": 1
         }
       },
@@ -93,6 +23,76 @@
         "unit": {
           "name": "",
           "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      }
+    ],
+    [
+      {
+        "unit": {
+          "name": "Bandit",
+          "quantity": 3
+        }
+      },
+      {
+        "unit": {
+          "name": "Archer",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "Eagle General",
+          "quantity": 3
+        }
+      },
+      {
+        "unit": {
+          "name": "Tree",
+          "quantity": 3
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      }
+    ],
+    [
+      {
+        "unit": {
+          "name": "",
+          "quantity": 0
+        }
+      },
+      {
+        "unit": {
+          "name": "Wolf Warrior",
+          "quantity": 1
+        }
+      },
+      {
+        "unit": {
+          "name": "Water Elemental",
+          "quantity": 2
         }
       },
       {
