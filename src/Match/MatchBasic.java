@@ -131,6 +131,10 @@ public class MatchBasic {
         Press.press(new Coordinates(39, 823), new Coordinates(129, 858), "Upgrading Common");
     }
 
+    public static void pressBuildFavoriteMythic() {
+        Press.press(new Coordinates(30, 175), new Coordinates(91, 237), "Building favorite mythic");
+    }
+
     public static int checkLuckyStones() {
 //        pressUpgrade();
 
@@ -194,11 +198,5 @@ public class MatchBasic {
         BufferedImage image = new BufferedImage(matrix.cols(), matrix.rows(), type);
         image.getRaster().setDataElements(0, 0, matrix.cols(), matrix.rows(), b);
         return image;
-    }
-
-    public static void main(String[] args) {
-        int temp = checkLuckyStones();
-
-        System.out.println(temp);
     }
 }
