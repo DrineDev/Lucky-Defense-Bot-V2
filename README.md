@@ -1,5 +1,6 @@
 To do
 1. Game Algorithm
+2. FIX BUILD MYTHICS and CANBUILD
 2. TEST
 3. Integrate with GUI
 

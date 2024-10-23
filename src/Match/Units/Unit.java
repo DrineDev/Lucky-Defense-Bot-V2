@@ -13,11 +13,13 @@ import java.io.IOException;
 public class Unit {
     protected String name;
     protected int quantity;
+    protected int form;
     // protected int value;
 
     public Unit() {
         name = "";
         quantity = 0;
+        form = 0;
     }
 
     /**
@@ -68,6 +70,8 @@ public class Unit {
     /** GETTERS & SETTERS */
     public void setName(String name) { this.name = name; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setForm(int form) { this.form = form; }
     public String getName() { return name; }
     public int getQuantity() { return quantity; }
+    public int getForm() { return form; }
 }

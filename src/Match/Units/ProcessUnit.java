@@ -15,7 +15,8 @@ public class ProcessUnit {
 
     public static GameBoard gameboard = new GameBoard();
 
-    /*
+    /**
+     * MAIN FUNCTION
      * Detect units in gameBoardState.json and process.
      * @return
      */
@@ -69,6 +70,12 @@ public class ProcessUnit {
         }
         return false;
     }
+
+    /**
+     * FUNCTIONS to detect a unit rarity
+     * @param unitName
+     * @return
+     */
     public static boolean isLegendary(String unitName) {
         return Pattern.compile("War Machine|Storm Giant|Sheriff|Tiger Master").matcher(unitName).find();
     }
@@ -88,6 +95,16 @@ public class ProcessUnit {
     public static boolean isMythic(String unitName) {
         return Pattern.compile("Bat Man|Mama|Ninja|Graviton|Orc Shaman|Kitty Mage|Coldy|Blob|Monopoly Man|Frog Prince|Vayne|Lancelot|Iron Meow|Dragon|Bomba|Pulse Generator|Indy|Watt|Tar|Rocket Chu|King Dian|Overclock Rocket Chu").matcher(unitName).find();
     }
+
+    /**
+     * Main function to process each unit
+     * @param rarity
+     * @param unit
+     * @param i
+     * @param j
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public static void processUnitByRarity(String rarity, Unit unit, int i, int j) throws IOException, InterruptedException {
         switch (rarity) {
             case "Legendary":
@@ -112,17 +129,38 @@ public class ProcessUnit {
 
     /**
      * Check what to do for Mythical Units
-     * @param unit
+     * @param baseMythic
      * @param i
      * @param j
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void processUnitMythic(Unit unit, int i, int j) throws IOException, InterruptedException{
-        String unitName = unit.name;
-        switch (unitName) {
-            case "Bat Man":
+    public static void processUnitMythic(Unit baseMythic, int i, int j) throws IOException, InterruptedException{
+        switch (baseMythic.getName()) {
+            case "BatMan":
+                if(i == 0 && j == 1 || i == 0 && j == 3)
+                    break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT TOUCH
+
+                // CHECK OPTIMAL POSITIONS
+                MythicalUnit unitBatman1 = (MythicalUnit) gameboard.getSquare(0, 1).getUnit();
+                MythicalUnit unitBatman2 = (MythicalUnit) gameboard.getSquare(0, 3).getUnit();
+                MythicalUnit unitBatman3 = (MythicalUnit) gameboard.getSquare(0, 4).getUnit();
+
+                // MOVE UNITS TO OPTIMAL POSITION IF NO OPTIMAL UNIT FOUND
+                if(!unitBatman1.getName().equals("BatMan"))
+                    gameboard = gameboard.moveUnit(gameboard, i, j, 0, 1);
+                else if(!unitBatman2.getName().equals("BatMan"))
+                    gameboard = gameboard.moveUnit(gameboard, i, j, 0, 3);
+                else if(!unitBatman3.getName().equals("BatMan"))
+                    gameboard = gameboard.moveUnit(gameboard, i, j, 0, 4);
+
+                // CHECK BATMAN FORM, AND IF BAD, THEN UPGRADE
+                MythicalUnit unitBatman = (MythicalUnit) baseMythic;
+                if(unitBatman.getForm() != 3)
+                    for(int k = 0; k < 5; k++)
+                        upgradeUnit(i, j); // UPGRADE FIVE TIMES, TODO : CHANGE THIS ALGORITHM
                 break;
+
             case "Mama":
                 break;
             case "Ninja":
@@ -166,101 +204,95 @@ public class ProcessUnit {
             case "Overclock Rocket Chu":
                 break;
             default:
-                // Handle case where unitName doesn't match any of the cases
                 break;
         }
 
     }
-    
-    public static void processUnitLegendary(Unit unit, int i, int j) throws IOException, InterruptedException {
-        String unitName = unit.name;
 
-        switch (unitName) {
+    /**
+     * Check what to do for Legendary Units
+     * @param baseLegendary
+     * @param i
+     * @param j
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static void processUnitLegendary(Unit baseLegendary, int i, int j) throws IOException, InterruptedException {
+        switch (baseLegendary.getName()) {
             case "War Machine":
-                if (MythicBuilder.canBuild("RocketChu")) {
-                    MythicBuilder.buildMythic("RocketChu");
-                } else {
-                    sellUnit(gameboard, i, j);
-                }
                 break;
             case "Storm Giant":
-                if (MythicBuilder.canBuild("Coldy")) {
-                    MythicBuilder.buildMythic("Coldy");
-                } else {
-                    sellUnit(gameboard, i, j);
-                }
                 break;
             case "Sheriff":
-                if (MythicBuilder.canBuild("Lancelot")) {
-                    MythicBuilder.buildMythic("Lancelot");
-                } else {
-                    sellUnit(gameboard, i, j);
-                }
                 break;
+
             case "Tiger Master":
-                if (MythicBuilder.canBuild("Batman")) {
-                    MythicBuilder.buildMythic("Batman");
-                } else {
-                    gameboard.moveUnit(gameboard, i,j,0,1);
-                }
+                if(i == 0 && j == 0)
+                    break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT MOVE
+                // TODO : CHECK IF BATMAN CAN BE BUILT..
                 break;
             default:
-                System.out.println("No specific handling for: " + unitName);
+                System.out.println("No specific handling for: " + baseLegendary.getName());
         }
     }
 
     /**
      * Check what to do for Epic Units
-     * @param unit
+     * @param baseEpic
      * @param i
      * @param j
      */
-    public static void processUnitEpic(Unit unit, int i, int j) throws IOException, InterruptedException {
-        String unitName = unit.name;
-        switch (unitName){
+    public static void processUnitEpic(Unit baseEpic, int i, int j) throws IOException, InterruptedException {
+        switch (baseEpic.getName()){
             case "Wolf Warrior", "Eagle General":
-                if (unit.quantity==3){
+                if (baseEpic.getQuantity() == 3){
                     mergeUnit(i,j);
-                }else if(unit.quantity==2){
+                } else if(baseEpic.getQuantity() == 2) {
                     gameboard = sellUnit(gameboard, i, j);
                     gameboard = sellUnit(gameboard, i, j);
-                }else if(unit.quantity==1){
+                } else if(baseEpic.getQuantity() == 1){
                     gameboard = sellUnit(gameboard, i, j);
                 }
                 break;
+
             case "Electro Robot":
-                if(i == 0 && j == 2) {
-                    break;
-                }
-                Unit unit1 = gameboard.getSquare(0,2).getUnit();
-                if(unit1.name.equals("Electro Robot")) {
-                    if(unit1.quantity==3){
-                        if(unit.quantity==3)
+                if(i == 0 && j == 2)
+                    break; // IF UNIT IN OPTIMAL POSITION, DO NOT TOUCH
+
+                Unit electroRobot1 = gameboard.getSquare(0,2).getUnit();
+                if(electroRobot1.getName().equals("Electro Robot")) {
+                    if(electroRobot1.getQuantity() == 3){
+                        if(baseEpic.getQuantity() == 3)
                             mergeUnit(i,j);
                         else
-                            for (int Enum = unit1.getQuantity(); Enum >0; --Enum)
+                            for (int k = electroRobot1.getQuantity(); k > 0; --k)
                                 gameboard = sellUnit(gameboard, i, j);
-                    }else if (unit1.quantity< unit.quantity) gameboard = gameboard.moveUnit(gameboard, i,j,0,2);
-                }else{
+                    } else if (electroRobot1.getQuantity() < electroRobot1.getQuantity())
+                        gameboard = gameboard.moveUnit(gameboard, i,j,0,2);
+                } else
                     gameboard = gameboard.moveUnit(gameboard, i,j,0,2);
-                }
                 break;
+
             case "Hunter":
-                Unit unit1H = gameboard.getSquare(0,5).getUnit();
-                Unit unit2H = gameboard.getSquare(1,5).getUnit();
-                Unit unit3H = gameboard.getSquare(2,5).getUnit();
+                if((i == 0 && j == 5) || (i == 1 && j == 5) || (i == 2 & j == 5))
+                    break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT TOUCH
+
                 boolean canMerge = false;
                 boolean shouldMove = false;
                 boolean shouldSell = false;
                 boolean processed = false;
                 boolean processed2 = false;
-                if(unit1H.name.equals("Tree")) {
-                    if(unit1H.quantity==3){
-                        if(unit.quantity==3)
+                Unit hunter1 = gameboard.getSquare(0,5).getUnit();
+                Unit hunter2 = gameboard.getSquare(1,5).getUnit();
+                Unit hunter3 = gameboard.getSquare(2,5).getUnit();
+
+                if(hunter1.getName().equals("Hunter")) {
+                    if(hunter1.getQuantity() == 3){
+                        if(baseEpic.getQuantity() == 3)
                             canMerge = true;
                         else
                             shouldSell = true;
-                    }else if (unit1H.quantity< unit.quantity)
+                    } else if (hunter1.getQuantity() < baseEpic.getQuantity())
                         shouldMove = true;
                 }else{
                     gameboard = gameboard.moveUnit(gameboard, i,j,0,5);
@@ -269,13 +301,13 @@ public class ProcessUnit {
                 }
 
                 if(!processed){
-                    if(unit2H.name.equals("Tree")) {
-                        if(unit2H.quantity==3){
-                            if(unit.quantity==3)
+                    if(hunter2.getName().equals("Hunter")) {
+                        if(hunter2.getQuantity() == 3){
+                            if(baseEpic.getQuantity() == 3)
                                 canMerge = true;
                             else
                                 shouldSell = true;
-                        }else if (unit2H.quantity< unit.quantity)
+                        }else if (hunter2.getQuantity() < baseEpic.getQuantity())
                             shouldMove = true;
                     }else{
                         gameboard = gameboard.moveUnit(gameboard, i, j, 1, 5);
@@ -285,13 +317,13 @@ public class ProcessUnit {
                 }
 
                 if(!processed2){
-                    if(unit3H.name.equals("Tree")) {
-                        if(unit3H.quantity==3){
-                            if(unit.quantity==3)
+                    if(hunter3.getName().equals("Hunter")) {
+                        if(hunter3.getQuantity() == 3){
+                            if(baseEpic.getQuantity() == 3)
                                 canMerge = true;
                             else
                                 shouldSell = true;
-                        }else if (unit3H.quantity< unit.quantity)
+                        }else if (hunter3.getQuantity() < baseEpic.getQuantity())
                             shouldMove = true;
                     }else{
                         gameboard = gameboard.moveUnit(gameboard, i, j, 2, 5);
@@ -299,53 +331,55 @@ public class ProcessUnit {
                     }
                 }
 
-                if(shouldMove){
-                    if(unit1H.quantity< unit2H.quantity && unit1H.quantity<unit3H.quantity)
+                if(shouldMove) {
+                    if(hunter1.getQuantity() < hunter2.getQuantity() && hunter1.getQuantity() < hunter3.getQuantity())
                         gameboard = gameboard.moveUnit(gameboard, i, j, 0, 5);
-                    else if(unit2H.quantity<unit1H.quantity&& unit2H.quantity<unit3H.quantity)
+                    else if(hunter2.getQuantity() < hunter1.getQuantity() && hunter2.getQuantity() < hunter3.getQuantity())
                         gameboard = gameboard.moveUnit(gameboard, i, j, 1, 5);
-                    else if (unit3H.quantity<unit1H.quantity&&unit3H.quantity<unit2H.quantity)
+                    else if(hunter3.getQuantity() < hunter1.getQuantity() && hunter3.getQuantity() < hunter2.getQuantity())
                         gameboard = gameboard.moveUnit(gameboard,i,j,2,5);
-                }else{
+                } else {
                     if(canMerge)
                         mergeUnit(i,j);
                     else if(shouldSell)
-                        for (int Enum = unit.getQuantity(); Enum >0; --Enum)
+                        for (int k = baseEpic.getQuantity(); k >0; --k)
                             gameboard = sellUnit(gameboard, i, j);
-                    break;
                 }
                 break;
             case "Tree":
-                Unit unit1T = gameboard.getSquare(1,3).getUnit();
-                Unit unit2T = gameboard.getSquare(1,4).getUnit();
+                if((i == 1 && j == 3) || (i == 1 && j == 4))
+                    break; // IF UNIT IN OPTIMAL POSITION, DO NOT TOUCH
+
+                Unit tree1 = gameboard.getSquare(1,3).getUnit();
+                Unit tree2 = gameboard.getSquare(1,4).getUnit();
                 canMerge = false;
                 shouldMove = false;
                 shouldSell = false;
                 processed = false;
-                if(unit1T.name.equals("Tree")) {
-                    if(unit1T.quantity==3){
-                        if(unit.quantity==3)
+
+                if(tree1.getName().equals("Tree")) {
+                    if(tree1.getQuantity() == 3){
+                        if(baseEpic.getQuantity() == 3)
                             canMerge = true;
                         else
                             shouldSell = true;
-                    }else if (unit1T.quantity< unit.quantity)
+                    } else if(tree1.getQuantity() < baseEpic.getQuantity())
                         shouldMove = true;
-                }else{
+                } else {
                     gameboard = gameboard.moveUnit(gameboard, i,j,1,3);
                     processed = true;
-                    break;
                 }
 
                 if(!processed){
-                    if(unit2T.name.equals("Tree")) {
-                        if(unit2T.quantity==3){
-                            if(unit.quantity==3)
+                    if(tree2.getName().equals("Tree")) {
+                        if(tree2.getQuantity() == 3){
+                            if(baseEpic.getQuantity() == 3)
                                 canMerge = true;
                             else
                                 shouldSell = true;
-                        }else if (unit2T.quantity< unit.quantity)
+                        } else if (tree2.getQuantity() < baseEpic.getQuantity())
                             shouldMove = true;
-                    }else{
+                    } else {
                         gameboard = gameboard.moveUnit(gameboard, i, j, 1, 4);
                         processed = true;
                         break;
@@ -353,70 +387,71 @@ public class ProcessUnit {
                 }
 
                 if(shouldMove){
-                    if(unit1T.quantity< unit2T.quantity)
+                    if(tree1.getQuantity() < tree2.getQuantity())
                         gameboard = gameboard.moveUnit(gameboard, i, j, 1, 3);
                     else
                         gameboard = gameboard.moveUnit(gameboard, i, j, 1, 4);
-                }else{
+                } else {
                     if(canMerge)
                         mergeUnit(i,j);
                     else if(shouldSell)
-                        for (int Enum = unit.getQuantity(); Enum >0; --Enum)
+                        for (int k = baseEpic.getQuantity(); k > 0; --k)
                             gameboard = sellUnit(gameboard, i, j);
-                    break;
                 }
                 break;
             default:
-                System.out.println("No specific handling for this "+unitName);
+                System.out.println("No specific handling for this " + baseEpic.getName());
                 break;
         }
     }
 
     /**
      * Check what to do for Rare/Uncommon Units
-     * @param unit
+     * @param baseRare
      * @param i
      * @param j
      */
-    public static void processUnitRare(Unit unit, int i, int j) throws IOException, InterruptedException {
-        String unitName = unit.name;
-        switch (unitName){
+    public static void processUnitRare(Unit baseRare, int i, int j) throws IOException, InterruptedException {
+        switch (baseRare.getName()){
             case "Ranger", "Sandman", "Shock Robot", "Paladin", "Demon Soldier":
-                if(unit.quantity==3)
+                if(baseRare.getQuantity() == 3)
                     mergeUnit(i,j);
                 else {
-                    for (int Enum = unit.quantity; Enum >0; --Enum)
+                    for (int k = baseRare.getQuantity(); k > 0; --k)
                         gameboard = sellUnit(gameboard, i, j);
                 }
                 break;
             default:
-                System.out.println("No specific handling for: " + unitName);
+                System.out.println("No specific handling for: " + baseRare.getName());
         }
     }
 
     /**
      * Check what to do for Common Units
-     * @param unit
+     * @param baseCommon
      * @param i
      * @param j
      */
-    public static void processUnitCommon(Unit unit, int i, int j) throws IOException, InterruptedException {
-        String unitName = unit.name;
-        switch (unitName){
+    public static void processUnitCommon(Unit baseCommon, int i, int j) throws IOException, InterruptedException {
+        switch (baseCommon.getName()){
             case "Bandit":
-                Unit unit1 = gameboard.getSquare(1,0).getUnit();
-                Unit unit2 = gameboard.getSquare(2,0).getUnit();
+                if((i == 1 && j == 0) || (i == 2 && j == 0))
+                    break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT TOUCH
+
                 boolean canMerge = false;
                 boolean shouldMove = false;
                 boolean shouldSell = false;
                 boolean processed = false;
-                if(unit1.name.equals("Bandit")) {
-                    if(unit1.quantity==3){
-                        if(unit.quantity==3)
+                Unit bandit1 = gameboard.getSquare(1,0).getUnit();
+                Unit bandit2 = gameboard.getSquare(2,0).getUnit();
+
+                if(bandit1.getName().equals("Bandit")) {
+                    if(bandit1.getQuantity() == 3){
+                        if(baseCommon.getQuantity() == 3)
                             canMerge = true;
                         else
                             shouldSell = true;
-                    }else if (unit1.quantity< unit.quantity)
+                    }else if (bandit1.getQuantity() < baseCommon.getQuantity())
                         shouldMove = true;
                 }else{
                     gameboard = gameboard.moveUnit(gameboard, i,j,1,0);
@@ -425,13 +460,13 @@ public class ProcessUnit {
                 }
 
                 if(!processed){
-                    if(unit2.name.equals("Bandit")) {
-                        if(unit2.quantity==3){
-                            if(unit.quantity==3)
+                    if(bandit2.getName().equals("Bandit")) {
+                        if(bandit2.getQuantity() == 3){
+                            if(baseCommon.getQuantity() == 3)
                                 canMerge = true;
                             else
                                 shouldSell = true;
-                        }else if (unit2.quantity< unit.quantity)
+                        }else if (bandit2.getQuantity() < baseCommon.getQuantity())
                             shouldMove = true;
                     }else{
                         gameboard = gameboard.moveUnit(gameboard, i, j, 2, 0);
@@ -441,50 +476,48 @@ public class ProcessUnit {
                 }
 
                 if(shouldMove){
-                    if(unit1.quantity<unit2.quantity)
+                    if(bandit1.getQuantity() < bandit2.getQuantity())
                         gameboard = gameboard.moveUnit(gameboard, i, j, 1, 0);
                     else
                         gameboard = gameboard.moveUnit(gameboard, i, j, 2, 0);
-                }else{
-                    if(canMerge)
-                        mergeUnit(i,j);
-                    else if(shouldSell)
-                        for (int Enum = unit.getQuantity(); Enum >0; --Enum)
+                } else {
+                    if (canMerge)
+                        mergeUnit(i, j);
+                    else if (shouldSell)
+                        for (int k = baseCommon.getQuantity(); k > 0; --k)
                             gameboard = sellUnit(gameboard, i, j);
-                        break;
                 }
                 break;
-            case "Thrower":
-                unit1 = gameboard.getSquare(2,3).getUnit();
 
-                if(unit1.name.equals("Thrower")) {
-                    if(unit1.quantity==3){
-                        if(unit.quantity==3)
+            case "Thrower":
+                if(i == 2 && j == 3)
+                    break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT TOUCH
+
+                Unit thrower1 = gameboard.getSquare(2,3).getUnit();
+
+                if(thrower1.getName().equals("Thrower")) {
+                    if(thrower1.getQuantity() == 3){
+                        if(baseCommon.getQuantity() == 3)
                             mergeUnit(i,j);
                         else{
-                            for (int Enum = unit.getQuantity(); Enum >0; --Enum)
+                            for (int k = baseCommon.getQuantity(); k > 0; --k)
                                 gameboard = sellUnit(gameboard, i, j);
                         }
-                    }else if (unit1.quantity<unit.quantity)
+                    }else if (thrower1.getQuantity() < baseCommon.getQuantity())
                         gameboard = gameboard.moveUnit(gameboard,i,j,2,3);
-                }else{
+                } else
                     gameboard = gameboard.moveUnit(gameboard, i,j,2,3);
-                    break;
-                }
                 break;
+
             case "Archer", "Barbarian", "Water Elemental","Imp":
-                if(unit.quantity==3)
+                if(baseCommon.getQuantity() == 3)
                    mergeUnit(i,j);
-                else if(unit.quantity==2){
+                else if(baseCommon.getQuantity() == 2){
                     gameboard = sellUnit(gameboard, i, j);
                     gameboard = sellUnit(gameboard, i, j);
-                }
-                else{
+                } else
                     gameboard = sellUnit(gameboard, i, j);
-                }
                 break;
-
-
         }
     }
 }
