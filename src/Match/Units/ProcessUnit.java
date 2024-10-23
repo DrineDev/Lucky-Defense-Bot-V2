@@ -362,11 +362,11 @@ public class ProcessUnit {
 
                 boolean shouldMove = false;
                 boolean canMerge = false;
-                int targetMoveRow = -1;
+                int targetMoveRow = 0;
 
                 for (int c = 0; c < 2; ++c) {
                     Unit currentUnit = unitsB[c];
-                    if (currentUnit != null && currentUnit.getName().equals("Bandit")) {
+                    if (currentUnit.getName().equals("Bandit")) {
                         if (unit.getQuantity() > currentUnit.getQuantity()) {
                             // Priority: Move the unit if it has a higher quantity than the Bandit in the square
                             shouldMove = true;
