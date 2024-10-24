@@ -1,13 +1,21 @@
 package Emulator;
 
+import GUI.MainFrame;
+
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class EmulatorBasic {
 
     /**
      * Open emulator
      */
-    public static void openEmulator() { // open emulator
+    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+    public static void openEmulator() {
+        String currentTime = LocalDateTime.now().format(dtf);
+        // open emulator
         try {
             Process process;
             process = Runtime.getRuntime().exec("C:/Program Files/Netease/MuMuPlayerGlobal-12.0/shell/MuMuPlayer.exe");
@@ -17,7 +25,8 @@ public class EmulatorBasic {
             process = Runtime.getRuntime().exec("adb shell wm size 540x960");
             Thread.sleep(5000);
         } catch (IOException | InterruptedException i) {
-            System.out.println("Process opening failed.");
+            System.out.println("[" + currentTime + "]" + " Process opening failed.");
         }
     }
+
 }

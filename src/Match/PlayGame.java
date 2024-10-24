@@ -7,12 +7,14 @@ import Match.GameBoard.GameBoard;
 import Match.Units.ProcessUnit;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PlayGame {
 
-    private static MainFrame mainFrame = new MainFrame();
+    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    public static void playGame() throws IOException, InterruptedException {
+    public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
         //ButtonsHome.pressBattle();
         //ButtonsHome.pressMatch();
         while(MatchBasic.isFindingMatch())
@@ -22,7 +24,7 @@ public class PlayGame {
             Screenshot.screenshotGameState();
 
 
-        waitFor90();
+        waitFor90(mainFrame);
         GameBoard gameBoard = new GameBoard();
         Thread.sleep(2000);
         Screenshot.screenshotGameState();
@@ -31,7 +33,7 @@ public class PlayGame {
             gameBoard = readUnits(gameBoard);
             gambleEpic();
             Thread.sleep(1000);
-            waitForGolem();
+            waitForGolem(mainFrame);
 
             gameBoard = readUnits(gameBoard);
             buildBatman(gameBoard);
@@ -40,32 +42,34 @@ public class PlayGame {
             spamSummon(gameBoard);
             gameBoard.saveBoardState();
 
-            appendColoredText("Match is finished...", "red");
+            appendColoredText(mainFrame,"Match is finished...", "red");
 
         }
     }
 
-    private static void waitFor90() throws IOException {
+    private static void waitFor90(MainFrame mainFrame) throws IOException {
         // wait for 90 monsters
-        appendColoredText("Waiting for enemies...\n", "blue");
+        String currentTime = LocalDateTime.now().format(dtf);
+        appendColoredText(mainFrame,"[" + currentTime + "]" + " Waiting for enemies...\n", "blue");
         while(!MatchBasic.is90enemies()) {
                 Screenshot.screenshotGameState();
         }
 
         // spawn
-        appendColoredText("Summoning now!\n", "green");
+        appendColoredText(mainFrame,"[" + currentTime + "]" + " Summoning now!\n", "green");
         for(int i = 0; i < 15; i++) {
             MatchBasic.pressSummon();
         }
     }
 
-    private static void waitForGolem() {
+    private static void waitForGolem(MainFrame mainFrame) {
+        String currentTime = LocalDateTime.now().format(dtf);
         if(!MatchBasic.isGolemPresent()) {
-            appendColoredText("Golem not found...\n", "red");
+            appendColoredText(mainFrame, "[" + currentTime + "]" + " Golem not found...\n", "red");
             return;
         }
 
-        appendColoredText("Golem can be challenged!\n", "green");
+        appendColoredText(mainFrame, "[" + currentTime + "]" + " Golem can be challenged!\n", "green");
         MatchBasic.pressGolem();
         try {
             Thread.sleep(2000);
@@ -124,11 +128,11 @@ public class PlayGame {
     }
     // TODO : ALGORITHM FOR PLAYING GAME
 
-    private static void appendColoredText(String message, String color) {
+    public static void appendColoredText(MainFrame mainFrame, String message, String color) {
         mainFrame.appendToPane(message, color);
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        playGame();
-    }
+//    public static void main(String[] args) throws IOException, InterruptedException {
+//        playGame();
+//    }
 }

@@ -1,11 +1,15 @@
 package Basic;
 
+import GUI.MainFrame;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,21 +22,25 @@ public class PixelColorChecker {
      * @return
      * @throws IOException
      */
+
+    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+
     public static Color getPixelColor(String resourcePath, Coordinates coordinates) throws IOException {
         // Load the image from the resources using class loader
+        String currentTime = LocalDateTime.now().format(dtf);
         File file = new File(resourcePath);
         FileInputStream fis = new FileInputStream(file);
         BufferedImage image = ImageIO.read(fis);
 
         // Check if the image is loaded correctly
         if (image == null) {
-            System.out.println("Failed to load the image. Please check the resource path: " + resourcePath);
+            System.out.println("[" + currentTime + "]" + " Failed to load the image. Please check the resource path: " + resourcePath);
             return null;
         }
 
         // Ensure the coordinates are within the bounds of the image
         if (coordinates.getX() < 0 || coordinates.getY() < 0 || coordinates.getX() >= image.getWidth() || coordinates.getY() >= image.getHeight()) {
-            System.out.println("Coordinates are out of bounds.");
+            System.out.println("[" + currentTime + "]" + " Coordinates are out of bounds.");
             return null;
         }
 
@@ -67,6 +75,8 @@ public class PixelColorChecker {
      * @return
      */
     public static boolean checkColorMatch(Coordinates coordinates, Color expectedColor, String screenshotPath, int tolerance) {
+        String currentTime = LocalDateTime.now().format(dtf);
+
         try {
             Color pixelColor = PixelColorChecker.getPixelColor(screenshotPath, coordinates);
 
@@ -75,13 +85,14 @@ public class PixelColorChecker {
 //                System.out.println("Color match: " + isMatch + "Expected: " + expectedColor + "Actual: " + pixelColor);
                 return isMatch;
             } else {
-                System.out.println("Failed to get pixel color");
+                System.out.println("[" + currentTime + "]" + " Failed to get pixel color");
             }
 
         } catch (IOException e) {
-            System.out.println("Error checking color match");
+            System.out.println("[" + currentTime + "]" + " Error checking color match");
         }
 
         return false;
     }
+
 }

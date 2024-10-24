@@ -70,7 +70,7 @@ public class StartButton extends JButton implements ActionListener {
         // Start the other program in a new thread
         new Thread(() -> {
             try {
-                PlayGame.playGame(); // Start the game logic
+                PlayGame.playGame(mainFrame); // Start the game logic
             } catch (IOException | InterruptedException ex) {
                 ex.printStackTrace(); // Handle any exceptions that occur during gameplay
             }
