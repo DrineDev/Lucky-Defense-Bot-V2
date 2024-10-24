@@ -15,7 +15,7 @@ import java.util.*;
 
 public class GameBoard {
 
-    private Square[][] gameBoard;
+    public static Square[][] gameBoard;
 
     private final static Coordinates[][] topLeftCoordinates = {
             { new Coordinates(85, 460), new Coordinates(150, 460), new Coordinates(215, 460), new Coordinates(280, 460), new Coordinates(345, 460), new Coordinates(410, 460) },
@@ -51,6 +51,10 @@ public class GameBoard {
         System.out.println("Game board initialization complete.");
     }
 
+    public static Square getSquare(int i, int j) {
+        Square gameBoardSquare = gameBoard[i][j];
+        return gameBoardSquare;
+    }
     /**
      * Keep the values to 3x6 Squares
      * @throws IOException
