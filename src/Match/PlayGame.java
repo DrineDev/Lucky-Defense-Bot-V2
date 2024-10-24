@@ -37,20 +37,11 @@ public class PlayGame {
         System.out.println("Match is finished...");
     }
 
-    private static void waitFor90() {
+    private static void waitFor90() throws IOException, InterruptedException {
         // wait for 90 monsters
         while(!MatchBasic.is90enemies()) {
             System.out.println("Waiting for enemies...");
-            try {
-                Screenshot.screenshotGameState();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            Screenshot.screenshotGameState();
         }
 
         // spawn

@@ -25,7 +25,7 @@ public class MatchBasic {
      * @return
      */
     public static boolean is90enemies() {
-        Coordinates coordinates = new Coordinates(315, 122);
+        Coordinates coordinates = new Coordinates(338, 122);
         Color expectedColor = new Color(194, 64, 73);
         String screenshotPath = "Resources/GameState.png";
         int tolerance = 5;
@@ -46,7 +46,7 @@ public class MatchBasic {
         Coordinates coordinates = new Coordinates(0, 0);
         Color expectedColor = new Color(98, 130, 42);
         String screenshotPath = "Resources/GameState.png";
-        int tolerance = 20;
+        int tolerance = 75;
 
         return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
@@ -176,8 +176,23 @@ public class MatchBasic {
         Press.press(new Coordinates(30, 175), new Coordinates(91, 237), "Building favorite mythic");
     }
 
-    public static int checkLuckyStones() {
-//        pressUpgrade();
+    public static void closeGamble() {
+        Press.press(new Coordinates(459, 645), new Coordinates(496, 678), "Closing Gamble");
+    }
+
+    public static void closeUpgrade() {
+        Press.press(new Coordinates(487, 653), new Coordinates(524, 686), "Closing Upgrade");
+    }
+
+    public static void closeMythic() {
+        Press.press(new Coordinates(456, 162), new Coordinates(493, 196), "Closing Upgrade");
+    }
+
+    public static int checkLuckyStones() throws InterruptedException {
+        closeGamble();
+        Thread.sleep(2000);
+        pressUpgrade();
+        Thread.sleep(2000);
 
         // Load the GameState image
         Mat gameState = Imgcodecs.imread("Resources/GameState.png");
@@ -197,6 +212,8 @@ public class MatchBasic {
 
         // Process the sub-image and convert it to an int
         int luckyStonesValue = processSubImage(subImage);
+
+        closeUpgrade();
 
         return luckyStonesValue;
     }
