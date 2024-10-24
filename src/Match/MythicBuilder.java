@@ -6,6 +6,8 @@ import java.util.*;
 
 import Basic.Coordinates;
 import Basic.Press;
+import Match.GameBoard.GameBoard;
+import Match.Units.Unit;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -43,12 +45,10 @@ public class MythicBuilder {
      * @param name
      * @return
      */
-    public static boolean canBuild(String name) {
-        // Load the game board from JSON
-        List<List<Map<String, Object>>> gameBoard = loadGameBoardState();
+    public static boolean canBuild(String name, GameBoard gameBoard) {
 
         if (gameBoard == null) {
-            System.out.println("Unable to load game board state.");
+            System.out.println("No units...");
             return false;
         }
 
@@ -79,6 +79,33 @@ public class MythicBuilder {
     }
 
     /**
+     * Helper method to flatten gameBoard and get all the units
+     * @param gameBoard
+     * @return map of unit names to their quantities
+     */
+    private static Map<String, Integer> getAllUnitsFromBoard(GameBoard gameBoard) {
+        Map<String, Integer> units = new HashMap<>();
+
+        // Iterate over the 3x6 grid of squares in the gameBoard
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 6; j++) {
+                Unit unit = gameBoard.getSquare(i, j).getUnit();
+
+                if (unit != null) {
+                    String unitName = unit.getName();
+                    int unitQuantity = unit.getQuantity();
+
+                    // Add the unit to the map, summing up quantities if it's already there
+                    if (unitName != null && !unitName.isEmpty()) {
+                        units.put(unitName, units.getOrDefault(unitName, 0) + unitQuantity);
+                    }
+                }
+            }
+        }
+        return units;
+    }
+
+    /**
      * Helper method to check if Mythic ca nbe built, to be called by canBuild()
      * @param name
      * @return
@@ -86,7 +113,7 @@ public class MythicBuilder {
     private static Map<String, Integer> getRequirementsForUnit(String name) {
         Map<String, Integer> requirements = new HashMap<>();
         switch (name) {
-            case "Batman":
+            case "BatMan":
                 requirements.put("Tiger Master", 1);
                 requirements.put("Tree", 1);
                 requirements.put("Thrower", 2);
@@ -231,15 +258,14 @@ public class MythicBuilder {
     }
 
     // TODO : BUILD MYTHICAL IN GAME FUNCTIONS...
-    public static void buildMythic(String unit) {
-        if(canBuild(unit)) {
-            Press.press(new Coordinates(), new Coordinates(), "Building " + unit);
-
+    // ONLY WORKS FOR BATMAN...
+    public static void buildMythic(String unit, GameBoard gameboard) {
+        if(canBuild(unit, gameboard)) {
+            MatchBasic.pressBuildFavoriteMythic();
         }
     }
 
     public static void main(String[] args) {
-        System.out.println(MythicBuilder.canBuild("Batman"));
     }
 }
 

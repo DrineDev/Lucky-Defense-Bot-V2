@@ -2,117 +2,51 @@
   "gameBoard": [
     [
       {
-        "unit": {
-          "name": "Hunter",
-          "quantity": 3
-        }
+        "quantity": 1,
+        "name": "Wolf Warrior"
       },
       {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
+        "quantity": 2,
+        "name": "War Machine"
       },
       {
-        "unit": {
-          "name": "Electro Robot",
-          "quantity": 1
-        }
+        "quantity": 3,
+        "name": "Electro Robot"
       },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      }
+      null,
+      null,
+      null
     ],
     [
       {
-        "unit": {
-          "name": "Bandit",
-          "quantity": 3
-        }
+        "quantity": 3,
+        "name": "Bandit"
       },
       {
-        "unit": {
-          "name": "Archer",
-          "quantity": 1
-        }
+        "quantity": 1,
+        "name": "Paladin"
       },
       {
-        "unit": {
-          "name": "Eagle General",
-          "quantity": 3
-        }
+        "quantity": 1,
+        "name": "Shock Robot"
       },
       {
-        "unit": {
-          "name": "Tree",
-          "quantity": 3
-        }
+        "quantity": 3,
+        "name": "Tree"
       },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      }
+      null,
+      null
     ],
     [
+      null,
+      null,
+      null,
       {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
+        "quantity": 2,
+        "name": "Thrower"
       },
-      {
-        "unit": {
-          "name": "Wolf Warrior",
-          "quantity": 1
-        }
-      },
-      {
-        "unit": {
-          "name": "Water Elemental",
-          "quantity": 2
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      },
-      {
-        "unit": {
-          "name": "",
-          "quantity": 0
-        }
-      }
+      null,
+      null
     ]
   ]
 }

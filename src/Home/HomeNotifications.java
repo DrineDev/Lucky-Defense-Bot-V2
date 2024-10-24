@@ -12,7 +12,7 @@ public class HomeNotifications {
      * @param coordinates
      * @return
      */
-    private static boolean checkNotification(Coordinates coordinates) {
+    public static boolean checkNotification(Coordinates coordinates) {
         Color notificationColor = new Color(247, 30, 81);
         return PixelColorChecker.checkColorMatch(coordinates, notificationColor, "Resources/GameState.png", 5);
     }

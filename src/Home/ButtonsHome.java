@@ -104,6 +104,11 @@ public class ButtonsHome {
         Screenshot.screenshotGameState();
     }
 
+    public static void pressLobby() throws IOException {
+        Press.press(new Coordinates(283, 817), new Coordinates(472, 887), "Proceeding to lobby");
+        Screenshot.screenshotGameState();
+    }
+
     public static void pressItem(int itemIndex) throws IOException, InterruptedException {
         Coordinates topLeft, bottomRight;
         String itemName;
@@ -188,5 +193,9 @@ public class ButtonsHome {
         Screenshot.screenshotGameState();
     }
 
+    public static void pressMatch() throws IOException {
+        Press.press(new Coordinates(285, 730), new Coordinates(474, 822), "Quick Match");
+        Screenshot.screenshotGameState();
+    }
 }
 

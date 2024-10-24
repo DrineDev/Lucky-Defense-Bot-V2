@@ -11,8 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import static Match.Units.ProcessUnit.gameboard;
+import java.util.*;
 
 public class GameBoard {
 
@@ -85,7 +84,28 @@ public class GameBoard {
 
         System.out.println("Saving board state...");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(this);
+
+        // Build a custom structure that better represents the state
+        List<List<Map<String, Object>>> boardState = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            List<Map<String, Object>> row = new ArrayList<>();
+            for (int j = 0; j < 6; j++) {
+                Unit unit = gameBoard[i][j].getUnit();
+                if (unit != null && unit.getName() != null && !unit.getName().isEmpty()) {
+                    Map<String, Object> unitData = new HashMap<>();
+                    unitData.put("name", unit.getName());
+                    unitData.put("quantity", unit.getQuantity());
+                    row.add(unitData);
+                } else {
+                    row.add(null); // Empty square represented as null
+                }
+            }
+            boardState.add(row);
+        }
+
+        // Convert the custom structure to JSON
+        String json = gson.toJson(Collections.singletonMap("gameBoard", boardState));
 
         System.out.println("JSON content to be saved:");
         System.out.println(json);
@@ -317,14 +337,8 @@ public class GameBoard {
         GameBoard gameBoard1 = new GameBoard();
         gameBoard1.updateBoard();
         gameBoard1.saveBoardState();
-//        MythicBuilder.canBuild("Batman");
-        boolean success = ProcessUnit.DetectUnitPlusProcess();
+        boolean success = ProcessUnit.DetectUnitPlusProcess(gameBoard1);
 
-        gameBoard1.updateBoard();
-        gameBoard1.saveBoardState();
-        success = ProcessUnit.DetectUnitPlusProcess();
-
-        // Check the result and print whether processing was successful
         if (success) {
             System.out.println("Unit processing completed successfully.");
         } else {

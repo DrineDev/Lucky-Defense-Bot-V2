@@ -3,6 +3,7 @@ package Match;
 import Basic.Coordinates;
 import Basic.PixelColorChecker;
 import Basic.Press;
+import Basic.Screenshot;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import org.opencv.core.Core;
@@ -12,6 +13,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class MatchBasic {
     static {
@@ -30,6 +32,45 @@ public class MatchBasic {
 
         return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
+
+    public static boolean isFindingMatch() {
+        Coordinates coordinates = new Coordinates(0, 0);
+        Color expectedColor = new Color(90, 76, 65);
+        String screenshotPath = "Resources/GameState.png";
+        int tolerance = 5;
+
+        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+    }
+    public static boolean isIngame() throws IOException {
+        Screenshot.screenshotGameState();
+        Coordinates coordinates = new Coordinates(0, 0);
+        Color expectedColor = new Color(98, 130, 42);
+        String screenshotPath = "Resources/GameState.png";
+        int tolerance = 20;
+
+        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+    }
+
+    public static boolean isOver() throws IOException {
+        Screenshot.screenshotGameState();
+        Coordinates coordinates = new Coordinates(0, 0);
+        Color expectedColor = new Color(90, 73, 66);
+        String screenshotPath = "Resources/GameState.png";
+        int tolerance = 20;
+
+        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+    }
+
+    public static boolean isLoading() throws IOException {
+        Screenshot.screenshotGameState();
+        Coordinates coordinates = new Coordinates(0, 0);
+        Color expectedColor = new Color(107, 81, 70);
+        String screenshotPath = "Resources/GameState.png";
+        int tolerance = 20;
+
+        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+    }
+
 
     /**
      * Check if Golem can be summoned
