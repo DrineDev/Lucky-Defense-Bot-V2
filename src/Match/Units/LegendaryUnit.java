@@ -17,7 +17,7 @@ public class LegendaryUnit extends Unit {
     }
 
     /**
-     * isWhatUnit function to check what kind of Legendar Unit is in, to be called by Square
+     * isWhatUnit function to check what kind of Legendary Unit is in, to be called by Square
      * @return
      */
     public static LegendaryUnit isWhatUnit() {

@@ -264,8 +264,5 @@ public class MythicBuilder {
             MatchBasic.pressBuildFavoriteMythic();
         }
     }
-
-    public static void main(String[] args) {
-    }
 }
 

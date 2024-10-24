@@ -33,7 +33,7 @@ public class PlayGame {
 
         while(MatchBasic.isIngame()) {
             gameBoard = readUnits(gameBoard);
-            gambleStones();
+            gambleStones(gameBoard);
             Thread.sleep(1000);
             waitForGolem(mainFrame);
 
@@ -108,28 +108,38 @@ public class PlayGame {
             MatchBasic.pressUpgradeSummoning();
     }
 
-    private static void gambleStones() throws InterruptedException, IOException {
+    private static void gambleStones(GameBoard gameBoard) throws InterruptedException, IOException {
+        MatchBasic.closeGamble();
+        Thread.sleep(1000);
+        MatchBasic.closeUpgrade();
+
+        Screenshot.screenshotGameState();
+        if(MatchBasic.isMax())
+            ProcessUnit.lessenbois(gameBoard);
+
+
+        if(!MatchBasic.isIngame())
+            return;
+
         int luckyStones = MatchBasic.checkLuckyStones();
         Thread.sleep(2000);
         MatchBasic.pressGamble();
         Thread.sleep(2000);
 
-        while(MatchBasic.isIngame()) {
-            for (int i = 0; i < luckyStones; i++) {
-                if (luckyStones > 10) {
-                    MatchBasic.pressLegendaryGamble();
-                    i += 2;
-                }
-                MatchBasic.pressEpicGamble();
-                Thread.sleep(2000);
+        for (int i = 0; i < luckyStones; i++) {
+            if (luckyStones > 10) {
+                MatchBasic.pressLegendaryGamble();
+                i += 2;
             }
-
-            MatchBasic.closeGamble();
+            MatchBasic.pressEpicGamble();
+            Thread.sleep(2000);
         }
+
+        MatchBasic.closeGamble();
     }
 
     private static void buildBatman(GameBoard gameBoard) throws IOException, InterruptedException {
-        if(MythicBuilder.canBuild("Batman", gameBoard))
+        if(MythicBuilder.canBuild("BatMan", gameBoard))
             MatchBasic.pressBuildFavoriteMythic();
 
         gameBoard.updateBoard();

@@ -60,10 +60,10 @@ public class MythicalUnit extends Unit {
 
         // Special case for BatMan
         for (int form = 0; form <= 4; form++) {
-            String imagePath = String.format("Resources/Units/Mythical/BatMan%d.png", form);
+            String imagePath = String.format("Resources/Units/Mythical/Bat Man%d.png", form);
             if (CompareImage.compareImage(subImage, imagePath)) {
-                LOGGER.info("Match found: BatMan Form " + form);
-                temp.setName("BatMan");
+                LOGGER.info("Match found: Bat Man Form " + form);
+                temp.setName("Bat Man");
                 temp.setQuantity(1);
                 temp.setForm(form);
                 return temp;
