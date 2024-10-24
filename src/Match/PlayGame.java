@@ -1,11 +1,13 @@
 package Match;
 
 import Basic.Screenshot;
+import GUI.IntroFrame;
 import GUI.MainFrame;
 import Home.ButtonsHome;
 import Match.GameBoard.GameBoard;
 import Match.Units.ProcessUnit;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -31,14 +33,16 @@ public class PlayGame {
 
         while(MatchBasic.isIngame()) {
             gameBoard = readUnits(gameBoard);
-            gambleEpic();
+            gambleStones();
             Thread.sleep(1000);
             waitForGolem(mainFrame);
 
             gameBoard = readUnits(gameBoard);
             buildBatman(gameBoard);
-            processUnits(gameBoard);
-
+            if(!MatchBasic.isMax())
+                processUnits(gameBoard);
+            else
+                ProcessUnit.lessenbois(gameBoard);
             spamSummon(gameBoard);
             gameBoard.saveBoardState();
 
@@ -104,18 +108,24 @@ public class PlayGame {
             MatchBasic.pressUpgradeSummoning();
     }
 
-    private static void gambleEpic() throws InterruptedException, IOException {
+    private static void gambleStones() throws InterruptedException, IOException {
         int luckyStones = MatchBasic.checkLuckyStones();
         Thread.sleep(2000);
         MatchBasic.pressGamble();
         Thread.sleep(2000);
 
-        for(int i = 0; i < luckyStones; i++) {
-            MatchBasic.pressEpicGamble();
-            Thread.sleep(2000);
-        }
+        while(MatchBasic.isIngame()) {
+            for (int i = 0; i < luckyStones; i++) {
+                if (luckyStones > 10) {
+                    MatchBasic.pressLegendaryGamble();
+                    i += 2;
+                }
+                MatchBasic.pressEpicGamble();
+                Thread.sleep(2000);
+            }
 
-        MatchBasic.closeGamble();
+            MatchBasic.closeGamble();
+        }
     }
 
     private static void buildBatman(GameBoard gameBoard) throws IOException, InterruptedException {
@@ -132,7 +142,7 @@ public class PlayGame {
         mainFrame.appendToPane(message, color);
     }
 
-//    public static void main(String[] args) throws IOException, InterruptedException {
-//        playGame();
-//    }
+    public static void main(String[] args) throws IOException, InterruptedException {
+        SwingUtilities.invokeLater(IntroFrame::new);
+    }
 }

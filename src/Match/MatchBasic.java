@@ -36,7 +36,7 @@ public class MatchBasic {
      * @return
      */
     public static boolean is90enemies() {
-        Coordinates coordinates = new Coordinates(338, 122);
+        Coordinates coordinates = new Coordinates(326, 123);
         Color expectedColor = new Color(194, 64, 73);
         String screenshotPath = "Resources/GameState.png";
         int tolerance = 5;

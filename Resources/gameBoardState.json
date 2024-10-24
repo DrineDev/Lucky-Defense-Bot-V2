@@ -2,40 +2,61 @@
   "gameBoard": [
     [
       {
+        "quantity": 3,
+        "name": "Bandit"
+      },
+      {
+        "quantity": 1,
+        "name": "Sandman"
+      },
+      {
         "quantity": 2,
+        "name": "Electro Robot"
+      },
+      {
+        "quantity": 1,
+        "name": "Archer"
+      },
+      null,
+      {
+        "quantity": 2,
+        "name": "Hunter"
+      }
+    ],
+    [
+      {
+        "quantity": 3,
+        "name": "Bandit"
+      },
+      {
+        "quantity": 2,
+        "name": "Thrower"
+      },
+      {
+        "quantity": 2,
+        "name": "Water Elemental"
+      },
+      null,
+      null,
+      null
+    ],
+    [
+      {
+        "quantity": 3,
+        "name": "Bandit"
+      },
+      {
+        "quantity": 3,
         "name": "Barbarian"
+      },
+      {
+        "quantity": 1,
+        "name": "Bandit"
       },
       {
         "quantity": 3,
         "name": "Thrower"
       },
-      null,
-      null,
-      null,
-      null
-    ],
-    [
-      {
-        "quantity": 1,
-        "name": "Water Elemental"
-      },
-      {
-        "quantity": 3,
-        "name": "Bandit"
-      },
-      null,
-      null,
-      null,
-      null
-    ],
-    [
-      {
-        "quantity": 2,
-        "name": "Archer"
-      },
-      null,
-      null,
-      null,
       null,
       null
     ]
