@@ -54,6 +54,7 @@ public class GameBoard {
         Square gameBoardSquare = gameBoard[i][j];
         return gameBoardSquare;
     }
+
     /**
      * Keep the values to 3x6 Squares
      * @throws IOException
