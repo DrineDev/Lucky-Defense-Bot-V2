@@ -30,6 +30,7 @@ public class PlayGame {
         while(MatchBasic.isIngame()) {
             gameBoard = readUnits(gameBoard);
             gambleEpic();
+            Thread.sleep(1000);
             waitForGolem();
 
             gameBoard = readUnits(gameBoard);
@@ -50,7 +51,6 @@ public class PlayGame {
         while(!MatchBasic.is90enemies()) {
                 Screenshot.screenshotGameState();
         }
-
 
         // spawn
         appendColoredText("Summoning now!\n", "green");
@@ -102,6 +102,7 @@ public class PlayGame {
 
     private static void gambleEpic() throws InterruptedException, IOException {
         int luckyStones = MatchBasic.checkLuckyStones();
+        Thread.sleep(2000);
         MatchBasic.pressGamble();
         Thread.sleep(2000);
 
@@ -109,6 +110,8 @@ public class PlayGame {
             MatchBasic.pressEpicGamble();
             Thread.sleep(2000);
         }
+
+        MatchBasic.closeGamble();
     }
 
     private static void buildBatman(GameBoard gameBoard) throws IOException, InterruptedException {

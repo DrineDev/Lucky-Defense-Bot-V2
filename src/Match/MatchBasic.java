@@ -215,6 +215,7 @@ public class MatchBasic {
         int luckyStonesValue = processSubImage(subImage);
 
         closeUpgrade();
+        Thread.sleep(2000);
 
         return luckyStonesValue;
     }
