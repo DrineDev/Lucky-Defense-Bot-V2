@@ -60,21 +60,14 @@ public class GameBoard {
      * @throws IOException
      * @throws InterruptedException
      */
-    public void updateBoard() throws IOException, InterruptedException {
-
+    public void updateBoard(int i, int j) throws IOException, InterruptedException {
         if (gameBoard == null) {
-            System.out.println("Error: gameBoard is null. Reinitializing...");
-            initializeGameBoard();
+            System.out.println("Board is null...");
         }
 
-        System.out.println("Updating board...");
-        for(int i = 0; i < 3; i++) {
-            for(int j = 0; j < 6; j++) {
-                String action = "Checking square " + i + ", " + j;
-                gameBoard[i][j].updateSquare(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
-            }
-        }
-        System.out.println("Board updated...");
+        String action = "Checking square " + i + ", " + j;
+        gameBoard[i][j].updateSquare(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
+        System.out.println("Board " + i + " " + j + " updated...");
     }
 
     /**
@@ -330,16 +323,6 @@ public class GameBoard {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        GameBoard gameBoard1 = new GameBoard();
-        gameBoard1.updateBoard();
-        gameBoard1.saveBoardState();
-        boolean success = ProcessUnit.DetectUnitPlusProcess(gameBoard1);
-
-        if (success) {
-            System.out.println("Unit processing completed successfully.");
-        } else {
-            System.out.println("Unit processing failed.");
-        }
     }
 }
 

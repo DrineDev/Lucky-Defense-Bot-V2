@@ -17,56 +17,49 @@ public class PlayGame {
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
-        //ButtonsHome.pressBattle();
-        //ButtonsHome.pressMatch();
-        while(MatchBasic.isFindingMatch())
-            Screenshot.screenshotGameState();
+        // START MATCH
+        ButtonsHome.pressBattle();
+        ButtonsHome.pressMatch();
 
-        while(MatchBasic.isLoading())
-            Screenshot.screenshotGameState();
+        // WAIT FOR LOADING
+        appendColoredText(mainFrame,"Waiting for game...", "red");
+        while(MatchBasic.isFindingMatch()) { Screenshot.screenshotGameState(); }
+        while(MatchBasic.isLoading()) { Screenshot.screenshotGameState(); }
 
-
-        waitFor90(mainFrame);
+        // START OF GAME
+//        waitFor90(mainFrame);
         GameBoard gameBoard = new GameBoard();
-        Thread.sleep(2000);
         Screenshot.screenshotGameState();
 
+        // GAME LOOP
         while(MatchBasic.isIngame()) {
-            gameBoard = readUnits(gameBoard);
+            gameBoard = processBoard(gameBoard);
             gambleStones(gameBoard);
-            Thread.sleep(1000);
             waitForGolem(mainFrame);
 
-            gameBoard = readUnits(gameBoard);
-            buildBatman(gameBoard);
-            if(!MatchBasic.isMax())
-                processUnits(gameBoard);
-            else
-                ProcessUnit.lessenbois(gameBoard);
+            if(MatchBasic.isMax()) { ProcessUnit.emergencySell(gameBoard); }
+
             spamSummon(gameBoard);
             gameBoard.saveBoardState();
-
-            appendColoredText(mainFrame,"Match is finished...", "red");
-
         }
+
+        // MATCH IS FINISHED
+        appendColoredText(mainFrame,"Match is finished...", "red");
     }
 
-    private static void waitFor90(MainFrame mainFrame) throws IOException {
+    private static void waitFor90(MainFrame mainFrame) throws IOException, InterruptedException {
         // wait for 90 monsters
         String currentTime = LocalDateTime.now().format(dtf);
         appendColoredText(mainFrame,"[" + currentTime + "]" + " Waiting for enemies...\n", "blue");
-        while(!MatchBasic.is90enemies()) {
-                Screenshot.screenshotGameState();
-        }
+        while(!MatchBasic.is90enemies()) { Screenshot.screenshotGameState(); }
+        Thread.sleep(45000);
 
         // spawn
         appendColoredText(mainFrame,"[" + currentTime + "]" + " Summoning now!\n", "green");
-        for(int i = 0; i < 15; i++) {
-            MatchBasic.pressSummon();
-        }
+        for(int i = 0; i < 15; i++) { MatchBasic.pressSummon(); }
     }
 
-    private static void waitForGolem(MainFrame mainFrame) {
+    private static void waitForGolem(MainFrame mainFrame) throws InterruptedException {
         String currentTime = LocalDateTime.now().format(dtf);
         if(!MatchBasic.isGolemPresent()) {
             appendColoredText(mainFrame, "[" + currentTime + "]" + " Golem not found...\n", "red");
@@ -75,56 +68,58 @@ public class PlayGame {
 
         appendColoredText(mainFrame, "[" + currentTime + "]" + " Golem can be challenged!\n", "green");
         MatchBasic.pressGolem();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        Thread.sleep(1000);
         MatchBasic.challengeGolem();
-        return;
     }
 
-    private static GameBoard readUnits(GameBoard gameBoard) throws IOException, InterruptedException {
-        gameBoard.updateBoard();
-        gameBoard.saveBoardState();
-        return gameBoard;
-    }
+    private static GameBoard processBoard(GameBoard gameBoard) throws InterruptedException, IOException {
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 6; j++) {
+                gameBoard.updateBoard(i, j);
 
-    private static GameBoard processUnits(GameBoard gameBoard) {
-        ProcessUnit.DetectUnitPlusProcess(gameBoard);
+                if(!(gameBoard.getSquare(i, j).getUnit().getName() == null))
+                    ProcessUnit.DetectUnitPlusProcess(gameBoard, i, j);
+            }
+        }
         return gameBoard;
     }
 
     private static GameBoard spamSummon(GameBoard gameBoard) throws IOException, InterruptedException {
         for(int i = 0; i < 15; i++) {
             MatchBasic.pressSummon();
+            Thread.sleep(250);
         }
-
+        Thread.sleep(1000);
         return gameBoard;
     }
 
-    private static void upgradeSummonLevel() {
-        for(int i = 0; i < 13; i++)
+    private static void upgradeSummonLevel() throws InterruptedException {
+        MatchBasic.pressUpgrade();
+        Thread.sleep(1000);
+
+        for(int i = 0; i < 13; i++) {
             MatchBasic.pressUpgradeSummoning();
+            Thread.sleep(250);
+        }
+
+        MatchBasic.closeUpgrade();
     }
 
     private static void gambleStones(GameBoard gameBoard) throws InterruptedException, IOException {
         MatchBasic.closeGamble();
-        Thread.sleep(1000);
+        Thread.sleep(750);
         MatchBasic.closeUpgrade();
 
         Screenshot.screenshotGameState();
         if(MatchBasic.isMax())
-            ProcessUnit.lessenbois(gameBoard);
-
-
+            ProcessUnit.emergencySell(gameBoard);
         if(!MatchBasic.isIngame())
             return;
 
         int luckyStones = MatchBasic.checkLuckyStones();
-        Thread.sleep(2000);
+        Thread.sleep(1500);
         MatchBasic.pressGamble();
-        Thread.sleep(2000);
+        Thread.sleep(1500);
 
         for (int i = 0; i < luckyStones; i++) {
             if (luckyStones > 10) {
@@ -132,20 +127,12 @@ public class PlayGame {
                 i += 2;
             }
             MatchBasic.pressEpicGamble();
-            Thread.sleep(2000);
+            Thread.sleep(1250);
         }
 
         MatchBasic.closeGamble();
     }
 
-    private static void buildBatman(GameBoard gameBoard) throws IOException, InterruptedException {
-        if(MythicBuilder.canBuild("BatMan", gameBoard))
-            MatchBasic.pressBuildFavoriteMythic();
-
-        gameBoard.updateBoard();
-        gameBoard = processUnits(gameBoard);
-
-    }
     // TODO : ALGORITHM FOR PLAYING GAME
 
     public static void appendColoredText(MainFrame mainFrame, String message, String color) {

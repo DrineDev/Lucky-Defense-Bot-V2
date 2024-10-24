@@ -2,24 +2,21 @@
   "gameBoard": [
     [
       {
-        "quantity": 3,
-        "name": "Bandit"
+        "quantity": 1,
+        "name": "Tiger Master"
       },
       {
         "quantity": 1,
-        "name": "Sandman"
+        "name": "Tiger Master"
       },
       {
         "quantity": 2,
         "name": "Electro Robot"
       },
-      {
-        "quantity": 1,
-        "name": "Archer"
-      },
+      null,
       null,
       {
-        "quantity": 2,
+        "quantity": 3,
         "name": "Hunter"
       }
     ],
@@ -28,31 +25,25 @@
         "quantity": 3,
         "name": "Bandit"
       },
-      {
-        "quantity": 2,
-        "name": "Thrower"
-      },
-      {
-        "quantity": 2,
-        "name": "Water Elemental"
-      },
       null,
       null,
-      null
+      {
+        "quantity": 2,
+        "name": "Tree"
+      },
+      null,
+      {
+        "quantity": 3,
+        "name": "Barbarian"
+      }
     ],
     [
       {
         "quantity": 3,
         "name": "Bandit"
       },
-      {
-        "quantity": 3,
-        "name": "Barbarian"
-      },
-      {
-        "quantity": 1,
-        "name": "Bandit"
-      },
+      null,
+      null,
       {
         "quantity": 3,
         "name": "Thrower"

@@ -19,85 +19,69 @@ public class ProcessUnit {
      * Detect units in gameBoardState.json and process.
      * @return true/false
      */
-    public static Boolean DetectUnitPlusProcess(GameBoard gameboard) {
-        Gson gson = new Gson();
-        String filePath = "Resources/gameBoardState.json";
+    public static Boolean DetectUnitPlusProcess(GameBoard gameboard, int i, int j) throws IOException, InterruptedException {
 
-        try (FileReader reader = new FileReader(filePath)) {
-            System.out.println("Attempting to read file: " + filePath);
-            // Loop through gameBoard to process the units
-            for (int i = 0; i < 3; i++) { // 3 rows
-                for (int j = 0; j < 6; j++) { // 6 columns
-                    if (gameboard.getSquare(i, j) != null && gameboard.getSquare(i, j).getUnit() != null) {
-                        Unit unit = gameboard.getSquare(i, j).getUnit();
-                        if (unit != null) {
-                            String unitName = unit.name;
-                            System.out.println("Processing unit: " + unitName + " at position: (" + i + ", " + j + ")");
+        if (gameboard.getSquare(i, j) != null && gameboard.getSquare(i, j).getUnit() != null) {
+            Unit unit = gameboard.getSquare(i, j).getUnit();
+                if (unit != null) {
+                    String unitName = unit.name;
+                    System.out.println("Processing unit: " + unitName + " at position: (" + i + ", " + j + ")");
 
-                            if (isLegendary(unitName)) {
-                                processUnitByRarity("Legendary", unit, i, j, gameboard);
-                            } else if (isEpic(unitName)) {
-                                processUnitByRarity("Epic", unit, i, j, gameboard);
-                            } else if (isRare(unitName)) {
-                                processUnitByRarity("Rare", unit, i, j, gameboard);
-                            } else if (isCommon(unitName)) {
-                                processUnitByRarity("Common", unit, i, j, gameboard);
-                            } else if (isMythic(unitName)) {
-                                processUnitByRarity("Mythic", unit, i, j, gameboard);
-                            } else {
-                                System.out.println("No matching rarity for unit: " + unitName);
-                            }
-
-                        }
-                    } else
-                        System.out.println("Square at (" + i + ", " + j + ") is empty or null.");
+                    if (isLegendary(unitName)) {
+                        processUnitByRarity("Legendary", unit, i, j, gameboard);
+                    } else if (isEpic(unitName)) {
+                        processUnitByRarity("Epic", unit, i, j, gameboard);
+                    } else if (isRare(unitName)) {
+                        processUnitByRarity("Rare", unit, i, j, gameboard);
+                    } else if (isCommon(unitName)) {
+                        processUnitByRarity("Common", unit, i, j, gameboard);
+                    } else if (isMythic(unitName)) {
+                        processUnitByRarity("Mythic", unit, i, j, gameboard);
+                    } else {
+                        System.out.println("No matching rarity for unit: " + unitName);
+                    }
+                    return true;
                 }
-            }
-
-            return true;
-        } catch (IOException e) {
-            System.out.println("IOException occurred: " + e.getMessage());
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("An unexpected error occurred: " + e.getMessage());
-            e.printStackTrace();
-        }
+            } else
+                System.out.println("Square at (" + i + ", " + j + ") is empty or null.");
         return false;
     }
 
-    /**
-     * FUNCTIONS to detect a unit rarity
-     * @return true/false
-     */
-    public static void lessenbois(GameBoard gameBoard) throws IOException, InterruptedException
+    public static void emergencySell(GameBoard gameBoard) throws IOException, InterruptedException
     {
         Pattern prio_units;
         prio_units = Pattern.compile("Bandit|Thrower|Hunter|Tree|Electro Robot|Tiger Master");
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 6; j++) {
 
+                Unit unit = gameBoard.getSquare(i,j).getUnit();
                 // Ensure the square contains a unit
                 if (gameBoard.getSquare(i, j).getUnit() == null) {
                     continue;
                 }
 
-                String unit_name = gameBoard.getSquare(i,j).getUnit().getName();
-                int unit_quantiy = gameBoard.getSquare(i,j).getUnit().getQuantity();
-
-                if(!unit_name.matches(String.valueOf(prio_units)))
+                if(!unit.getName().matches(String.valueOf(prio_units)))
                 {
-                    for(int iterator=unit_quantiy;iterator>0;--iterator)
-                        gameBoard = gameBoard.sellUnit(gameBoard,i,j);
+                    if (unit.getQuantity() == 3)
+                        mergeUnit(i,j);
+                    else
+                        for(int k = unit.getQuantity(); k > 1; --k)
+                            gameBoard = gameBoard.sellUnit(gameBoard,i,j);
 
-                }else if (unit_name.equals("Electro Robot")){
+                }else if (unit.getName().equals("Electro Robot")){
                     break;
                 }else{
-                    for(int iterator=unit_quantiy;iterator>0;--iterator)
+                    for(int k = unit.getQuantity(); k > 1; --k)
                         gameBoard = gameBoard.sellUnit(gameBoard,i,j);
                 }
             }
         }
     }
+
+    /**
+     * FUNCTIONS to detect a unit rarity
+     * @return true/false
+     */
     public static boolean isLegendary(String unitName) {
         return Pattern.compile("War Machine|Storm Giant|Sheriff|Tiger Master").matcher(unitName).find();
     }
@@ -115,7 +99,7 @@ public class ProcessUnit {
     }
 
     public static boolean isMythic(String unitName) {
-        return Pattern.compile("BatMan|Mama|Ninja|Graviton|Orc Shaman|Kitty Mage|Coldy|Blob|Monopoly Man|Frog Prince|Vayne|Lancelot|Iron Meow|Dragon|Bomba|Pulse Generator|Indy|Watt|Tar|Rocket Chu|King Dian|Overclock Rocket Chu").matcher(unitName).find();
+        return Pattern.compile("Bat Man|Mama|Ninja|Graviton|Orc Shaman|Kitty Mage|Coldy|Blob|Monopoly Man|Frog Prince|Vayne|Lancelot|Iron Meow|Dragon|Bomba|Pulse Generator|Indy|Watt|Tar|Rocket Chu|King Dian|Overclock Rocket Chu").matcher(unitName).find();
     }
 
     /**
@@ -160,7 +144,11 @@ public class ProcessUnit {
      */
     public static GameBoard processUnitMythic(Unit baseMythic, int i, int j, GameBoard gameboard) throws IOException, InterruptedException{
         switch (baseMythic.getName()) {
-            case "BatMan":
+            case "Bat Man":
+
+                // CHECK BATMAN FORM, AND IF BAD, THEN UPGRADE
+                if(baseMythic.getForm() != 3 || baseMythic.getForm() != 4)
+                    for(int k = 0; k < 5; k++) { upgradeUnit(i, j); } // UPGRADE FIVE TIMES, TODO : CHANGE THIS ALGORITHM
                 if(i == 0 && j == 1 || i == 0 && j == 3)
                     break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT TOUCH
 
@@ -170,18 +158,12 @@ public class ProcessUnit {
                 MythicalUnit unitBatman3 = (MythicalUnit) gameboard.getSquare(0, 4).getUnit();
 
                 // MOVE UNITS TO OPTIMAL POSITION IF NO OPTIMAL UNIT FOUND
-                if(!unitBatman1.getName().equals("BatMan"))
+                if(!unitBatman1.getName().equals("Bat Man"))
                     gameboard = gameboard.moveUnit(gameboard, i, j, 0, 1);
-                else if(!unitBatman2.getName().equals("BatMan"))
+                else if(!unitBatman2.getName().equals("Bat Man"))
                     gameboard = gameboard.moveUnit(gameboard, i, j, 0, 3);
-                else if(!unitBatman3.getName().equals("BatMan"))
+                else if(!unitBatman3.getName().equals("Bat Man"))
                     gameboard = gameboard.moveUnit(gameboard, i, j, 0, 4);
-
-                // CHECK BATMAN FORM, AND IF BAD, THEN UPGRADE
-                MythicalUnit unitBatman = (MythicalUnit) baseMythic;
-                if(unitBatman.getForm() != 3 || unitBatman.getForm() != 4)
-                    for(int k = 0; k < 5; k++)
-                        upgradeUnit(i, j); // UPGRADE FIVE TIMES, TODO : CHANGE THIS ALGORITHM
                 break;
 
             case "Mama":
@@ -240,20 +222,22 @@ public class ProcessUnit {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static GameBoard processUnitLegendary(Unit baseLegendary, int i, int j, GameBoard gameboard) throws IOException, InterruptedException {
+    private static GameBoard processUnitLegendary(Unit baseLegendary, int i, int j, GameBoard gameboard) throws IOException, InterruptedException {
         switch (baseLegendary.getName()) {
             case "War Machine", "Storm Giant", "Sheriff":
                 for(int k = baseLegendary.getQuantity(); k > 0; k--)
                     gameboard = sellUnit(gameboard, i, j);
                 break;
             case "Tiger Master":
-                if(i == 0 && j == 0)
-                    break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT MOVE
-
-                if(MythicBuilder.canBuild("Batman", gameboard)) {
+                if(MythicBuilder.canBuild("Bat Man", gameboard)) {
+                    MatchBasic.pressAnywhere();
+                    Thread.sleep(750);
                     MatchBasic.pressBuildFavoriteMythic();
                     break;
                 }
+
+                if(i == 0 && j == 0)
+                    break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT MOVE
 
                 Unit tigerMaster1 = gameboard.getSquare(0, 0).getUnit();
                 if(tigerMaster1.getName().equals("Tiger Master")) {
@@ -317,10 +301,10 @@ public class ProcessUnit {
 
                 Unit Hunter1 = gameboard.getSquare(0,5).getUnit();
                 Unit Hunter2 = gameboard.getSquare(1,5).getUnit();
-                Boolean canMerge = false;
-                Boolean shouldMove = false;
-                Boolean shouldSell = false;
-                Boolean processed = false;
+                boolean canMerge = false;
+                boolean shouldMove = false;
+                boolean shouldSell = false;
+                boolean processed = false;
 
                 if(Hunter1.getName().equals("Hunter")) {
                     if(Hunter1.getQuantity() == 3){
@@ -365,56 +349,27 @@ public class ProcessUnit {
                 }
                 break;
             case "Tree":
-                if((i == 1 && j == 3) || (i == 1 && j == 4))
+                if(MythicBuilder.canBuild("Bat Man", gameboard)) {
+                    MatchBasic.pressAnywhere();
+                    Thread.sleep(750);
+                    MatchBasic.pressBuildFavoriteMythic();
+                    break;
+                }
+
+                if((i == 1 && j == 3))
                     break; // IF UNIT IN OPTIMAL POSITION, DO NOT TOUCH
 
                 Unit tree1 = gameboard.getSquare(1,3).getUnit();
-                Unit tree2 = gameboard.getSquare(1,4).getUnit();
-                canMerge = false;
-                shouldMove = false;
-                shouldSell = false;
-                processed = false;
-
                 if(tree1.getName().equals("Tree")) {
                     if(tree1.getQuantity() == 3){
                         if(baseEpic.getQuantity() == 3)
-                            canMerge = true;
+                            mergeUnit(i, j);
                         else if(baseEpic.getQuantity() == 1)
-                            shouldSell = true;
+                            gameboard = sellUnit(gameboard, i ,j);
                     } else if(tree1.getQuantity() < baseEpic.getQuantity())
-                        shouldMove = true;
+                        gameboard = gameboard.moveUnit(gameboard, i, j, 1, 3);
                 } else {
                     gameboard = gameboard.moveUnit(gameboard, i,j,1,3);
-                    processed = true;
-                }
-
-                if(!processed){
-                    if(tree2.getName().equals("Tree")) {
-                        if(tree2.getQuantity() == 3){
-                            if(baseEpic.getQuantity() == 3)
-                                canMerge = true;
-                            else if(baseEpic.getQuantity() == 1)
-                                shouldSell = true;
-                        } else if (tree2.getQuantity() < baseEpic.getQuantity())
-                            shouldMove = true;
-                    } else {
-                        gameboard = gameboard.moveUnit(gameboard, i, j, 1, 4);
-                        processed = true;
-                        break;
-                    }
-                }
-
-                if(shouldMove){
-                    if(tree1.getQuantity() < tree2.getQuantity())
-                        gameboard = gameboard.moveUnit(gameboard, i, j, 1, 3);
-                    else
-                        gameboard = gameboard.moveUnit(gameboard, i, j, 1, 4);
-                } else {
-                    if(canMerge)
-                        mergeUnit(i,j);
-                    else if(shouldSell)
-                        for (int k = baseEpic.getQuantity(); k > 0; --k)
-                            gameboard = sellUnit(gameboard, i, j);
                 }
                 break;
             default:
@@ -511,6 +466,13 @@ public class ProcessUnit {
                 break;
 
             case "Thrower":
+                if(MythicBuilder.canBuild("Bat Man", gameboard)) {
+                    MatchBasic.pressAnywhere();
+                    Thread.sleep(750);
+                    MatchBasic.pressBuildFavoriteMythic();
+                    break;
+                }
+
                 if(i == 2 && j == 3) {
                     break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT TOUCH
                 }

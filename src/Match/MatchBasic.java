@@ -141,6 +141,10 @@ public class MatchBasic {
         Press.press(topLeft, bottomRight, action);
     }
 
+    public static void pressAnywhere() {
+        Press.press(new Coordinates(540, 0), "Pressing anywhere");
+    }
+
     public static void challengeGolem() {
         Coordinates topLeft = new Coordinates(181, 550);
         Coordinates bottomRight = new Coordinates(358, 621);
