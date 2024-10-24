@@ -45,7 +45,6 @@ public class GameBoard {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 6; j++) {
                 gameBoard[i][j] = new Square();
-                System.out.println("Initialized square at [" + i + "][" + j + "]");
             }
         }
         System.out.println("Game board initialization complete.");
@@ -324,14 +323,6 @@ public class GameBoard {
      * @param column
      * @return
      */
-    public Square getSquare(int row, int column) {
-        // Check for out-of-bounds access
-        if (row >= 0 && row < gameBoard.length && column >= 0 && column < gameBoard[0].length) {
-            return gameBoard[row][column];
-        } else {
-            return null; // Return null if the indices are out of bounds
-        }
-    }
 
     public void setSquare(Square square, int row, int column) {
         gameBoard[row][column] = square;

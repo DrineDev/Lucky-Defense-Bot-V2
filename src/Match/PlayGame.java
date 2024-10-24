@@ -1,6 +1,7 @@
 package Match;
 
 import Basic.Screenshot;
+import GUI.MainFrame;
 import Home.ButtonsHome;
 import Match.GameBoard.GameBoard;
 import Match.Units.ProcessUnit;
@@ -9,17 +10,22 @@ import java.io.IOException;
 
 public class PlayGame {
 
+    private static MainFrame mainFrame = new MainFrame();
+
     public static void playGame() throws IOException, InterruptedException {
-        ButtonsHome.pressBattle();
-        ButtonsHome.pressMatch();
+        //ButtonsHome.pressBattle();
+        //ButtonsHome.pressMatch();
         while(MatchBasic.isFindingMatch())
             Screenshot.screenshotGameState();
 
         while(MatchBasic.isLoading())
             Screenshot.screenshotGameState();
 
-        GameBoard gameBoard = new GameBoard();
+
         waitFor90();
+        GameBoard gameBoard = new GameBoard();
+        Thread.sleep(2000);
+        Screenshot.screenshotGameState();
 
         while(MatchBasic.isIngame()) {
             gameBoard = readUnits(gameBoard);
@@ -32,29 +38,22 @@ public class PlayGame {
 
             spamSummon(gameBoard);
             gameBoard.saveBoardState();
-        }
 
-        System.out.println("Match is finished...");
+            appendColoredText("Match is finished...", "red");
+
+        }
     }
 
-    private static void waitFor90() {
+    private static void waitFor90() throws IOException {
         // wait for 90 monsters
+        appendColoredText("Waiting for enemies...\n", "blue");
         while(!MatchBasic.is90enemies()) {
-            System.out.println("Waiting for enemies...");
-            try {
                 Screenshot.screenshotGameState();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }
 
+
         // spawn
-        System.out.println("Summoning now!");
+        appendColoredText("Summoning now!\n", "green");
         for(int i = 0; i < 15; i++) {
             MatchBasic.pressSummon();
         }
@@ -62,14 +61,14 @@ public class PlayGame {
 
     private static void waitForGolem() {
         if(!MatchBasic.isGolemPresent()) {
-            System.out.println("Golem not found...");
+            appendColoredText("Golem not found...\n", "red");
             return;
         }
 
-        System.out.println("Golem can be challenged!");
+        appendColoredText("Golem can be challenged!\n", "green");
         MatchBasic.pressGolem();
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -101,9 +100,10 @@ public class PlayGame {
             MatchBasic.pressUpgradeSummoning();
     }
 
-    private static void gambleEpic() throws InterruptedException {
+    private static void gambleEpic() throws InterruptedException, IOException {
         int luckyStones = MatchBasic.checkLuckyStones();
         MatchBasic.pressGamble();
+        Thread.sleep(2000);
 
         for(int i = 0; i < luckyStones; i++) {
             MatchBasic.pressEpicGamble();
@@ -120,6 +120,10 @@ public class PlayGame {
 
     }
     // TODO : ALGORITHM FOR PLAYING GAME
+
+    private static void appendColoredText(String message, String color) {
+        mainFrame.appendToPane(message, color);
+    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         playGame();

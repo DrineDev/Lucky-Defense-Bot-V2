@@ -2,49 +2,40 @@
   "gameBoard": [
     [
       {
-        "quantity": 1,
-        "name": "Wolf Warrior"
-      },
-      {
         "quantity": 2,
-        "name": "War Machine"
+        "name": "Barbarian"
       },
       {
         "quantity": 3,
-        "name": "Electro Robot"
+        "name": "Thrower"
       },
+      null,
       null,
       null,
       null
     ],
     [
+      {
+        "quantity": 1,
+        "name": "Water Elemental"
+      },
       {
         "quantity": 3,
         "name": "Bandit"
       },
-      {
-        "quantity": 1,
-        "name": "Paladin"
-      },
-      {
-        "quantity": 1,
-        "name": "Shock Robot"
-      },
-      {
-        "quantity": 3,
-        "name": "Tree"
-      },
+      null,
+      null,
       null,
       null
     ],
     [
-      null,
-      null,
-      null,
       {
         "quantity": 2,
-        "name": "Thrower"
+        "name": "Archer"
       },
+      null,
+      null,
+      null,
       null,
       null
     ]

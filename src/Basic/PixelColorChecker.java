@@ -72,14 +72,14 @@ public class PixelColorChecker {
 
             if (pixelColor != null) {
                 boolean isMatch = PixelColorChecker.isMatchingColor(pixelColor, expectedColor, tolerance);
-                LOGGER.info(String.format("Color match: %b, Expected: %s, Actual: %s", isMatch, expectedColor, pixelColor));
+//                System.out.println("Color match: " + isMatch + "Expected: " + expectedColor + "Actual: " + pixelColor);
                 return isMatch;
             } else {
-                LOGGER.warning("Failed to get pixel color");
+                System.out.println("Failed to get pixel color");
             }
 
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Error checking color match", e);
+            System.out.println("Error checking color match");
         }
 
         return false;

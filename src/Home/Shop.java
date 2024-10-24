@@ -48,13 +48,7 @@ public class Shop {
      */
     private static void initializeCoordinates() throws IOException {
         try {
-            // Find the refresh button's coordinates in the game state image
-//            Coordinates refreshCoords = CompareImage.findRefreshButtonInGameState("Resources/RefreshButtons/", "Resources/GameState.png");
-//            if (refreshCoords.getY() == -1) {
-//                throw new IOException("Failed to find RefreshButton");
-//            }
             int topLeftRefresh = findTopLeft(); // Get the y-coordinate of the refresh button
-
             // Calculate offsets for the coordinates of shop items based on the refresh button position
             int Offset01 = topLeftRefresh - 375;
             int Offset234 = topLeftRefresh - 131;
@@ -86,10 +80,11 @@ public class Shop {
     }
 
     // Not really shop related; consider moving to a different class
+
     /**
      * Receives mail from the inbox if notifications are present.
      *
-     * @throws IOException If there is an error taking screenshots or interacting with the game.
+     * @throws IOException          If there is an error taking screenshots or interacting with the game.
      * @throws InterruptedException If the thread is interrupted during sleep.
      */
     public static void receiveMailBox() throws IOException, InterruptedException {
@@ -114,7 +109,7 @@ public class Shop {
     /**
      * Swipes the screen to navigate to the shop.
      *
-     * @throws IOException If there is an error executing the swipe command.
+     * @throws IOException          If there is an error executing the swipe command.
      * @throws InterruptedException If the thread is interrupted during sleep.
      */
     public static void swipeToShop() throws IOException, InterruptedException {
@@ -147,7 +142,7 @@ public class Shop {
     /**
      * Swipes the screen to navigate to the keys section of the shop.
      *
-     * @throws IOException If there is an error executing the swipe command.
+     * @throws IOException          If there is an error executing the swipe command.
      * @throws InterruptedException If the thread is interrupted during sleep.
      */
     public static void swipeToKeys() throws IOException, InterruptedException {
@@ -182,6 +177,7 @@ public class Shop {
     }
 
     /* TODO: Consider moving this method to a different class */
+
     /**
      * Loads the game state image from the specified file.
      *
@@ -235,6 +231,7 @@ public class Shop {
     /**
      * Temporary cropImage function for shop use
      * TODO : MOVE TO DIFFERENT CLASS
+     *
      * @param image
      * @param topLeft
      * @param bottomRight
@@ -250,6 +247,7 @@ public class Shop {
 
     /**
      * Process shopItems and see if it should be purchased, if purchaseable then buy
+     *
      * @param croppedImage
      * @param areaIndex
      * @throws IOException
@@ -268,6 +266,7 @@ public class Shop {
 
     /**
      * Helper function to buy items
+     *
      * @param areaIndex
      * @throws InterruptedException
      * @throws IOException
@@ -282,6 +281,7 @@ public class Shop {
 
     /**
      * Helper function to check if an item should be purchased
+     *
      * @throws IOException
      * @throws InterruptedException
      */
@@ -295,6 +295,7 @@ public class Shop {
 
     /**
      * MAIN FUNCTION for autoshop
+     *
      * @throws IOException
      * @throws InterruptedException
      */
@@ -306,13 +307,11 @@ public class Shop {
             ButtonsHome.pressReset();
         }
     }
-
     /**
      * Main method for testing the Shop class functionality.
      * @param args Command line arguments (not used).
      * @throws IOException If there is an error during execution.
      */
-    public static void main(String[] args) throws IOException, InterruptedException {
-
+    public static void main(String[] args) {
     }
 }

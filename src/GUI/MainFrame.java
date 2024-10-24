@@ -3,6 +3,7 @@ package GUI;
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
+import java.io.PrintStream;
 
 public class MainFrame extends JFrame {
 
@@ -62,6 +63,11 @@ public class MainFrame extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setVisible(true);
+
+        TextPaneOutputStream textPaneStream = new TextPaneOutputStream(textPane);
+        PrintStream printStream = new PrintStream(textPaneStream);
+        System.setOut(printStream);  // Redirects standard output
+        System.setErr(printStream);  // Redirects standard error
     }
 
     // Method to append text with a specific color to the JTextPane
@@ -75,8 +81,10 @@ public class MainFrame extends JFrame {
                 StyleConstants.setForeground(style, Color.BLUE);
                 break;
             case "green":
-                StyleConstants.setForeground(style, Color.GREEN);
+                StyleConstants.setForeground(style, new Color(1, 50, 32));
                 break;
+            case "red":
+                StyleConstants.setForeground(style, Color.RED);
             default:
                 StyleConstants.setForeground(style, Color.BLACK);
                 break;
@@ -87,6 +95,7 @@ public class MainFrame extends JFrame {
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
+
     }
 
     private static class InvisibleCaret extends DefaultCaret {

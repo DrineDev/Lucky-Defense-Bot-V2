@@ -1,11 +1,14 @@
 package GUI;
 
+import Match.PlayGame;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 public class StartButton extends JButton implements ActionListener {
 
@@ -66,9 +69,13 @@ public class StartButton extends JButton implements ActionListener {
 
         // Start the other program in a new thread
         new Thread(() -> {
-            SomeOtherProgram otherProgram = new SomeOtherProgram(mainFrame);
-            otherProgram.run(); // This will use System.out to print messages
+            try {
+                PlayGame.playGame(); // Start the game logic
+            } catch (IOException | InterruptedException ex) {
+                ex.printStackTrace(); // Handle any exceptions that occur during gameplay
+            }
         }).start();
+
     }
 
     @Override
