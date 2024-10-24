@@ -2,6 +2,7 @@ package Match.GameBoard;
 
 import Basic.Coordinates;
 import Basic.Press;
+import Basic.Screenshot;
 import Match.Units.*;
 
 import java.io.IOException;
@@ -29,15 +30,18 @@ public class Square {
         return unit;
     }
 
-    /**
+    /*
      * update square to add unitName and unitQuantity, to be called by GameBoard
      * @param topLeft
      * @param bottomRight
      * @param action
      * @throws IOException
      */
-    public void updateSquare(Coordinates topLeft, Coordinates bottomRight, String action) throws IOException {
+    public void updateSquare(Coordinates topLeft, Coordinates bottomRight, String action) throws IOException, InterruptedException {
+        Thread.sleep(1000);
         Press.press(topLeft, bottomRight, action);
+        Thread.sleep(1000);
+        Screenshot.screenshotGameState();
         int rarity = Unit.isWhatRarity();
         switch(rarity) {
             case 1:
@@ -60,4 +64,9 @@ public class Square {
                 break;
         }
     }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
+    }
+
 }

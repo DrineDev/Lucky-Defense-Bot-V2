@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public class CompareImage {
 
     private static final Logger LOGGER = Logger.getLogger(CompareImage.class.getName());
-    private static final double SIMILARITY_THRESHOLD = 0.70; // 95% similarity required
+    private static final double SIMILARITY_THRESHOLD = 0.95; // 95% similarity required
     private static final int COLOR_TOLERANCE = 30; // Using the same tolerance as in your PixelColorChecker
 
     /** Takes a BufferedImage and a string path to the image to compare against

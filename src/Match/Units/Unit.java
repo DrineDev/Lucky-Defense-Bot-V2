@@ -70,6 +70,8 @@ public class Unit {
     /** GETTERS & SETTERS */
     public void setName(String name) { this.name = name; }
     public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setForm(int form) { this.form = form; }
     public String getName() { return name; }
     public int getQuantity() { return quantity; }
+    public int getForm() { return form; }
 }

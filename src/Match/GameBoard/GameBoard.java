@@ -1,8 +1,8 @@
 package Match.GameBoard;
 
 import Basic.Coordinates;
-import Basic.Press;
-import Basic.Screenshot;
+import Match.Units.ProcessUnit;
+import Match.Units.Unit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -11,6 +11,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static Match.Units.ProcessUnit.gameboard;
 
 public class GameBoard {
 
@@ -70,9 +72,6 @@ public class GameBoard {
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 6; j++) {
                 String action = "Checking square " + i + ", " + j;
-                Press.press(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
-                Screenshot.screenshotGameState();
-                Thread.sleep(750);
                 gameBoard[i][j].updateSquare(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
             }
         }
@@ -132,12 +131,17 @@ public class GameBoard {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void moveUnit(int i1, int j1, int i2, int j2) throws IOException, InterruptedException {
+    public GameBoard moveUnit(GameBoard gameBoard, int i1, int j1, int i2, int j2) throws IOException, InterruptedException {
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i1][j1], bottomRightCoordinates[i1][j1]);
         Coordinates toRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i2][j2], bottomRightCoordinates[i2][j2]);
+        Thread.sleep(2000);
         Process process = Runtime.getRuntime()
                 .exec("adb shell input draganddrop " + fromRandomCoordinates.toString() + " " + toRandomCoordinates.toString());
         Thread.sleep(3000);
+
+        gameBoard = gameBoard.updateGameBoard(gameBoard, i1, j1, i2, j2);
+
+        return gameBoard;
     }
 
     /**
@@ -150,15 +154,6 @@ public class GameBoard {
         return gameBoard;
     }
 
-//    public static void main(String[] args) throws IOException, InterruptedException {
-//        System.out.println("Starting main method...");
-//        GameBoard gameBoard1 = new GameBoard();
-//        System.out.println("GameBoard created.");
-//        gameBoard1.updateBoard();
-//        System.out.println("Board updated.");
-//        gameBoard1.saveBoardState();
-//        System.out.println("Board state saved.");
-//    }
 
     /**
      * Sell units
@@ -167,7 +162,7 @@ public class GameBoard {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static void sellUnit(int i, int j) throws IOException, InterruptedException {
+    public static GameBoard sellUnit(GameBoard gameboard, int i, int j) throws IOException, InterruptedException {
         // Click the unit at the specified game board coordinates
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j], bottomRightCoordinates[i][j]);
 
@@ -196,6 +191,10 @@ public class GameBoard {
         System.out.println("Selling the unit at: " + sellRandomCoordinates);
         Process process2 = Runtime.getRuntime().exec("adb shell input tap " + sellRandomCoordinates.getX() + " " + sellRandomCoordinates.getY());
         Thread.sleep(500);
+
+        gameboard = gameboard.updateGameBoard(gameboard, i, j, i, j);
+
+        return gameboard;
     }
 
     /**
@@ -234,6 +233,8 @@ public class GameBoard {
         System.out.println("Merging the unit at: " + mergeRandomCoordinates);
         Process process2 = Runtime.getRuntime().exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
         Thread.sleep(500);
+
+        // TODO : UPDATE GAMEBOARD AFTER MERGING
     }
 
     /**
@@ -266,12 +267,73 @@ public class GameBoard {
         // click unit
         System.out.println("Clicking the unit to merge at: " + fromRandomCoordinates);
         Process process1 = Runtime.getRuntime().exec("adb shell input tap " + fromRandomCoordinates.getX() + " " + fromRandomCoordinates.getY());
-        Thread.sleep(500);
-
-        //Click merge
+        Thread.sleep(500); //Click merge
         System.out.println("Merging the unit at: " + mergeRandomCoordinates);
         Process process2 = Runtime.getRuntime().exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
         Thread.sleep(500);
+    }
+
+    public GameBoard updateGameBoard(GameBoard gameBoard, int i1, int j1, int i2, int j2) {
+        // IF EQUAL, JUST TURN TO NULL TO BE CALLED BY SELL UNIT
+        if(i1 == i2 && j1 == j2) {
+            gameBoard.setSquare(new Square(), i1, j1);
+            return gameBoard;
+        }
+
+        // TEMP HOLDER FOR SQUARE AND UNIT
+        Square temp = new Square();
+        Unit tempUnit;
+
+        // I1 J1 TO TEMP
+        temp = gameBoard.getSquare(i1, j1);
+        // I1 J1 UNIT TO TEMP
+        tempUnit = gameBoard.getSquare(i1, j1).getUnit();
+
+        // PLACE SQUARE I2 J2 TO I1 J1
+        gameBoard.setSquare(gameBoard.getSquare(i2, j2), i1, j1);
+
+        // PUT TEMP TO I2 J2
+        gameBoard.setSquare(temp, i2, j2);
+
+        return gameBoard;
+    }
+
+    /**
+     * Return square;
+     * @param row
+     * @param column
+     * @return
+     */
+    public Square getSquare(int row, int column) {
+        // Check for out-of-bounds access
+        if (row >= 0 && row < gameBoard.length && column >= 0 && column < gameBoard[0].length) {
+            return gameBoard[row][column];
+        } else {
+            return null; // Return null if the indices are out of bounds
+        }
+    }
+
+    public void setSquare(Square square, int row, int column) {
+        gameBoard[row][column] = square;
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException {
+        GameBoard gameBoard1 = new GameBoard();
+        gameBoard1.updateBoard();
+        gameBoard1.saveBoardState();
+//        MythicBuilder.canBuild("Batman");
+        boolean success = ProcessUnit.DetectUnitPlusProcess();
+
+        gameBoard1.updateBoard();
+        gameBoard1.saveBoardState();
+        success = ProcessUnit.DetectUnitPlusProcess();
+
+        // Check the result and print whether processing was successful
+        if (success) {
+            System.out.println("Unit processing completed successfully.");
+        } else {
+            System.out.println("Unit processing failed.");
+        }
     }
 }
 
