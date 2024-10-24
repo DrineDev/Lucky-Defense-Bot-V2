@@ -14,20 +14,15 @@ public class CompareImage {
     private static final int COLOR_TOLERANCE = 30; // Using the same tolerance as in your PixelColorChecker
 
     /** Takes a BufferedImage and a string path to the image to compare against
-    *  Checks if the specified path exists,
-    *  Reads the comparison image into a BufferedImage,
-    *  Checks dimensions and must have the same dimensions else return
-    *  Iterates through each pixel in the images,
-    *  Calculates the similarity percentage
-    *  Returns true if the similarity meets or exceeds the threshold
-    *  */
+     *  Checks if the specified path exists,
+     *  Reads the comparison image into a BufferedImage,
+     *  Checks dimensions and must have the same dimensions else return
+     *  Iterates through each pixel in the images,
+     *  Calculates the similarity percentage
+     *  Returns true if the similarity meets or exceeds the threshold
+     *  */
     public static boolean compareImage(BufferedImage mainImage, String path) {
         try {
-            // TEST CODE TODO : REMOVE
-            File mainImageFile = new File("Resources/savedImages(Temp)/test.png");
-            ImageIO.write(mainImage, "png", mainImageFile);
-            LOGGER.info("Main image saved at: " + mainImageFile.getAbsolutePath());
-
             File imageFile = new File(path);
             if (!imageFile.exists()) {
                 LOGGER.warning("Image file does not exist: " + path);
@@ -35,11 +30,6 @@ public class CompareImage {
             }
 
             BufferedImage imageToCompare = ImageIO.read(imageFile);
-            // TEST CODE TODO : REMOVE
-            File compareImageFile = new File("Resources/savedImages(Temp)/compareImage.png");
-            ImageIO.write(imageToCompare, "png", compareImageFile);
-            LOGGER.info("Comparison image saved at: " + compareImageFile.getAbsolutePath());
-
 
             // Check if dimensions are the same
             if (mainImage.getWidth() != imageToCompare.getWidth() ||
@@ -77,14 +67,14 @@ public class CompareImage {
     }
 
     /** Takes the mainImage, a sub-image(image to match) and the starting coordinates(topLeft) for comparison
-    *  Checks that the sub-image fits within the bounds of the main image
-    *  Compares each pixel in the sub-image with the corresponding pixel in the main image using PixelColorChecker
-    * */
+     *  Checks that the sub-image fits within the bounds of the main image
+     *  Compares each pixel in the sub-image with the corresponding pixel in the main image using PixelColorChecker
+     * */
     private static boolean isMatchingRegion(BufferedImage mainImage, BufferedImage subImage, int startX, int startY) {
-        int mainImageWidth = mainImage.getWidth();
-        int mainImageHeight = mainImage.getHeight();
         int subImageWidth = subImage.getWidth();
         int subImageHeight = subImage.getHeight();
+        int mainImageWidth = mainImage.getWidth();
+        int mainImageHeight = mainImage.getHeight();
 
         // Check if the subImage fits within the bounds of the mainImage at the specified position
         if (startX + subImageWidth > mainImageWidth || startY + subImageHeight > mainImageHeight) {
@@ -107,57 +97,43 @@ public class CompareImage {
     }
 
     /**  Takes the paths to the refreshButton images and GameState image
-    *   Loads both images and checks for null values
-    *   Logs the dimensions of both images
-    *   Iterates over each pixel in the game state and considers it as a possible top-left corner for the refresh button
-    *   Calls isMatchingRegion to check if the sub-image matches at that position
-    *   If a match is found, return coordinates, else return (-1, -1) */
-    public static Coordinates findRefreshButtonInGameState(String refreshButtonPath, int startX, int endX, int startY, int endY) throws IOException {
-        System.out.println("Attempting to load GameState from: Resources/GameState.png");
-        BufferedImage gameState = ImageIO.read(new File("Resources/GameState.png"));
+     *   Loads both images and checks for null values
+     *   Logs the dimensions of both images
+     *   Iterates over each pixel in the game state and considers it as a possible top-left corner for the refresh button
+     *   Calls isMatchingRegion to check if the sub-image matches at that position
+     *   If a match is found, return coordinates, else return (-1, -1) */
+    public static Coordinates findRefreshButtonInGameState(String refreshButtonPath, String gameStatePath) throws IOException {
+        System.out.println("Attempting to load GameState from: " + gameStatePath);
+        BufferedImage gameState = ImageIO.read(new File(gameStatePath));
+
+        System.out.println("Attempting to load RefreshButton from: " + refreshButtonPath);
+        BufferedImage refreshButton = ImageIO.read(new File(refreshButtonPath));
 
         if (gameState == null) {
             throw new IOException("GameState image is null!");
         }
 
-        // Get dimensions of the GameState image
-        int gameStateWidth = gameState.getWidth();
-        int gameStateHeight = gameState.getHeight();
-
-        // Iterate over each refreshButton image path
-        System.out.println("Attempting to load RefreshButton from: " + refreshButtonPath);
-        BufferedImage refreshButton = ImageIO.read(new File(refreshButtonPath));
-
         if (refreshButton == null) {
             throw new IOException("RefreshButton image is null!");
         }
 
-        // Get dimensions of the current RefreshButton
+        // Get dimensions
         int buttonWidth = refreshButton.getWidth();
         int buttonHeight = refreshButton.getHeight();
+        int gameStateWidth = gameState.getWidth();
+        int gameStateHeight = gameState.getHeight();
 
-        // Validate input ranges for the current button
-        if (startX < 0 || startX + buttonWidth > gameStateWidth || startY < 0 || startY + buttonHeight > gameStateHeight) {
-            throw new IllegalArgumentException("Specified range exceeds GameState image bounds for " + refreshButtonPath);
-        }
+        LOGGER.info("Searching GameState (" + gameStateWidth + "x" + gameStateHeight + ") for RefreshButton (" + buttonWidth + "x" + buttonHeight + ")");
 
-        LOGGER.info("Searching GameState (" + gameStateWidth + "x" + gameStateHeight + ") for RefreshButton (" + buttonWidth + "x" + buttonHeight + ") within x: " + startX + " to " + endX + " and y: " + startY + " to " + endY);
-
-        // Iterate over the specified range in the GameState image
-        for (int y = startY; y <= endY; y++) {
-            for (int x = startX; x <= endX; x++) {
-                // Check if the current region matches the refresh button
+        // Iterate over every pixel in GameState, treating each as a possible top-left corner of the button
+        for (int y = 0; y <= gameStateHeight - buttonHeight; y++) {
+            for (int x = 0; x <= gameStateWidth - buttonWidth; x++) {
                 if (isMatchingRegion(gameState, refreshButton, x, y)) {
-                    LOGGER.info("Found matching RefreshButton at (" + x + ", " + y + ") for image " + refreshButtonPath);
+                    LOGGER.info("Found matching RefreshButton at (" + x + ", " + y + ")");
                     return new Coordinates(x, y);
                 }
             }
         }
-
-        // Save the GameState image for manual inspection if no match is found
-        File gameStateFile = new File("Resources/gameStateFile.png");
-        ImageIO.write(gameState, "png", gameStateFile);
-        LOGGER.info("GameState image saved at: " + gameStateFile.getAbsolutePath());
 
         LOGGER.warning("No matching refresh button found in the game state.");
         return new Coordinates(-1, -1); // No match found

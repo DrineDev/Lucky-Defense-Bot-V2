@@ -55,6 +55,7 @@ public class GameBoard {
         Square gameBoardSquare = gameBoard[i][j];
         return gameBoardSquare;
     }
+
     /**
      * Keep the values to 3x6 Squares
      * @throws IOException
@@ -324,14 +325,6 @@ public class GameBoard {
      * @param column
      * @return
      */
-    public Square getSquare(int row, int column) {
-        // Check for out-of-bounds access
-        if (row >= 0 && row < gameBoard.length && column >= 0 && column < gameBoard[0].length) {
-            return gameBoard[row][column];
-        } else {
-            return null; // Return null if the indices are out of bounds
-        }
-    }
 
     public void setSquare(Square square, int row, int column) {
         gameBoard[row][column] = square;
