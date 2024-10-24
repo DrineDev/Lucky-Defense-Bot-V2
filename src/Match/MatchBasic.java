@@ -82,6 +82,15 @@ public class MatchBasic {
         return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
 
+    public static boolean isMax() throws IOException {
+        Screenshot.screenshotGameState();
+        Coordinates coordinates = new Coordinates(373, 744);
+        Color expectedColor = new Color(189, 5, 5);
+        String screenshotPath = "Resources/GameState.png";
+        int tolerance = 20;
+
+        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+    }
 
     /**
      * Check if Golem can be summoned
