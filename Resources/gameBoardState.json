@@ -2,18 +2,15 @@
   "gameBoard": [
     [
       null,
+      null,
       {
         "quantity": 3,
-        "name": "Archer"
-      },
-      {
-        "quantity": 2,
         "name": "Electro Robot"
       },
       null,
       null,
       {
-        "quantity": 2,
+        "quantity": 1,
         "name": "Hunter"
       }
     ],
@@ -25,18 +22,24 @@
       null,
       null,
       {
-        "quantity": 3,
+        "quantity": 1,
         "name": "Tree"
       },
       null,
-      null
+      {
+        "quantity": 1,
+        "name": "Hunter"
+      }
     ],
     [
       {
         "quantity": 3,
         "name": "Bandit"
       },
-      null,
+      {
+        "quantity": 2,
+        "name": "Electro Robot"
+      },
       null,
       {
         "quantity": 3,

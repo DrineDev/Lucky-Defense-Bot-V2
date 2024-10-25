@@ -152,7 +152,7 @@ public class ProcessUnit {
                     upgradeUnit(i, j);
                     upgradeUnit(i, j);
                     gameboard.updateBoard(i, j);
-                    ProcessUnit.DetectUnitPlusProcess(gameboard, i, j);
+                    gameboard = ProcessUnit.DetectUnitPlusProcess(gameboard, i, j);
                     baseMythic.setForm(gameboard.getSquare(i, j).getUnit().getForm());
                 }
 
