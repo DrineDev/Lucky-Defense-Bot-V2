@@ -19,7 +19,7 @@ public class ProcessUnit {
      * Detect units in gameBoardState.json and process.
      * @return true/false
      */
-    public static Boolean DetectUnitPlusProcess(GameBoard gameboard, int i, int j) throws IOException, InterruptedException {
+    public static GameBoard DetectUnitPlusProcess(GameBoard gameboard, int i, int j) throws IOException, InterruptedException {
 
         if (gameboard.getSquare(i, j) != null && gameboard.getSquare(i, j).getUnit() != null) {
             Unit unit = gameboard.getSquare(i, j).getUnit();
@@ -28,23 +28,22 @@ public class ProcessUnit {
                     System.out.println("Processing unit: " + unitName + " at position: (" + i + ", " + j + ")");
 
                     if (isLegendary(unitName)) {
-                        processUnitByRarity("Legendary", unit, i, j, gameboard);
+                        gameboard = processUnitByRarity("Legendary", unit, i, j, gameboard);
                     } else if (isEpic(unitName)) {
-                        processUnitByRarity("Epic", unit, i, j, gameboard);
+                        gameboard = processUnitByRarity("Epic", unit, i, j, gameboard);
                     } else if (isRare(unitName)) {
-                        processUnitByRarity("Rare", unit, i, j, gameboard);
+                        gameboard = processUnitByRarity("Rare", unit, i, j, gameboard);
                     } else if (isCommon(unitName)) {
-                        processUnitByRarity("Common", unit, i, j, gameboard);
+                        gameboard = processUnitByRarity("Common", unit, i, j, gameboard);
                     } else if (isMythic(unitName)) {
-                        processUnitByRarity("Mythic", unit, i, j, gameboard);
+                        gameboard = processUnitByRarity("Mythic", unit, i, j, gameboard);
                     } else {
                         System.out.println("No matching rarity for unit: " + unitName);
                     }
-                    return true;
                 }
             } else
                 System.out.println("Square at (" + i + ", " + j + ") is empty or null.");
-        return false;
+        return gameboard;
     }
 
     public static void emergencySell(GameBoard gameBoard) throws IOException, InterruptedException

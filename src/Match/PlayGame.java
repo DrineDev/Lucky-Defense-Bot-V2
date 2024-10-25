@@ -75,7 +75,7 @@ public class PlayGame {
 
         appendColoredText(mainFrame, "[" + currentTime + "]" + " Golem can be challenged!\n", "green");
         MatchBasic.pressGolem();
-        Thread.sleep(1000);
+        Thread.sleep(1500);
         MatchBasic.challengeGolem();
     }
 
@@ -85,7 +85,7 @@ public class PlayGame {
                 gameBoard.updateBoard(i, j);
                 checkForRewards();
                 if(!(gameBoard.getSquare(i, j).getUnit().getName() == null))
-                    ProcessUnit.DetectUnitPlusProcess(gameBoard, i, j);
+                    gameBoard = ProcessUnit.DetectUnitPlusProcess(gameBoard, i, j);
             }
         }
         return gameBoard;
@@ -94,7 +94,7 @@ public class PlayGame {
     private static GameBoard spamSummon(GameBoard gameBoard) throws IOException, InterruptedException {
         for(int i = 0; i < 15; i++) {
             MatchBasic.pressSummon();
-            Thread.sleep(250);
+            checkForRewards();
         }
         Thread.sleep(1000);
         return gameBoard;
@@ -121,7 +121,7 @@ public class PlayGame {
         }
     }
     private static void gambleStones(GameBoard gameBoard) throws InterruptedException, IOException {
-        MatchBasic.closeUpgrade();
+//        MatchBasic.closeUpgrade();
         Thread.sleep(500);
         checkForRewards();
         Screenshot.screenshotGameState();
@@ -140,7 +140,8 @@ public class PlayGame {
                 i += 2;
             }
             MatchBasic.pressEpicGamble();
-            Thread.sleep(1250);
+            checkForRewards();
+            Thread.sleep(500);
         }
 
         MatchBasic.closeGamble();
