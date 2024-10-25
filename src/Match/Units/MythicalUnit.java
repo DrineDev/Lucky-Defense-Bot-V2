@@ -91,5 +91,5 @@ public class MythicalUnit extends Unit {
         return temp;
     }
 
-    public void setForm(int i) { form = 1; }
+    public void setForm(int i) { form = i; }
 }

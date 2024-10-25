@@ -51,6 +51,7 @@ public class ProcessUnit {
     {
         Pattern prio_units;
         prio_units = Pattern.compile("Bandit|Thrower|Hunter|Tree|Electro Robot|Tiger Master");
+        System.out.println("Performing emergency sell");
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 6; j++) {
 
@@ -147,15 +148,23 @@ public class ProcessUnit {
             case "Bat Man":
 
                 // CHECK BATMAN FORM, AND IF BAD, THEN UPGRADE
-                if(baseMythic.getForm() != 3 || baseMythic.getForm() != 4)
-                    for(int k = 0; k < 5; k++) { upgradeUnit(i, j); } // UPGRADE FIVE TIMES, TODO : CHANGE THIS ALGORITHM
+                while (baseMythic.form != 3 && baseMythic.form != 4) // UPGRADE 2 TIMES, TODO : CHANGE THIS ALGORITHM
+                {
+                    upgradeUnit(i, j);
+                    upgradeUnit(i, j);
+                    gameboard.updateBoard(i, j);
+                    ProcessUnit.DetectUnitPlusProcess(gameboard, i, j);
+                    baseMythic.setForm(gameboard.getSquare(i, j).getUnit().getForm());
+                }
+
+
                 if(i == 0 && j == 1 || i == 0 && j == 3)
                     break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT TOUCH
 
                 // CHECK OPTIMAL POSITIONS
-                MythicalUnit unitBatman1 = (MythicalUnit) gameboard.getSquare(0, 1).getUnit();
-                MythicalUnit unitBatman2 = (MythicalUnit) gameboard.getSquare(0, 3).getUnit();
-                MythicalUnit unitBatman3 = (MythicalUnit) gameboard.getSquare(0, 4).getUnit();
+                Unit unitBatman1 =  gameboard.getSquare(0, 1).getUnit();
+                Unit unitBatman2 = gameboard.getSquare(0, 3).getUnit();
+                Unit unitBatman3 = gameboard.getSquare(0, 4).getUnit();
 
                 // MOVE UNITS TO OPTIMAL POSITION IF NO OPTIMAL UNIT FOUND
                 if(!unitBatman1.getName().equals("Bat Man"))
@@ -229,12 +238,12 @@ public class ProcessUnit {
                     gameboard = sellUnit(gameboard, i, j);
                 break;
             case "Tiger Master":
-                if(MythicBuilder.canBuild("Bat Man", gameboard)) {
-                    MatchBasic.pressAnywhere();
-                    Thread.sleep(750);
-                    MatchBasic.pressBuildFavoriteMythic();
-                    break;
-                }
+//                if(MythicBuilder.canBuild("Bat Man", gameboard)) {
+//                    MatchBasic.pressAnywhere();
+//                    Thread.sleep(750);
+//                    MatchBasic.pressBuildFavoriteMythic();
+//                    break;
+//                }
 
                 if(i == 0 && j == 0)
                     break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT MOVE
@@ -349,12 +358,12 @@ public class ProcessUnit {
                 }
                 break;
             case "Tree":
-                if(MythicBuilder.canBuild("Bat Man", gameboard)) {
-                    MatchBasic.pressAnywhere();
-                    Thread.sleep(750);
-                    MatchBasic.pressBuildFavoriteMythic();
-                    break;
-                }
+//                if(MythicBuilder.canBuild("Bat Man", gameboard)) {
+//                    MatchBasic.pressAnywhere();
+//                    Thread.sleep(750);
+//                    MatchBasic.pressBuildFavoriteMythic();
+//                    break;
+//                }
 
                 if((i == 1 && j == 3))
                     break; // IF UNIT IN OPTIMAL POSITION, DO NOT TOUCH
@@ -466,12 +475,12 @@ public class ProcessUnit {
                 break;
 
             case "Thrower":
-                if(MythicBuilder.canBuild("Bat Man", gameboard)) {
-                    MatchBasic.pressAnywhere();
-                    Thread.sleep(750);
-                    MatchBasic.pressBuildFavoriteMythic();
-                    break;
-                }
+//                if(MythicBuilder.canBuild("Bat Man", gameboard)) {
+//                    MatchBasic.pressAnywhere();
+//                    Thread.sleep(750);
+//                    MatchBasic.pressBuildFavoriteMythic();
+//                    break;
+//                }
 
                 if(i == 2 && j == 3) {
                     break; // IF UNIT IN MOST OPTIMAL POSITION, DO NOT TOUCH

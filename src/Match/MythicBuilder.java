@@ -113,7 +113,7 @@ public class MythicBuilder {
     private static Map<String, Integer> getRequirementsForUnit(String name) {
         Map<String, Integer> requirements = new HashMap<>();
         switch (name) {
-            case "BatMan":
+            case "Bat Man":
                 requirements.put("Tiger Master", 1);
                 requirements.put("Tree", 1);
                 requirements.put("Thrower", 2);

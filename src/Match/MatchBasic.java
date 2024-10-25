@@ -50,7 +50,7 @@ public class MatchBasic {
         int tolerance = 10;
 
         for(Coordinates coordinates1 : coordinates) {
-            if(PixelColorChecker.checkColorMatch(coordinates1, expectedColor, screenshotPath, tolerance));
+            if(PixelColorChecker.checkColorMatch(coordinates1, expectedColor, screenshotPath, tolerance))
                 return true;
         }
 
@@ -242,7 +242,23 @@ public class MatchBasic {
 
         return luckyStonesValue;
     }
+    public static boolean isBossClear() throws IOException {
+        Screenshot.screenshotGameState();
+        Coordinates coordinates = new Coordinates(0, 0);
+        Color expectedColor = new Color(92, 81, 62);
+        String screenshotPath = "Resources/GameState.png";
+        int tolerance = 5;
 
+        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+    }
+    public static void pressSelect() throws IOException {
+        Press.press(new Coordinates(172, 633), new Coordinates(367, 714), "Confirming selection...");
+        Screenshot.screenshotGameState();
+    }
+    public static void pressMostRight() throws IOException {
+        Press.press(new Coordinates(363, 314), new Coordinates(493, 479), "Selecting most right...");
+        Screenshot.screenshotGameState();
+    }
     public static boolean checkIfMax() throws InterruptedException, IOException {
         pressGamble();
         Thread.sleep(1500);
@@ -291,6 +307,7 @@ public class MatchBasic {
 
         // Initialize Tesseract
         Tesseract tesseract = new Tesseract();
+        tesseract.setTessVariable("tessedit_char_whitelist", "0123456789/");
         tesseract.setDatapath("lib/Tess4j/tessdata"); // Set the path to the tessdata directory
         tesseract.setLanguage("eng"); // Set the language you want to use
 
@@ -308,7 +325,7 @@ public class MatchBasic {
             return extractedText.trim();
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            return ""; // or some default value/error code
+            return "0"; // or some default value/error code
         }
     }
 

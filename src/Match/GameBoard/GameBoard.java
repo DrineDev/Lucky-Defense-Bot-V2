@@ -195,15 +195,12 @@ public class GameBoard {
         // Generate a random cell within the given top left and bottom right coordinates
         Coordinates sellRandomCoordinates = Coordinates.makeRandomCoordinate(sellTopLeft[i][j], sellBottomRight[i][j]);
 
-        // click unit
-        System.out.println("Clicking the unit at: " + fromRandomCoordinates);
-        Process process1 = Runtime.getRuntime().exec("adb shell input tap " + fromRandomCoordinates.getX() + " " + fromRandomCoordinates.getY());
-        Thread.sleep(500);
 
         // click sell
         System.out.println("Selling the unit at: " + sellRandomCoordinates);
-        Process process2 = Runtime.getRuntime().exec("adb shell input tap " + sellRandomCoordinates.getX() + " " + sellRandomCoordinates.getY());
         Thread.sleep(500);
+        Process process2 = Runtime.getRuntime().exec("adb shell input tap " + sellRandomCoordinates.getX() + " " + sellRandomCoordinates.getY());
+
 
         gameboard = gameboard.updateGameBoard(gameboard, i, j, i, j);
 
@@ -237,15 +234,11 @@ public class GameBoard {
         // Generate a random cell within the given top left and bottom right coordinates
         Coordinates mergeRandomCoordinates = Coordinates.makeRandomCoordinate(mergeTopLeft[i][j], mergeBottomRight[i][j]);
 
-        // click unit
-        System.out.println("Clicking the unit to merge at: " + fromRandomCoordinates);
-        Process process1 = Runtime.getRuntime().exec("adb shell input tap " + fromRandomCoordinates.getX() + " " + fromRandomCoordinates.getY());
-        Thread.sleep(500);
 
         //Click merge
         System.out.println("Merging the unit at: " + mergeRandomCoordinates);
-        Process process2 = Runtime.getRuntime().exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
         Thread.sleep(500);
+        Process process2 = Runtime.getRuntime().exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
 
         // TODO : UPDATE GAMEBOARD AFTER MERGING
     }
