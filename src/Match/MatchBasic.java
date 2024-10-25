@@ -322,6 +322,8 @@ public class MatchBasic {
         // Parse the extracted text into an integer
         // You may need to adjust this logic based on the format of the extracted text
         try {
+            if(extractedText.trim()==null)
+                return "0";
             return extractedText.trim();
         } catch (NumberFormatException e) {
             e.printStackTrace();
