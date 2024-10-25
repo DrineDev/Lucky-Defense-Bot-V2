@@ -1,5 +1,6 @@
 package GUI;
 
+import Home.Shop;
 import Match.PlayGame;
 
 import javax.swing.*;
@@ -75,7 +76,13 @@ public class StartButton extends JButton implements ActionListener {
                 ex.printStackTrace(); // Handle any exceptions that occur during gameplay
             }
         }).start();
-
+//        new Thread(() -> {
+//            try {
+//                Shop.autoShop(); // Start the game logic
+//            } catch (IOException | InterruptedException ex) {
+//                ex.printStackTrace(); // Handle any exceptions that occur during gameplay
+//            }
+//        }).start();
     }
 
     @Override

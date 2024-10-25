@@ -17,20 +17,20 @@ public class PlayGame {
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
-//        ButtonsHome.pressBattle();
-//        Thread.sleep(2000);
-//        ButtonsHome.pressWithFriend();
-//        Thread.sleep(2000);
-//        ButtonsHome.pressCreateRoom();
-//
-//        // WAIT FOR LOADING
-//        appendColoredText(mainFrame,"Waiting for game...", "red");
-//        while(MatchBasic.isInLobby()) { Screenshot.screenshotGameState(); }
-//        while(MatchBasic.isFindingMatch()) { Screenshot.screenshotGameState(); }
-//        while(MatchBasic.isLoading()) { Screenshot.screenshotGameState(); }
-//
-//        // START OF GAME
-//        waitFor90(mainFrame);
+        ButtonsHome.pressBattle();
+        Thread.sleep(2000);
+        ButtonsHome.pressWithFriend();
+        Thread.sleep(2000);
+        ButtonsHome.pressCreateRoom();
+
+        // WAIT FOR LOADING
+        appendColoredText(mainFrame,"Waiting for game...", "red");
+        while(MatchBasic.isInLobby()) { Screenshot.screenshotGameState(); }
+        while(MatchBasic.isFindingMatch()) { Screenshot.screenshotGameState(); }
+        while(MatchBasic.isLoading()) { Screenshot.screenshotGameState(); }
+
+        // START OF GAME
+        waitFor90(mainFrame);
         GameBoard gameBoard = new GameBoard();
         Screenshot.screenshotGameState();
 
