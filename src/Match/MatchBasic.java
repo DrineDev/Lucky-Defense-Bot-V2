@@ -307,29 +307,33 @@ public class MatchBasic {
 
         // Initialize Tesseract
         Tesseract tesseract = new Tesseract();
-        tesseract.setTessVariable("tessedit_char_whitelist", "0123456789/");
-        tesseract.setDatapath("lib/Tess4j/tessdata"); // Set the path to the tessdata directory
-        tesseract.setLanguage("eng"); // Set the language you want to use
+        tesseract.setTessVariable("tessedit_char_whitelist", "0123456789"); // digits only ang dawaton
+        tesseract.setDatapath("lib/Tess4j/tessdata"); // Set path to tessdata directory
+        tesseract.setLanguage("eng"); //english
 
         String extractedText = "";
         try {
             // Perform OCR on the buffered image
-            extractedText = tesseract.doOCR(bufferedImage);
+            extractedText = tesseract.doOCR(bufferedImage).trim();
+
+            // mga numbers ra e keep
+            extractedText = extractedText.replaceAll("[^0-9]", "");
+
+            // Check if the extracted text is empty after filtering
+            if (extractedText.isEmpty()) {
+                return "0";
+            }
+
+            return extractedText;
         } catch (TesseractException e) {
             e.printStackTrace();
-        }
-
-        // Parse the extracted text into an integer
-        // You may need to adjust this logic based on the format of the extracted text
-        try {
-            if(extractedText.trim()==null)
-                return "0";
-            return extractedText.trim();
-        } catch (NumberFormatException e) {
+            return "0";
+        } catch (Exception e) {
             e.printStackTrace();
-            return "0"; // or some default value/error code
+            return "0"; // Default value for any other unexpected exceptions
         }
     }
+
 
     private static BufferedImage matToBufferedImage(Mat matrix) {
         int type = BufferedImage.TYPE_BYTE_GRAY;
