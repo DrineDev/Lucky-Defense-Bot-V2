@@ -109,6 +109,16 @@ public class ButtonsHome {
         Screenshot.screenshotGameState();
     }
 
+    public static void pressWithFriend() throws IOException {
+        Press.press(new Coordinates(66, 731), new Coordinates(254, 821), "Pressing with friends");
+        Screenshot.screenshotGameState();
+    }
+
+    public static void pressCreateRoom() throws IOException {
+        Press.press(new Coordinates(167, 436), new Coordinates(372, 503), "Creating room");
+        Screenshot.screenshotGameState();
+    }
+
     public static void pressItem(int itemIndex) throws IOException, InterruptedException {
         Coordinates topLeft, bottomRight;
         String itemName;

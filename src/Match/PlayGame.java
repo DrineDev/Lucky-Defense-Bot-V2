@@ -17,17 +17,20 @@ public class PlayGame {
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
-        // START MATCH
         ButtonsHome.pressBattle();
-        ButtonsHome.pressMatch();
+        Thread.sleep(2000);
+        ButtonsHome.pressWithFriend();
+        Thread.sleep(2000);
+        ButtonsHome.pressCreateRoom();
 
         // WAIT FOR LOADING
         appendColoredText(mainFrame,"Waiting for game...", "red");
+        while(MatchBasic.isInLobby()) { Screenshot.screenshotGameState(); }
         while(MatchBasic.isFindingMatch()) { Screenshot.screenshotGameState(); }
         while(MatchBasic.isLoading()) { Screenshot.screenshotGameState(); }
 
         // START OF GAME
-//        waitFor90(mainFrame);
+        waitFor90(mainFrame);
         GameBoard gameBoard = new GameBoard();
         Screenshot.screenshotGameState();
 
@@ -37,7 +40,7 @@ public class PlayGame {
             gambleStones(gameBoard);
             waitForGolem(mainFrame);
 
-            if(MatchBasic.isMax()) { ProcessUnit.emergencySell(gameBoard); }
+            if(MatchBasic.checkIfMax()) { ProcessUnit.emergencySell(gameBoard); }
 
             spamSummon(gameBoard);
             gameBoard.saveBoardState();
@@ -52,7 +55,6 @@ public class PlayGame {
         String currentTime = LocalDateTime.now().format(dtf);
         appendColoredText(mainFrame,"[" + currentTime + "]" + " Waiting for enemies...\n", "blue");
         while(!MatchBasic.is90enemies()) { Screenshot.screenshotGameState(); }
-        Thread.sleep(45000);
 
         // spawn
         appendColoredText(mainFrame,"[" + currentTime + "]" + " Summoning now!\n", "green");
@@ -106,18 +108,16 @@ public class PlayGame {
     }
 
     private static void gambleStones(GameBoard gameBoard) throws InterruptedException, IOException {
-        MatchBasic.closeGamble();
-        Thread.sleep(750);
         MatchBasic.closeUpgrade();
+        Thread.sleep(500);
 
         Screenshot.screenshotGameState();
-        if(MatchBasic.isMax())
+        if(MatchBasic.checkIfMax())
             ProcessUnit.emergencySell(gameBoard);
         if(!MatchBasic.isIngame())
             return;
 
         int luckyStones = MatchBasic.checkLuckyStones();
-        Thread.sleep(1500);
         MatchBasic.pressGamble();
         Thread.sleep(1500);
 

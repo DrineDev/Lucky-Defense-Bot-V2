@@ -1,53 +1,29 @@
 {
   "gameBoard": [
     [
-      {
-        "quantity": 1,
-        "name": "Tiger Master"
-      },
-      {
-        "quantity": 1,
-        "name": "Tiger Master"
-      },
-      {
-        "quantity": 2,
-        "name": "Electro Robot"
-      },
       null,
       null,
-      {
-        "quantity": 3,
-        "name": "Hunter"
-      }
+      null,
+      null,
+      null,
+      null
     ],
     [
       {
-        "quantity": 3,
+        "quantity": 2,
         "name": "Bandit"
       },
       null,
       null,
-      {
-        "quantity": 2,
-        "name": "Tree"
-      },
       null,
-      {
-        "quantity": 3,
-        "name": "Barbarian"
-      }
+      null,
+      null
     ],
     [
-      {
-        "quantity": 3,
-        "name": "Bandit"
-      },
       null,
       null,
-      {
-        "quantity": 3,
-        "name": "Thrower"
-      },
+      null,
+      null,
       null,
       null
     ]

@@ -14,6 +14,8 @@ import org.opencv.imgcodecs.Imgcodecs;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MatchBasic {
     static {
@@ -36,12 +38,23 @@ public class MatchBasic {
      * @return
      */
     public static boolean is90enemies() {
-        Coordinates coordinates = new Coordinates(326, 123);
+        Coordinates[] coordinates = new Coordinates[3];
+        coordinates[0] = new Coordinates(338, 122); // 100
+        coordinates[1] = new Coordinates(324, 124); // 112
+        coordinates[2] = new Coordinates(321, 122); // 113
+
+        // TODO : ADD COORDINATES FOR OTHER MONSTER LIMITS
+
         Color expectedColor = new Color(194, 64, 73);
         String screenshotPath = "Resources/GameState.png";
-        int tolerance = 5;
+        int tolerance = 10;
 
-        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+        for(Coordinates coordinates1 : coordinates) {
+            if(PixelColorChecker.checkColorMatch(coordinates1, expectedColor, screenshotPath, tolerance));
+                return true;
+        }
+
+        return false;
     }
 
     public static boolean isFindingMatch() {
@@ -52,6 +65,16 @@ public class MatchBasic {
 
         return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
+
+    public static boolean isInLobby() {
+        Coordinates coordinates = new Coordinates(0, 0);
+        Color expectedColor = new Color(84, 123, 44);
+        String screenshotPath = "Resources/GameState.png";
+        int tolerance = 5;
+
+        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+    }
+
     public static boolean isIngame() throws IOException {
         Screenshot.screenshotGameState();
         Coordinates coordinates = new Coordinates(0, 0);
@@ -76,16 +99,6 @@ public class MatchBasic {
         Screenshot.screenshotGameState();
         Coordinates coordinates = new Coordinates(0, 0);
         Color expectedColor = new Color(107, 81, 70);
-        String screenshotPath = "Resources/GameState.png";
-        int tolerance = 20;
-
-        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
-    }
-
-    public static boolean isMax() throws IOException {
-        Screenshot.screenshotGameState();
-        Coordinates coordinates = new Coordinates(373, 744);
-        Color expectedColor = new Color(189, 5, 5);
         String screenshotPath = "Resources/GameState.png";
         int tolerance = 20;
 
@@ -201,11 +214,8 @@ public class MatchBasic {
     }
 
     public static int checkLuckyStones() throws InterruptedException, IOException {
-        closeGamble();
-        Thread.sleep(2000);
-        pressUpgrade();
-        Thread.sleep(2000);
-
+        pressGamble();
+        Thread.sleep(1500);
         Screenshot.screenshotGameState();
 
         // Load the GameState image
@@ -213,9 +223,9 @@ public class MatchBasic {
 
         // Define the coordinates for the sub-image
         // Replace these with your actual coordinates
-        int topLeftX = 305; // Example X coordinate for the top-left corner
-        int topLeftY = 645; // Example Y coordinate for the top-left corner
-        int bottomRightX = 393; // Example X coordinate for the bottom-right corner
+        int topLeftX = 194; // Example X coordinate for the top-left corner
+        int topLeftY = 644; // Example Y coordinate for the top-left corner
+        int bottomRightX = 264; // Example X coordinate for the bottom-right corner
         int bottomRightY = 674; // Example Y coordinate for the bottom-right corner
 
         // Create a rectangle based on the coordinates
@@ -225,15 +235,57 @@ public class MatchBasic {
         Mat subImage = new Mat(gameState, roi);
 
         // Process the sub-image and convert it to an int
-        int luckyStonesValue = processSubImage(subImage);
+        int luckyStonesValue;
+        luckyStonesValue = Integer.parseInt(processSubImage(subImage));
 
-        closeUpgrade();
         Thread.sleep(2000);
 
         return luckyStonesValue;
     }
 
-    private static int processSubImage(Mat subImage) {
+    public static boolean checkIfMax() throws InterruptedException, IOException {
+        pressGamble();
+        Thread.sleep(1500);
+        Screenshot.screenshotGameState();
+
+        // Load the GameState image
+        Mat gameState = Imgcodecs.imread("Resources/GameState.png");
+
+        // Define the coordinates for the sub-image
+        int topLeftX = 293; // X coordinate for the top-left corner
+        int topLeftY = 644; // Y coordinate for the top-left corner
+        int bottomRightX = 374; // X coordinate for the bottom-right corner
+        int bottomRightY = 673; // Y coordinate for the bottom-right corner
+
+        // Create a rectangle based on the coordinates
+        Rect roi = new Rect(topLeftX, topLeftY, bottomRightX - topLeftX, bottomRightY - topLeftY);
+
+        // Crop the sub-image
+        Mat subImage = new Mat(gameState, roi);
+
+        // Process the sub-image and get the result string
+        String string = processSubImage(subImage);
+
+        // Pattern to match "<num>/<num>" format
+        Pattern pattern = Pattern.compile("(\\d+)/(\\d+)");
+        Matcher matcher = pattern.matcher(string);
+
+        // Check if it matches the pattern
+        if (matcher.find()) {
+            // Extract the two numbers
+            int firstNum = Integer.parseInt(matcher.group(1));
+            int secondNum = Integer.parseInt(matcher.group(2));
+
+            // Compare the two numbers and return true if they are equal
+            return firstNum == secondNum;
+        }
+
+        closeGamble();
+        // Return false if the format is incorrect
+        return false;
+    }
+
+    private static String processSubImage(Mat subImage) {
         // Convert the Mat to BufferedImage
         BufferedImage bufferedImage = matToBufferedImage(subImage);
 
@@ -253,10 +305,10 @@ public class MatchBasic {
         // Parse the extracted text into an integer
         // You may need to adjust this logic based on the format of the extracted text
         try {
-            return Integer.parseInt(extractedText.trim());
+            return extractedText.trim();
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            return 0; // or some default value/error code
+            return ""; // or some default value/error code
         }
     }
 
