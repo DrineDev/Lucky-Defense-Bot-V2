@@ -3,46 +3,25 @@
     [
       null,
       null,
-      {
-        "quantity": 3,
-        "name": "Electro Robot"
-      },
       null,
       null,
-      {
-        "quantity": 1,
-        "name": "Hunter"
-      }
+      null,
+      null
     ],
     [
-      {
-        "quantity": 3,
-        "name": "Bandit"
-      },
       null,
       null,
-      {
-        "quantity": 1,
-        "name": "Tree"
-      },
       null,
-      {
-        "quantity": 1,
-        "name": "Hunter"
-      }
+      null,
+      null,
+      null
     ],
     [
-      {
-        "quantity": 3,
-        "name": "Bandit"
-      },
-      {
-        "quantity": 2,
-        "name": "Electro Robot"
-      },
+      null,
+      null,
       null,
       {
-        "quantity": 3,
+        "quantity": 1,
         "name": "Thrower"
       },
       null,

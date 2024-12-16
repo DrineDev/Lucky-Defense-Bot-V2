@@ -17,42 +17,60 @@ public class PlayGame {
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
-        ButtonsHome.pressBattle();
-        Thread.sleep(2000);
-        ButtonsHome.pressWithFriend();
-        Thread.sleep(2000);
-        ButtonsHome.pressCreateRoom();
+        while(true) {
 
-        // WAIT FOR LOADING
-        appendColoredText(mainFrame,"Waiting for game...", "red");
-        while(MatchBasic.isInLobby()) { Screenshot.screenshotGameState(); }
-        while(MatchBasic.isFindingMatch()) { Screenshot.screenshotGameState(); }
-        while(MatchBasic.isLoading()) { Screenshot.screenshotGameState(); }
+            ButtonsHome.pressBattle();
+            Thread.sleep(2000);
+            ButtonsHome.pressMatch();
 
-        // START OF GAME
-        waitFor90(mainFrame);
-        GameBoard gameBoard = new GameBoard();
-        Screenshot.screenshotGameState();
-
-        // GAME LOOP
-        while(MatchBasic.isIngame()) {
-            gameBoard = processBoard(gameBoard);
-            if(MythicBuilder.canBuild("Bat Man", gameBoard)) {
-                MatchBasic.pressAnywhere();
-                Thread.sleep(750);
-                MatchBasic.pressBuildFavoriteMythic();
+            // WAIT FOR LOADING
+            appendColoredText(mainFrame, "Waiting for game...", "red");
+            while (MatchBasic.isInLobby()) {
+                Screenshot.screenshotGameState();
             }
-            gambleStones(gameBoard);
-            waitForGolem(mainFrame);
+            while (MatchBasic.isFindingMatch()) {
+                Screenshot.screenshotGameState();
+            }
+            while (MatchBasic.isLoading()) {
+                Screenshot.screenshotGameState();
+            }
 
-            if(MatchBasic.checkIfMax()) { ProcessUnit.emergencySell(gameBoard);System.out.println("Emergency sell executing"); }
+            // START OF GAME
+            for(int i = 0; i < 5; i++) {
+                MatchBasic.pressSummon();
+            }
+            GameBoard gameBoard = new GameBoard();
+            int upgradePrice = 2;
+            Screenshot.screenshotGameState();
 
-            spamSummon(gameBoard);
-            gameBoard.saveBoardState();
+            // GAME LOOP
+            while (MatchBasic.isIngame()) {
+                gameBoard = processBoard(gameBoard);
+                if (MythicBuilder.canBuild("Bat Man", gameBoard)) {
+                    MatchBasic.pressAnywhere();
+                    Thread.sleep(750);
+                    MatchBasic.pressBuildFavoriteMythic();
+                }
+                upgradePrice = gambleStones(gameBoard, upgradePrice);
+
+                if (upgradePrice == 0) break;
+
+                waitForGolem(mainFrame);
+
+                if (MatchBasic.checkIfMax()) {
+                    ProcessUnit.emergencySell(gameBoard);
+                    System.out.println("Emergency sell executing");
+                }
+
+                spamSummon(gameBoard);
+                gameBoard.saveBoardState();
+            }
+
+            // MATCH IS FINISHED
+            appendColoredText(mainFrame, "Match is finished...", "red");
+            MatchBasic.pressAnywhere();
+            ButtonsHome.pressLobby();
         }
-
-        // MATCH IS FINISHED
-        appendColoredText(mainFrame,"Match is finished...", "red");
     }
 
     private static void waitFor90(MainFrame mainFrame) throws IOException, InterruptedException {
@@ -120,7 +138,7 @@ public class PlayGame {
             MatchBasic.pressSelect();
         }
     }
-    private static void gambleStones(GameBoard gameBoard) throws InterruptedException, IOException {
+    private static int gambleStones(GameBoard gameBoard, int upgradePrice) throws InterruptedException, IOException {
 //        MatchBasic.closeUpgrade();
         Thread.sleep(500);
         checkForRewards();
@@ -128,16 +146,21 @@ public class PlayGame {
         if(MatchBasic.checkIfMax())
             ProcessUnit.emergencySell(gameBoard);
         if(!MatchBasic.isIngame())
-            return;
+            return 0;
 
         int luckyStones = MatchBasic.checkLuckyStones();
         MatchBasic.pressGamble();
         Thread.sleep(1500);
 
         for (int i = 0; i < luckyStones; i++) {
-            if (luckyStones > 10) {
-                MatchBasic.pressLegendaryGamble();
-                i += 2;
+            if (luckyStones > 15) {
+                MatchBasic.closeGamble();
+                Thread.sleep(1500);
+                MatchBasic.pressUpgrade();
+                Thread.sleep(1500);
+                MatchBasic.pressUpgradeMythic();
+                upgradePrice += 1;
+                i += upgradePrice;
             }
             MatchBasic.pressEpicGamble();
             checkForRewards();
@@ -145,6 +168,8 @@ public class PlayGame {
         }
 
         MatchBasic.closeGamble();
+
+        return upgradePrice;
     }
 
     // TODO : ALGORITHM FOR PLAYING GAME

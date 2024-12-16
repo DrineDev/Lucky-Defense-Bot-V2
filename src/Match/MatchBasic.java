@@ -319,8 +319,6 @@ public class MatchBasic {
             e.printStackTrace();
         }
 
-        // Parse the extracted text into an integer
-        // You may need to adjust this logic based on the format of the extracted text
         try {
             return extractedText.trim();
         } catch (NumberFormatException e) {
