@@ -1,32 +1,42 @@
 package Match.GameBoard;
 
-import Basic.Coordinates;
-import Match.Units.ProcessUnit;
-import Match.Units.Unit;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class GameBoard {
 
     public static Square[][] gameBoard;
 
     private final static Coordinates[][] topLeftCoordinates = {
-            { new Coordinates(85, 460), new Coordinates(150, 460), new Coordinates(215, 460), new Coordinates(280, 460), new Coordinates(345, 460), new Coordinates(410, 460) },
-            { new Coordinates(85, 513), new Coordinates(150, 513), new Coordinates(215, 513), new Coordinates(280, 513), new Coordinates(345, 513), new Coordinates(410, 513) },
-            { new Coordinates(85, 566), new Coordinates(150, 566), new Coordinates(215, 566), new Coordinates(280, 566), new Coordinates(345, 566), new Coordinates(410, 566) }
+            { new Coordinates(85, 460), new Coordinates(150, 460), new Coordinates(215, 460), new Coordinates(280, 460),
+                    new Coordinates(345, 460), new Coordinates(410, 460) },
+            { new Coordinates(85, 513), new Coordinates(150, 513), new Coordinates(215, 513), new Coordinates(280, 513),
+                    new Coordinates(345, 513), new Coordinates(410, 513) },
+            { new Coordinates(85, 566), new Coordinates(150, 566), new Coordinates(215, 566), new Coordinates(280, 566),
+                    new Coordinates(345, 566), new Coordinates(410, 566) }
     };
 
     private final static Coordinates[][] bottomRightCoordinates = {
-            { new Coordinates(135, 495), new Coordinates(200, 495), new Coordinates(265, 495), new Coordinates(330, 495), new Coordinates(395, 495), new Coordinates(460, 495) },
-            { new Coordinates(135, 548), new Coordinates(200, 548), new Coordinates(265, 548), new Coordinates(330, 548), new Coordinates(395, 548), new Coordinates(460, 548) },
-            { new Coordinates(135, 601), new Coordinates(200, 601), new Coordinates(265, 601), new Coordinates(330, 601), new Coordinates(395, 601), new Coordinates(460, 601) }
+            { new Coordinates(135, 495), new Coordinates(200, 495), new Coordinates(265, 495),
+                    new Coordinates(330, 495), new Coordinates(395, 495), new Coordinates(460, 495) },
+            { new Coordinates(135, 548), new Coordinates(200, 548), new Coordinates(265, 548),
+                    new Coordinates(330, 548), new Coordinates(395, 548), new Coordinates(460, 548) },
+            { new Coordinates(135, 601), new Coordinates(200, 601), new Coordinates(265, 601),
+                    new Coordinates(330, 601), new Coordinates(395, 601), new Coordinates(460, 601) }
     };
 
     /**
@@ -137,6 +147,7 @@ public class GameBoard {
 
     /**
      * Move units
+     * 
      * @param i1
      * @param j1
      * @param i2
@@ -144,12 +155,16 @@ public class GameBoard {
      * @throws IOException
      * @throws InterruptedException
      */
-    public GameBoard moveUnit(GameBoard gameBoard, int i1, int j1, int i2, int j2) throws IOException, InterruptedException {
-        Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i1][j1], bottomRightCoordinates[i1][j1]);
-        Coordinates toRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i2][j2], bottomRightCoordinates[i2][j2]);
+    public GameBoard moveUnit(GameBoard gameBoard, int i1, int j1, int i2, int j2)
+            throws IOException, InterruptedException {
+        Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i1][j1],
+                bottomRightCoordinates[i1][j1]);
+        Coordinates toRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i2][j2],
+                bottomRightCoordinates[i2][j2]);
         Thread.sleep(2000);
         Process process = Runtime.getRuntime()
-                .exec("adb shell input draganddrop " + fromRandomCoordinates.toString() + " " + toRandomCoordinates.toString());
+                .exec("adb shell input draganddrop " + fromRandomCoordinates.toString() + " "
+                        + toRandomCoordinates.toString());
         Thread.sleep(3000);
 
         gameBoard = gameBoard.updateGameBoard(gameBoard, i1, j1, i2, j2);
@@ -159,17 +174,24 @@ public class GameBoard {
 
     /**
      * GETTERS
+     * 
      * @return
      */
-    public static Coordinates[][] getTopLeftCoordinates() { return topLeftCoordinates; }
-    public static Coordinates[][] getBottomRightCoordinates() { return bottomRightCoordinates; }
+    public static Coordinates[][] getTopLeftCoordinates() {
+        return topLeftCoordinates;
+    }
+
+    public static Coordinates[][] getBottomRightCoordinates() {
+        return bottomRightCoordinates;
+    }
+
     public Square[][] getGameBoard() {
         return gameBoard;
     }
 
-
     /**
      * Sell units
+     * 
      * @param i
      * @param j
      * @throws IOException
@@ -177,30 +199,36 @@ public class GameBoard {
      */
     public static GameBoard sellUnit(GameBoard gameboard, int i, int j) throws IOException, InterruptedException {
         // Click the unit at the specified game board coordinates
-        Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j], bottomRightCoordinates[i][j]);
+        Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j],
+                bottomRightCoordinates[i][j]);
 
         // Top left coordinates of sell button 3x6 array siya like the grid in game
         Coordinates[][] sellTopLeft = {
-                { new Coordinates(95, 404), new Coordinates(160, 404), new Coordinates(224, 404), new Coordinates(286, 404), new Coordinates(348, 404), new Coordinates(412, 404) }, // Row A
-                { new Coordinates(98, 451), new Coordinates(161, 451), new Coordinates(225, 451), new Coordinates(285, 451), new Coordinates(345, 451), new Coordinates(410, 451) }, // Row B
-                { new Coordinates(95, 503), new Coordinates(161, 503), new Coordinates(225, 503), new Coordinates(285, 503), new Coordinates(345, 503), new Coordinates(410, 503) }  // Row C
+                { new Coordinates(95, 404), new Coordinates(160, 404), new Coordinates(224, 404),
+                        new Coordinates(286, 404), new Coordinates(348, 404), new Coordinates(412, 404) }, // Row A
+                { new Coordinates(98, 451), new Coordinates(161, 451), new Coordinates(225, 451),
+                        new Coordinates(285, 451), new Coordinates(345, 451), new Coordinates(410, 451) }, // Row B
+                { new Coordinates(95, 503), new Coordinates(161, 503), new Coordinates(225, 503),
+                        new Coordinates(285, 503), new Coordinates(345, 503), new Coordinates(410, 503) } // Row C
         };
-        //Bottom right coordinates of sell button 3x6 array siya like the grid in game
+        // Bottom right coordinates of sell button 3x6 array siya like the grid in game
         Coordinates[][] sellBottomRight = {
-                { new Coordinates(131, 434), new Coordinates(191, 434), new Coordinates(253, 434), new Coordinates(318, 434), new Coordinates(380, 434), new Coordinates(442, 434) }, // Row A
-                { new Coordinates(128, 483), new Coordinates(192, 483), new Coordinates(254, 483), new Coordinates(318, 483), new Coordinates(380, 483), new Coordinates(442, 483) }, // Row B
-                { new Coordinates(130, 533), new Coordinates(192, 533), new Coordinates(254, 533), new Coordinates(318, 533), new Coordinates(380, 533), new Coordinates(442, 533) }  // Row C
+                { new Coordinates(131, 434), new Coordinates(191, 434), new Coordinates(253, 434),
+                        new Coordinates(318, 434), new Coordinates(380, 434), new Coordinates(442, 434) }, // Row A
+                { new Coordinates(128, 483), new Coordinates(192, 483), new Coordinates(254, 483),
+                        new Coordinates(318, 483), new Coordinates(380, 483), new Coordinates(442, 483) }, // Row B
+                { new Coordinates(130, 533), new Coordinates(192, 533), new Coordinates(254, 533),
+                        new Coordinates(318, 533), new Coordinates(380, 533), new Coordinates(442, 533) } // Row C
         };
 
         // Generate a random cell within the given top left and bottom right coordinates
         Coordinates sellRandomCoordinates = Coordinates.makeRandomCoordinate(sellTopLeft[i][j], sellBottomRight[i][j]);
 
-
         // click sell
         System.out.println("Selling the unit at: " + sellRandomCoordinates);
         Thread.sleep(500);
-        Process process2 = Runtime.getRuntime().exec("adb shell input tap " + sellRandomCoordinates.getX() + " " + sellRandomCoordinates.getY());
-
+        Process process2 = Runtime.getRuntime()
+                .exec("adb shell input tap " + sellRandomCoordinates.getX() + " " + sellRandomCoordinates.getY());
 
         gameboard = gameboard.updateGameBoard(gameboard, i, j, i, j);
 
@@ -209,79 +237,103 @@ public class GameBoard {
 
     /**
      * Merge units
+     * 
      * @param i
      * @param j
      * @throws IOException
      * @throws InterruptedException
      */
     public static void mergeUnit(int i, int j) throws IOException, InterruptedException {
-        //Location sa specific unit e merge sa gameboard
-        Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j], bottomRightCoordinates[i][j]);
+        // Location sa specific unit e merge sa gameboard
+        Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j],
+                bottomRightCoordinates[i][j]);
 
-        // Top left coordinates sa merge button per unit 3x6 array siya like the grid in game
+        // Top left coordinates sa merge button per unit 3x6 array siya like the grid in
+        // game
         Coordinates[][] mergeTopLeft = {
-                { new Coordinates(75, 531), new Coordinates(138, 530), new Coordinates(201, 530), new Coordinates(264, 530), new Coordinates(325, 530), new Coordinates(388, 530) }, // Row A
-                { new Coordinates(76, 582), new Coordinates(140, 582), new Coordinates(202, 582), new Coordinates(264, 582), new Coordinates(325, 582), new Coordinates(388, 582) }, // Row B
-                { new Coordinates(78, 633), new Coordinates(138, 633), new Coordinates(202, 633), new Coordinates(264, 633), new Coordinates(325, 633), new Coordinates(388, 633) }  // Row C
+                { new Coordinates(75, 531), new Coordinates(138, 530), new Coordinates(201, 530),
+                        new Coordinates(264, 530), new Coordinates(325, 530), new Coordinates(388, 530) }, // Row A
+                { new Coordinates(76, 582), new Coordinates(140, 582), new Coordinates(202, 582),
+                        new Coordinates(264, 582), new Coordinates(325, 582), new Coordinates(388, 582) }, // Row B
+                { new Coordinates(78, 633), new Coordinates(138, 633), new Coordinates(202, 633),
+                        new Coordinates(264, 633), new Coordinates(325, 633), new Coordinates(388, 633) } // Row C
         };
-        // BottomRight coordinates sa merge button per unit 3x6 array siya like the grid in game
+        // BottomRight coordinates sa merge button per unit 3x6 array siya like the grid
+        // in game
         Coordinates[][] mergeBottomRight = {
-                { new Coordinates(152, 567), new Coordinates(216, 566), new Coordinates(278, 567), new Coordinates(339, 567), new Coordinates(400, 567), new Coordinates(463, 567) }, // Row A
-                { new Coordinates(152, 614), new Coordinates(216, 614), new Coordinates(278, 614), new Coordinates(339, 614), new Coordinates(400, 614), new Coordinates(463, 614) }, // Row B
-                { new Coordinates(152, 664), new Coordinates(216, 664), new Coordinates(278, 664), new Coordinates(339, 664), new Coordinates(400, 664), new Coordinates(463, 664) }  // Row C
+                { new Coordinates(152, 567), new Coordinates(216, 566), new Coordinates(278, 567),
+                        new Coordinates(339, 567), new Coordinates(400, 567), new Coordinates(463, 567) }, // Row A
+                { new Coordinates(152, 614), new Coordinates(216, 614), new Coordinates(278, 614),
+                        new Coordinates(339, 614), new Coordinates(400, 614), new Coordinates(463, 614) }, // Row B
+                { new Coordinates(152, 664), new Coordinates(216, 664), new Coordinates(278, 664),
+                        new Coordinates(339, 664), new Coordinates(400, 664), new Coordinates(463, 664) } // Row C
         };
 
         // Generate a random cell within the given top left and bottom right coordinates
-        Coordinates mergeRandomCoordinates = Coordinates.makeRandomCoordinate(mergeTopLeft[i][j], mergeBottomRight[i][j]);
+        Coordinates mergeRandomCoordinates = Coordinates.makeRandomCoordinate(mergeTopLeft[i][j],
+                mergeBottomRight[i][j]);
 
-
-        //Click merge
+        // Click merge
         System.out.println("Merging the unit at: " + mergeRandomCoordinates);
         Thread.sleep(500);
-        Process process2 = Runtime.getRuntime().exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
+        Process process2 = Runtime.getRuntime()
+                .exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
 
         // TODO : UPDATE GAMEBOARD AFTER MERGING
     }
 
     /**
      * Upgrade units for mythics like Batman, Tar, Lancelot, etc.
+     * 
      * @param i
      * @param j
      * @throws IOException
      * @throws InterruptedException
      */
     public static void upgradeUnit(int i, int j) throws IOException, InterruptedException {
-        //Location sa specific unit e merge sa gameboard
-        Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j], bottomRightCoordinates[i][j]);
+        // Location sa specific unit e merge sa gameboard
+        Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j],
+                bottomRightCoordinates[i][j]);
 
-        // Top left coordinates sa merge button per unit 3x6 array siya like the grid in game
+        // Top left coordinates sa merge button per unit 3x6 array siya like the grid in
+        // game
         Coordinates[][] mergeTopLeft = {
-                { new Coordinates(75, 531), new Coordinates(138, 530), new Coordinates(201, 530), new Coordinates(264, 530), new Coordinates(325, 530), new Coordinates(388, 530) }, // Row A
-                { new Coordinates(76, 582), new Coordinates(140, 582), new Coordinates(202, 582), new Coordinates(264, 582), new Coordinates(325, 582), new Coordinates(388, 582) }, // Row B
-                { new Coordinates(78, 633), new Coordinates(138, 633), new Coordinates(202, 633), new Coordinates(264, 633), new Coordinates(325, 633), new Coordinates(388, 633) }  // Row C
+                { new Coordinates(75, 531), new Coordinates(138, 530), new Coordinates(201, 530),
+                        new Coordinates(264, 530), new Coordinates(325, 530), new Coordinates(388, 530) }, // Row A
+                { new Coordinates(76, 582), new Coordinates(140, 582), new Coordinates(202, 582),
+                        new Coordinates(264, 582), new Coordinates(325, 582), new Coordinates(388, 582) }, // Row B
+                { new Coordinates(78, 633), new Coordinates(138, 633), new Coordinates(202, 633),
+                        new Coordinates(264, 633), new Coordinates(325, 633), new Coordinates(388, 633) } // Row C
         };
-        // BottomRight coordinates sa merge button per unit 3x6 array siya like the grid in game
+        // BottomRight coordinates sa merge button per unit 3x6 array siya like the grid
+        // in game
         Coordinates[][] mergeBottomRight = {
-                { new Coordinates(152, 567), new Coordinates(216, 566), new Coordinates(278, 567), new Coordinates(339, 567), new Coordinates(400, 567), new Coordinates(463, 567) }, // Row A
-                { new Coordinates(152, 614), new Coordinates(216, 614), new Coordinates(278, 614), new Coordinates(339, 614), new Coordinates(400, 614), new Coordinates(463, 614) }, // Row B
-                { new Coordinates(152, 664), new Coordinates(216, 664), new Coordinates(278, 664), new Coordinates(339, 664), new Coordinates(400, 664), new Coordinates(463, 664) }  // Row C
+                { new Coordinates(152, 567), new Coordinates(216, 566), new Coordinates(278, 567),
+                        new Coordinates(339, 567), new Coordinates(400, 567), new Coordinates(463, 567) }, // Row A
+                { new Coordinates(152, 614), new Coordinates(216, 614), new Coordinates(278, 614),
+                        new Coordinates(339, 614), new Coordinates(400, 614), new Coordinates(463, 614) }, // Row B
+                { new Coordinates(152, 664), new Coordinates(216, 664), new Coordinates(278, 664),
+                        new Coordinates(339, 664), new Coordinates(400, 664), new Coordinates(463, 664) } // Row C
         };
 
         // Generate a random cell within the given top left and bottom right coordinates
-        Coordinates mergeRandomCoordinates = Coordinates.makeRandomCoordinate(mergeTopLeft[i][j], mergeBottomRight[i][j]);
+        Coordinates mergeRandomCoordinates = Coordinates.makeRandomCoordinate(mergeTopLeft[i][j],
+                mergeBottomRight[i][j]);
 
         // click unit
         System.out.println("Clicking the unit to merge at: " + fromRandomCoordinates);
-        Process process1 = Runtime.getRuntime().exec("adb shell input tap " + fromRandomCoordinates.getX() + " " + fromRandomCoordinates.getY());
-        Thread.sleep(500); //Click merge
+        Process process1 = Runtime.getRuntime()
+                .exec("adb shell input tap " + fromRandomCoordinates.getX() + " " + fromRandomCoordinates.getY());
+        Thread.sleep(500); // Click merge
         System.out.println("Merging the unit at: " + mergeRandomCoordinates);
-        Process process2 = Runtime.getRuntime().exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
+        Process process2 = Runtime.getRuntime()
+                .exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
         Thread.sleep(500);
     }
 
     public GameBoard updateGameBoard(GameBoard gameBoard, int i1, int j1, int i2, int j2) {
         // IF EQUAL, JUST TURN TO NULL TO BE CALLED BY SELL UNIT
-        if(i1 == i2 && j1 == j2) {
+        if (i1 == i2 && j1 == j2) {
             gameBoard.setSquare(new Square(), i1, j1);
             return gameBoard;
         }
@@ -304,8 +356,36 @@ public class GameBoard {
         return gameBoard;
     }
 
+    public static HashMap<Integer, Integer> getNonEmptySquares() {
+        if (!MatchBasic.isIngame()) {
+            System.out.println("Currently not in game...");
+            return null;
+        }
+
+        HashMap<Integer, Integer> nonEmptySquares = new HashMap<>();
+        BufferedImage baseState = ImageIO.read(new File("Resources/defaultGameBoard.png"));
+        BufferedImage gameState = ImageIO.read(new File("Resources/GameState.png"));
+
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 3; j++) {
+                int topLeftX = topLeftCoordinates[i][j].getX();
+                int topLeftY = topLeftCoordinates[i][j].getY();
+                int bottomRightX = bottomRightCoordinates[i][j].getX();
+                int bottomRightY = bottomRightCoordinates[i][j].getY();
+                if (CompareImage.isMatchingRegion(baseState, gameState, topLeftX, topLeftY, bottomRightX,
+                        bottomRightY)) {
+                    nonEmptySquares.put(i, j);
+                }
+            }
+        }
+
+        return nonEmptySquares;
+
+    }
+
     /**
      * Return square;
+     * 
      * @param row
      * @param column
      * @return
@@ -318,4 +398,3 @@ public class GameBoard {
     public static void main(String[] args) throws IOException, InterruptedException {
     }
 }
-

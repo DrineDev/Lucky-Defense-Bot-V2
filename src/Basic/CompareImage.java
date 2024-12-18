@@ -1,15 +1,14 @@
 package Basic;
 
-import GUI.MainFrame;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 public class CompareImage {
 
@@ -69,7 +68,7 @@ public class CompareImage {
      *  Checks that the sub-image fits within the bounds of the main image
      *  Compares each pixel in the sub-image with the corresponding pixel in the main image using PixelColorChecker
      * */
-    private static boolean isMatchingRegion(BufferedImage mainImage, BufferedImage subImage, int startX, int startY) {
+    public static boolean isMatchingRegion(BufferedImage mainImage, BufferedImage subImage, int startX, int startY) {
         int subImageWidth = subImage.getWidth();
         int subImageHeight = subImage.getHeight();
         int mainImageWidth = mainImage.getWidth();
