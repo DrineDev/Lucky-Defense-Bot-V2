@@ -14,6 +14,10 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import Basic.CompareImage;
+import Basic.Coordinates;
+import Match.MatchBasic;
+import Match.Units.Unit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -278,8 +282,6 @@ public class GameBoard {
         Thread.sleep(500);
         Process process2 = Runtime.getRuntime()
                 .exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
-
-        // TODO : UPDATE GAMEBOARD AFTER MERGING
     }
 
     /**
@@ -356,7 +358,7 @@ public class GameBoard {
         return gameBoard;
     }
 
-    public static HashMap<Integer, Integer> getNonEmptySquares() {
+    public static HashMap<Integer, Integer> getNonEmptySquares() throws IOException {
         if (!MatchBasic.isIngame()) {
             System.out.println("Currently not in game...");
             return null;
@@ -372,15 +374,13 @@ public class GameBoard {
                 int topLeftY = topLeftCoordinates[i][j].getY();
                 int bottomRightX = bottomRightCoordinates[i][j].getX();
                 int bottomRightY = bottomRightCoordinates[i][j].getY();
-                if (CompareImage.isMatchingRegion(baseState, gameState, topLeftX, topLeftY, bottomRightX,
-                        bottomRightY)) {
+                if (CompareImage.isMatchingRegion(baseState, gameState, topLeftX, topLeftY, bottomRightX, bottomRightY)) {
                     nonEmptySquares.put(i, j);
                 }
             }
         }
 
         return nonEmptySquares;
-
     }
 
     /**

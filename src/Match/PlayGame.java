@@ -1,9 +1,16 @@
 package Match;
 
+import Basic.Screenshot;
+import GUI.MainFrame;
+import Home.ButtonsHome;
+import Match.GameBoard.GameBoard;
+import Match.Units.ProcessUnit;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
@@ -57,7 +64,7 @@ public class PlayGame {
                     System.out.println("Emergency sell executing");
                 }
 
-                spamSummon(gameBoard);
+                MatchBasic.spamSummon10X();
                 gameBoard.saveBoardState();
             }
 
@@ -68,20 +75,7 @@ public class PlayGame {
         }
     }
 
-    private static void waitFor90(MainFrame mainFrame) throws IOException, InterruptedException {
-        // wait for 90 monsters
-        String currentTime = LocalDateTime.now().format(dtf);
-        appendColoredText(mainFrame, "[" + currentTime + "]" + " Waiting for enemies...\n", "blue");
-        while (!MatchBasic.is90enemies()) {
-            Screenshot.screenshotGameState();
-        }
 
-        // spawn
-        appendColoredText(mainFrame, "[" + currentTime + "]" + " Summoning now!\n", "green");
-        for (int i = 0; i < 15; i++) {
-            MatchBasic.pressSummon();
-        }
-    }
 
     private static void waitForGolem(MainFrame mainFrame) throws InterruptedException {
         String currentTime = LocalDateTime.now().format(dtf);
@@ -96,25 +90,33 @@ public class PlayGame {
         MatchBasic.challengeGolem();
     }
 
-    private static GameBoard processBoard(GameBoard gameBoard) throws InterruptedException, IOException {
+    private static GameBoard processBoard(final GameBoard gameBoard) throws InterruptedException, IOException {
         HashMap<Integer, Integer> nonEmptySquares = GameBoard.getNonEmptySquares();
 
-        nonEmptySquares.forEach((i, j) -> {
-            gameBoard.updateBoard(i, j);
-            checkForRewards();
-            if (!(gameBoard.getSquare(i, j).getUnit().getName() == null))
+        for (Map.Entry<Integer, Integer> entry : nonEmptySquares.entrySet()) {
+            int i = entry.getKey();
+            int j = entry.getValue();
+
+            // Update the board for square (i, j)
+            try {
+                gameBoard.updateBoard(i, j);
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException("Error updating board at (" + i + ", " + j + "): " + e.getMessage(), e);
+            }
+
+            // Check for rewards
+            try {
+                checkForRewards();
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException("Error checking for rewards: " + e.getMessage(), e);
+            }
+
+            // Detect and process the unit if it exists at (i, j)
+            if (gameBoard.getSquare(i, j).getUnit().getName() != null) {
                 gameBoard = ProcessUnit.DetectUnitPlusProcess(gameBoard, i, j);
-
-        });
-        return gameBoard;
-    }
-
-    private static GameBoard spamSummon(GameBoard gameBoard) throws IOException, InterruptedException {
-        for (int i = 0; i < 15; i++) {
-            MatchBasic.pressSummon();
-            checkForRewards();
+            }
         }
-        Thread.sleep(1000);
+
         return gameBoard;
     }
 

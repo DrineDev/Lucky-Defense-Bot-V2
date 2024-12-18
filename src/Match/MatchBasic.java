@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import Basic.Coordinates;
+import Basic.PixelColorChecker;
+import Basic.Press;
+import Basic.Screenshot;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;

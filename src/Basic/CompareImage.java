@@ -94,6 +94,51 @@ public class CompareImage {
         return true; // The region matches
     }
 
+    /**
+     * Compares a region defined by top-left and bottom-right coordinates in two images.
+     * Checks if the region in baseState and currentState is similar based on PixelColorChecker.
+     *
+     * @param baseState The base image.
+     * @param currentState The current image to compare.
+     * @param topLeftX The x-coordinate of the top-left corner of the region.
+     * @param topLeftY The y-coordinate of the top-left corner of the region.
+     * @param bottomRightX The x-coordinate of the bottom-right corner of the region.
+     * @param bottomRightY The y-coordinate of the bottom-right corner of the region.
+     * @return true if the region in both images is similar, false otherwise.
+     */
+    public static boolean isMatchingRegion(
+            BufferedImage baseState,
+            BufferedImage currentState,
+            int topLeftX,
+            int topLeftY,
+            int bottomRightX,
+            int bottomRightY) {
+        // Validate region coordinates
+        if (topLeftX < 0 || topLeftY < 0 || bottomRightX >= baseState.getWidth() || bottomRightY >= baseState.getHeight() ||
+                bottomRightX >= currentState.getWidth() || bottomRightY >= currentState.getHeight()) {
+            throw new IllegalArgumentException("Region coordinates exceed image bounds.");
+        }
+
+        // Calculate region width and height
+        int regionWidth = bottomRightX - topLeftX + 1;
+        int regionHeight = bottomRightY - topLeftY + 1;
+
+        // Compare each pixel in the specified region
+        for (int y = 0; y < regionHeight; y++) {
+            for (int x = 0; x < regionWidth; x++) {
+                Color baseColor = new Color(baseState.getRGB(topLeftX + x, topLeftY + y));
+                Color currentColor = new Color(currentState.getRGB(topLeftX + x, topLeftY + y));
+
+                if (!PixelColorChecker.isMatchingColor(baseColor, currentColor, COLOR_TOLERANCE)) {
+                    return false; // Region doesn't match
+                }
+            }
+        }
+
+        return true; // Region matches
+    }
+
+
     /**  Takes the paths to the refreshButton images and GameState image
      *   Loads both images and checks for null values
      *   Logs the dimensions of both images
