@@ -5,6 +5,7 @@ import GUI.MainFrame;
 import Home.ButtonsHome;
 import Match.GameBoard.GameBoard;
 import Match.Units.ProcessUnit;
+import GUI.IntroFrame;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -64,7 +65,7 @@ public class PlayGame {
                     System.out.println("Emergency sell executing");
                 }
 
-                MatchBasic.spamSummon10X();
+                MatchBasic.pressSummon10X();
                 gameBoard.saveBoardState();
             }
 
@@ -113,7 +114,7 @@ public class PlayGame {
 
             // Detect and process the unit if it exists at (i, j)
             if (gameBoard.getSquare(i, j).getUnit().getName() != null) {
-                gameBoard = ProcessUnit.DetectUnitPlusProcess(gameBoard, i, j);
+                ProcessUnit.DetectUnitPlusProcess(gameBoard, i, j);
             }
         }
 
