@@ -1,16 +1,10 @@
 package Match.Units;
 
 
-import Match.GameBoard.GameBoard;
-import Match.MatchBasic;
-import Match.MythicBuilder;
-import com.google.gson.Gson;
+import static Match.GameBoard.GameBoard.*;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.regex.Pattern;
-
-import static Match.GameBoard.GameBoard.*;
 
 public class ProcessUnit {
 
@@ -46,6 +40,12 @@ public class ProcessUnit {
         return gameboard;
     }
 
+    /**
+     * Function for selling units when units are full
+     * TODO : modify to sell units not required for the strat
+     *
+     *
+     */
     public static void emergencySell(GameBoard gameBoard) throws IOException, InterruptedException
     {
         Pattern prio_units;
@@ -98,6 +98,7 @@ public class ProcessUnit {
         return Pattern.compile("Archer|Barbarian|Bandit|Water Elemental|Thrower").matcher(unitName).find();
     }
 
+    // TODO : Add unit names for other evolutions (Dragon Egg, Iron Meow, etc)
     public static boolean isMythic(String unitName) {
         return Pattern.compile("Bat Man|Mama|Ninja|Graviton|Orc Shaman|Kitty Mage|Coldy|Blob|Monopoly Man|Frog Prince|Vayne|Lancelot|Iron Meow|Dragon|Bomba|Pulse Generator|Indy|Watt|Tar|Rocket Chu|King Dian|Overclock Rocket Chu").matcher(unitName).find();
     }
