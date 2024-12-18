@@ -1,16 +1,13 @@
 package Match;
 
-import Basic.Screenshot;
-import GUI.IntroFrame;
-import GUI.MainFrame;
-import Home.ButtonsHome;
-import Match.GameBoard.GameBoard;
-import Match.Units.ProcessUnit;
-
-import javax.swing.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import javax.swing.SwingUtilities;
+
+import GameBoard.GameBoard;
+import Units.ProcessUnit;
 
 public class PlayGame {
 
@@ -36,9 +33,8 @@ public class PlayGame {
             }
 
             // START OF GAME
-            for(int i = 0; i < 5; i++) {
-                MatchBasic.pressSummon();
-            }
+            MatchBasic.pressSummon10X();
+
             GameBoard gameBoard = new GameBoard();
             int upgradePrice = 2;
             Screenshot.screenshotGameState();

@@ -1,21 +1,18 @@
 package Match;
 
-import Basic.Coordinates;
-import Basic.PixelColorChecker;
-import Basic.Press;
-import Basic.Screenshot;
-import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.TesseractException;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-import org.opencv.imgcodecs.Imgcodecs;
-
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.imgcodecs.Imgcodecs;
+
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
 
 public class MatchBasic {
     static {
@@ -32,29 +29,6 @@ public class MatchBasic {
 
     public static void closeMythic() {
         Press.press(new Coordinates(456, 162), new Coordinates(493, 196), "Closing Upgrade");
-    }
-    /**
-     * Check if there are 90 enemies
-     * @return
-     */
-    public static boolean is90enemies() {
-        Coordinates[] coordinates = new Coordinates[3];
-        coordinates[0] = new Coordinates(338, 122); // 100
-        coordinates[1] = new Coordinates(324, 124); // 112
-        coordinates[2] = new Coordinates(321, 122); // 113
-
-        // TODO : ADD COORDINATES FOR OTHER MONSTER LIMITS
-
-        Color expectedColor = new Color(194, 64, 73);
-        String screenshotPath = "Resources/GameState.png";
-        int tolerance = 10;
-
-        for(Coordinates coordinates1 : coordinates) {
-            if(PixelColorChecker.checkColorMatch(coordinates1, expectedColor, screenshotPath, tolerance))
-                return true;
-        }
-
-        return false;
     }
 
     public static boolean isFindingMatch() {
@@ -124,6 +98,15 @@ public class MatchBasic {
         Coordinates bottomRight = new Coordinates(364, 880);
         String action = "Pressing Summon";
         Press.press(topLeft, bottomRight, action);
+    }
+
+    public static void pressSummon10X() {
+        Coordinates topLeft = new Coordinates(175, 789);
+        Coordinates bottomRight = new Coordinates(364, 880);
+        String action = "Pressing Summon";
+
+        Coordinates temp = Coordinates.makeRandomCoordinate(topLeft, bottomRight);
+        Press.press(temp, action);
     }
 
     public static void pressGamble() {
