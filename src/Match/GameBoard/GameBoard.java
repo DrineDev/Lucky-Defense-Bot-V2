@@ -65,14 +65,11 @@ public class GameBoard {
     }
 
     public static Square getSquare(int i, int j) {
-        Square gameBoardSquare = gameBoard[i][j];
-        return gameBoardSquare;
+        return gameBoard[i][j];
     }
 
     /**
      * Keep the values to 3x6 Squares
-     * @throws IOException
-     * @throws InterruptedException
      */
     public void updateBoard(int i, int j) throws IOException, InterruptedException {
         if (gameBoard == null) {
@@ -151,13 +148,6 @@ public class GameBoard {
 
     /**
      * Move units
-     * 
-     * @param i1
-     * @param j1
-     * @param i2
-     * @param j2
-     * @throws IOException
-     * @throws InterruptedException
      */
     public GameBoard moveUnit(GameBoard gameBoard, int i1, int j1, int i2, int j2)
             throws IOException, InterruptedException {
@@ -177,29 +167,7 @@ public class GameBoard {
     }
 
     /**
-     * GETTERS
-     * 
-     * @return
-     */
-    public static Coordinates[][] getTopLeftCoordinates() {
-        return topLeftCoordinates;
-    }
-
-    public static Coordinates[][] getBottomRightCoordinates() {
-        return bottomRightCoordinates;
-    }
-
-    public Square[][] getGameBoard() {
-        return gameBoard;
-    }
-
-    /**
      * Sell units
-     * 
-     * @param i
-     * @param j
-     * @throws IOException
-     * @throws InterruptedException
      */
     public static GameBoard sellUnit(GameBoard gameboard, int i, int j) throws IOException, InterruptedException {
         // Click the unit at the specified game board coordinates
@@ -241,11 +209,6 @@ public class GameBoard {
 
     /**
      * Merge units
-     * 
-     * @param i
-     * @param j
-     * @throws IOException
-     * @throws InterruptedException
      */
     public static void mergeUnit(int i, int j) throws IOException, InterruptedException {
         // Location sa specific unit e merge sa gameboard
@@ -286,11 +249,6 @@ public class GameBoard {
 
     /**
      * Upgrade units for mythics like Batman, Tar, Lancelot, etc.
-     * 
-     * @param i
-     * @param j
-     * @throws IOException
-     * @throws InterruptedException
      */
     public static void upgradeUnit(int i, int j) throws IOException, InterruptedException {
         // Location sa specific unit e merge sa gameboard
@@ -323,11 +281,11 @@ public class GameBoard {
                 mergeBottomRight[i][j]);
 
         // click unit
-        System.out.println("Clicking the unit to merge at: " + fromRandomCoordinates);
+        System.out.println("Clicking the unit to upgrade at: " + fromRandomCoordinates);
         Process process1 = Runtime.getRuntime()
                 .exec("adb shell input tap " + fromRandomCoordinates.getX() + " " + fromRandomCoordinates.getY());
         Thread.sleep(500); // Click merge
-        System.out.println("Merging the unit at: " + mergeRandomCoordinates);
+        System.out.println("Upgrading the unit at: " + mergeRandomCoordinates);
         Process process2 = Runtime.getRuntime()
                 .exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
         Thread.sleep(500);
@@ -345,12 +303,12 @@ public class GameBoard {
         Unit tempUnit;
 
         // I1 J1 TO TEMP
-        temp = gameBoard.getSquare(i1, j1);
+        temp = getSquare(i1, j1);
         // I1 J1 UNIT TO TEMP
-        tempUnit = gameBoard.getSquare(i1, j1).getUnit();
+        tempUnit = getSquare(i1, j1).getUnit();
 
         // PLACE SQUARE I2 J2 TO I1 J1
-        gameBoard.setSquare(gameBoard.getSquare(i2, j2), i1, j1);
+        gameBoard.setSquare(getSquare(i2, j2), i1, j1);
 
         // PUT TEMP TO I2 J2
         gameBoard.setSquare(temp, i2, j2);
@@ -383,6 +341,40 @@ public class GameBoard {
         return nonEmptySquares;
     }
 
+    public boolean isBoardComplete() {
+        if(!getSquare(0, 0).getUnit().getName().equals("Frog Prince"))
+            return false;
+        if(!getSquare(1, 0).getUnit().getName().equals("Bandit"))
+            return false;
+        if(!getSquare(2, 0).getUnit().getName().equals("Bandit"))
+            return false;
+        if(!getSquare(1, 0).getUnit().getName().equals("Frog Prince"))
+            return false;
+        if(!getSquare(1, 1).getUnit().getName().equals("Dragon"))
+            return false;
+        if(!getSquare(1, 2).getUnit().getName().equals("Dragon"))
+            return false;
+        if(!getSquare(0, 2).getUnit().getName().equals("Electro Robot"))
+            return false;
+
+        return true;
+    }
+
+    public int getTotalUnits(String unitName) {
+        int totalQuantity = 0;
+
+        for (int i = 0; i < gameBoard.length; i++) {
+            for (int j = 0; j < gameBoard[i].length; j++) {
+                Unit unit = gameBoard[i][j].getUnit();
+                if (unit != null && unit.getName().equals(unitName)) {
+                    totalQuantity += unit.getQuantity();
+                }
+            }
+        }
+
+        return totalQuantity;
+    }
+
     /**
      * Return square;
      * 
@@ -395,6 +387,20 @@ public class GameBoard {
         gameBoard[row][column] = square;
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    /**
+     * GETTERS
+     *
+     * @return
+     */
+    public static Coordinates[][] getTopLeftCoordinates() {
+        return topLeftCoordinates;
+    }
+
+    public static Coordinates[][] getBottomRightCoordinates() {
+        return bottomRightCoordinates;
+    }
+
+    public Square[][] getGameBoard() {
+        return gameBoard;
     }
 }

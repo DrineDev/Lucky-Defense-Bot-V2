@@ -54,6 +54,16 @@ public class MythicalUnit extends Unit {
                 LOGGER.info("Match found: " + unitName);
                 temp.setName(unitName);
                 temp.setQuantity(1); // Mythical units always have 1 quantity
+
+                // FOR DRAGON
+                switch (unitName) {
+                    case "Dragon Egg" -> temp.setName("Dragon");
+
+                    // FOR IRON MEOW
+                    case "Iron Meow (evo)" -> temp.setName("Iron Meow(0)");
+                    case "Iron Meow (non evo" -> temp.setName("Iron Meow(1)");
+                }
+
                 return temp;
             }
         }

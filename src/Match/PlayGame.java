@@ -17,11 +17,10 @@ import javax.swing.SwingUtilities;
 
 public class PlayGame {
 
-    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
         while (true) {
-
             ButtonsHome.pressBattle();
             Thread.sleep(2000);
             ButtonsHome.pressMatch();
@@ -42,21 +41,37 @@ public class PlayGame {
             MatchBasic.pressSummon10X();
 
             GameBoard gameBoard = new GameBoard();
-            int upgradePrice = 2;
             Screenshot.screenshotGameState();
 
             // GAME LOOP
             while (MatchBasic.isIngame()) {
+
+                if(gameBoard.isBoardComplete()) {
+                    while (MatchBasic.isIngame()) {
+                        MatchBasic.closeGamble();
+                        MatchBasic.closeMythic();
+                        MatchBasic.closeUpgrade();
+
+                        MatchBasic.pressUpgrade();
+                        MatchBasic.pressUpgradeMythic();
+                        waitForGolem(mainFrame);
+                    }
+                    break;
+                }
                 gameBoard = processBoard(gameBoard);
-                if (MythicBuilder.canBuild("Bat Man", gameBoard)) {
+                if (MythicBuilder.canBuild("Dragon", gameBoard)) {
                     MatchBasic.pressAnywhere();
                     Thread.sleep(750);
                     MatchBasic.pressBuildFavoriteMythic();
                 }
-                upgradePrice = gambleStones(gameBoard, upgradePrice);
 
-                if (upgradePrice == 0)
-                    break;
+                if (MythicBuilder.canBuild("Frog Prince", gameBoard)) {
+                    MatchBasic.pressAnywhere();
+                    Thread.sleep(750);
+                    MatchBasic.pressBuildFavoriteMythic();
+                }
+
+                gambleStones(gameBoard);
 
                 waitForGolem(mainFrame);
 
@@ -127,7 +142,7 @@ public class PlayGame {
 
         for (int i = 0; i < 13; i++) {
             MatchBasic.pressUpgradeSummoning();
-            Thread.sleep(250);
+            Thread.sleep(100);
         }
 
         MatchBasic.closeUpgrade();
@@ -143,41 +158,26 @@ public class PlayGame {
         }
     }
 
-    private static int gambleStones(GameBoard gameBoard, int upgradePrice) throws InterruptedException, IOException {
+    private static void gambleStones(GameBoard gameBoard) throws InterruptedException, IOException {
         // MatchBasic.closeUpgrade();
         Thread.sleep(500);
         checkForRewards();
         Screenshot.screenshotGameState();
         if (MatchBasic.checkIfMax())
             ProcessUnit.emergencySell(gameBoard);
-        if (!MatchBasic.isIngame())
-            return 0;
 
         int luckyStones = MatchBasic.checkLuckyStones();
         MatchBasic.pressGamble();
         Thread.sleep(1500);
 
         for (int i = 0; i < luckyStones; i++) {
-            if (luckyStones > 15) {
-                MatchBasic.closeGamble();
-                Thread.sleep(1500);
-                MatchBasic.pressUpgrade();
-                Thread.sleep(1500);
-                MatchBasic.pressUpgradeMythic();
-                upgradePrice += 1;
-                i += upgradePrice;
-            }
             MatchBasic.pressEpicGamble();
             checkForRewards();
             Thread.sleep(500);
         }
 
         MatchBasic.closeGamble();
-
-        return upgradePrice;
     }
-
-    // TODO : ALGORITHM FOR PLAYING GAME
 
     public static void appendColoredText(MainFrame mainFrame, String message, String color) {
         mainFrame.appendToPane(message, color);
