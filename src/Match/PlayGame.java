@@ -91,8 +91,6 @@ public class PlayGame {
         }
     }
 
-
-
     private static void waitForGolem(MainFrame mainFrame) throws InterruptedException {
         String currentTime = LocalDateTime.now().format(dtf);
         if (!MatchBasic.isGolemPresent()) {
@@ -107,9 +105,9 @@ public class PlayGame {
     }
 
     private static GameBoard processBoard(final GameBoard gameBoard) throws InterruptedException, IOException {
-        HashMap<Integer, Integer> nonEmptySquares = GameBoard.getNonEmptySquares();
+        HashMap<Integer, Integer> validSquares = GameBoard.getNonEmptySquares();
 
-        for (Map.Entry<Integer, Integer> entry : nonEmptySquares.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : validSquares.entrySet()) {
             int i = entry.getKey();
             int j = entry.getValue();
 

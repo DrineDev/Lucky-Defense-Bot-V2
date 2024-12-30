@@ -298,7 +298,7 @@ public class ProcessUnit {
                     break;
                 }
 
-                if (i == 0 && j == 4)
+                if (i == 1 && j == 4)
                     break;
 
                 String unitIn14 = getSquare(1, 4).getUnit().getName();
@@ -405,13 +405,13 @@ public class ProcessUnit {
                 if (i == 2 && j == 4)
                     break;
 
-                String unitIn24 = getSquare(0, 4).getUnit().getName();
+                String unitIn24 = getSquare(2, 4).getUnit().getName();
 
                 if(unitIn24.equals("Tree"))
                     for(int k = 0; k < baseEpic.getQuantity(); k++)
                         gameboard = sellUnit(gameboard, i, j);
                 else
-                    gameboard = gameboard.moveUnit(gameboard, i, j, 0, 4);
+                    gameboard = gameboard.moveUnit(gameboard, i, j, 2, 4);
 
                 break;
 

@@ -6,11 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.imageio.ImageIO;
 
@@ -338,7 +334,51 @@ public class GameBoard {
             }
         }
 
+        nonEmptySquares = validateRemainingSquares(nonEmptySquares);
         return nonEmptySquares;
+    }
+
+    private static HashMap<Integer, Integer> validateRemainingSquares(HashMap<Integer, Integer> nonEmptySquares) {
+        if (nonEmptySquares == null || nonEmptySquares.isEmpty()) {
+            System.out.println("No non-empty squares to validate.");
+            return nonEmptySquares;
+        }
+
+        Iterator<Map.Entry<Integer, Integer>> iterator = nonEmptySquares.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Integer> entry = iterator.next();
+            int i = entry.getKey();
+            int j = entry.getValue();
+
+            String expectedUnit = getExpectedUnit(i, j);
+            if (expectedUnit == null) {
+                System.out.println("No expected unit for square: (" + i + ", " + j + ")");
+                continue;
+            }
+
+            if (getSquare(i, j).getUnit().getName().equals(expectedUnit)) {
+                iterator.remove();
+            }
+        }
+
+        return nonEmptySquares;
+    }
+
+    private static String getExpectedUnit(int i, int j) {
+        if (i == 0 && j == 0) return "Frog Prince";
+        if (i == 1 && j == 0) return "Bandit";
+        if (i == 2 && j == 0) return "Bandit";
+        if (i == 1 && j == 1) return "Dragon";
+        if (i == 1 && j == 2) return "Dragon";
+        if (i == 0 && j == 2) return "Electro Robot";
+        if (i == 0 && j == 4) return "Wolf Warrior";
+        if (i == 0 && j == 5) return "Barbarian";
+        if (i == 1 && j == 4) return "Eagle General";
+        if (i == 2 && j == 4) return "Tree";
+        if (i == 1 && j == 5) return "Thrower";
+        if (i == 2 && j == 5) return "Water Elemental";
+
+        return null; // No specific unit expected
     }
 
     public boolean isBoardComplete() {
@@ -377,20 +417,13 @@ public class GameBoard {
 
     /**
      * Return square;
-     * 
-     * @param row
-     * @param column
-     * @return
      */
-
     public void setSquare(Square square, int row, int column) {
         gameBoard[row][column] = square;
     }
 
     /**
      * GETTERS
-     *
-     * @return
      */
     public static Coordinates[][] getTopLeftCoordinates() {
         return topLeftCoordinates;
