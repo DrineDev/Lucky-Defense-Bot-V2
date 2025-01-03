@@ -7,13 +7,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Press {
-    /**
-     * Press within random coordinates in topLeft and bottomRight
-     * @param topLeft
-     * @param bottomRight
-     * @param actionName
-     */
-
     private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static void press(Coordinates topLeft, Coordinates bottomRight, String actionName) {
@@ -29,11 +22,6 @@ public class Press {
         }
     }
 
-    /**
-     * Press coordinates instantly
-     * @param coordinates
-     * @param actionName
-     */
     public static void press(Coordinates coordinates, String actionName) {
         Process process;
         String currentTime = LocalDateTime.now().format(dtf);
@@ -45,6 +33,4 @@ public class Press {
             System.out.println("[" + currentTime + "]" + " Pressing " + actionName + "failed.");
         }
     }
-
-
 }

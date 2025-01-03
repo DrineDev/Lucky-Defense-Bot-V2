@@ -38,12 +38,12 @@ public class Unit {
 
         // RARITY COLORS
         Color mythicalColor = new Color(181, 90, 45);
-        Color commonColor = new Color(176, 165, 136);
+        Color commonColor = new Color(177, 166, 137);
         Color uncommonColor = new Color(59, 76, 136);
         Color epicColor = new Color(111, 56, 146);
         Color legendaryColor = new Color(219, 161, 50);
 
-        Coordinates checkCoordinates = new Coordinates(64, 147);
+        Coordinates checkCoordinates = new Coordinates(61, 122);
         Screenshot.screenshotGameState();
 
         try {

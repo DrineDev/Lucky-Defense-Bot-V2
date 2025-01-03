@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.SwingUtilities;
@@ -21,44 +22,36 @@ public class PlayGame {
 
     public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
         while (true) {
-            ButtonsHome.pressBattle();
-            Thread.sleep(2000);
-            ButtonsHome.pressMatch();
-
-            // WAIT FOR LOADING
-            appendColoredText(mainFrame, "Waiting for game...", "red");
-            while (MatchBasic.isInLobby()) {
-                Screenshot.screenshotGameState();
-            }
-            while (MatchBasic.isFindingMatch()) {
-                Screenshot.screenshotGameState();
-            }
-            while (MatchBasic.isLoading()) {
-                Screenshot.screenshotGameState();
-            }
-
-            // START OF GAME
-            MatchBasic.pressSummon10X();
+//            ButtonsHome.pressBattle();
+//            Thread.sleep(2000);
+//            ButtonsHome.pressMatch();
+//
+//            // WAIT FOR LOADING
+//            appendColoredText(mainFrame, "Waiting for game...", "red");
+//            while (MatchBasic.isInLobby()) {
+//                Screenshot.screenshotGameState();
+//            }
+//            while (MatchBasic.isFindingMatch()) {
+//                Screenshot.screenshotGameState();
+//            }
+//            while (MatchBasic.isLoading()) {
+//                Screenshot.screenshotGameState();
+//            }
 
             GameBoard gameBoard = new GameBoard();
-            Screenshot.screenshotGameState();
+            System.out.println("Gameboard initialized...");
 
+//            System.out.println("7.5s timer started");
+//            Thread.sleep(7500);
+//
+//            // FIRST STEPS
+//            MatchBasic.pressSummon10X();
+//            Screenshot.screenshotGameState();
+//
             // GAME LOOP
             while (MatchBasic.isIngame()) {
 
-                if(gameBoard.isBoardComplete()) {
-                    while (MatchBasic.isIngame()) {
-                        MatchBasic.closeGamble();
-                        MatchBasic.closeMythic();
-                        MatchBasic.closeUpgrade();
-
-                        MatchBasic.pressUpgrade();
-                        MatchBasic.pressUpgradeMythic();
-                        waitForGolem(mainFrame);
-                    }
-                    break;
-                }
-                gameBoard = processBoard(gameBoard);
+                processBoard(gameBoard);
                 if (MythicBuilder.canBuild("Dragon", gameBoard)) {
                     MatchBasic.pressAnywhere();
                     Thread.sleep(750);
@@ -82,6 +75,15 @@ public class PlayGame {
 
                 MatchBasic.pressSummon10X();
                 gameBoard.saveBoardState();
+
+                if(gameBoard.isBoardComplete()) {
+                    while (MatchBasic.isIngame()) {
+                        MatchBasic.pressUpgrade();
+                        MatchBasic.pressUpgradeMythic();
+                        waitForGolem(mainFrame);
+                    }
+                    break;
+                }
             }
 
             // MATCH IS FINISHED
@@ -104,12 +106,18 @@ public class PlayGame {
         MatchBasic.challengeGolem();
     }
 
-    private static GameBoard processBoard(final GameBoard gameBoard) throws InterruptedException, IOException {
-        HashMap<Integer, Integer> validSquares = GameBoard.getNonEmptySquares();
+    private static void processBoard(GameBoard gameBoard) throws InterruptedException, IOException {
+        Screenshot.screenshotGameState();
+        List<int[]> validSquares = GameBoard.getNonEmptySquares();
 
-        for (Map.Entry<Integer, Integer> entry : validSquares.entrySet()) {
-            int i = entry.getKey();
-            int j = entry.getValue();
+        if (validSquares == null || validSquares.isEmpty()) {
+            System.out.println("No valid squares found to process.");
+            return;
+        }
+
+        for (int[] square : validSquares) {
+            int i = square[0];
+            int j = square[1];
 
             // Update the board for square (i, j)
             try {
@@ -126,12 +134,11 @@ public class PlayGame {
             }
 
             // Detect and process the unit if it exists at (i, j)
-            if (gameBoard.getSquare(i, j).getUnit().getName() != null) {
+            if (gameBoard.getSquare(i, j).getUnit() != null &&
+                    gameBoard.getSquare(i, j).getUnit().getName() != null) {
                 ProcessUnit.DetectUnitPlusProcess(gameBoard, i, j);
             }
         }
-
-        return gameBoard;
     }
 
     private static void upgradeSummonLevel() throws InterruptedException {
@@ -184,4 +191,5 @@ public class PlayGame {
     public static void main(String[] args) throws IOException, InterruptedException {
         SwingUtilities.invokeLater(IntroFrame::new);
     }
+
 }

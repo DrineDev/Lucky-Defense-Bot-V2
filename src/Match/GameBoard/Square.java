@@ -40,7 +40,7 @@ public class Square {
     public void updateSquare(Coordinates topLeft, Coordinates bottomRight, String action) throws IOException, InterruptedException {
         Thread.sleep(1000);
         Press.press(topLeft, bottomRight, action);
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         Screenshot.screenshotGameState();
         int rarity = Unit.isWhatRarity();
         switch(rarity) {

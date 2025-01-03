@@ -12,6 +12,7 @@ public class Screenshot {
      * @throws IOException
      */
     public static void screenshotGameState() throws IOException {
+        System.out.println("GameState.png updated...");
         Path outputPath = Paths.get(SCREENSHOT_PATH).toAbsolutePath();
         ProcessBuilder pb = new ProcessBuilder("adb", "exec-out", "screencap", "-p");
         pb.redirectOutput(outputPath.toFile());

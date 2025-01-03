@@ -8,6 +8,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         SwingUtilities.invokeLater(IntroFrame::new);
-        EmulatorBasic.openEmulator();
+//        EmulatorBasic.openEmulator();
     }
 }

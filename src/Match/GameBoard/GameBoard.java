@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import Basic.CompareImage;
 import Basic.Coordinates;
+import Basic.Screenshot;
 import Match.MatchBasic;
 import Match.Units.Unit;
 import com.google.gson.Gson;
@@ -207,6 +208,7 @@ public class GameBoard {
      * Merge units
      */
     public static void mergeUnit(int i, int j) throws IOException, InterruptedException {
+        System.out.println("Merging units...");
         // Location sa specific unit e merge sa gameboard
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j],
                 bottomRightCoordinates[i][j]);
@@ -247,6 +249,7 @@ public class GameBoard {
      * Upgrade units for mythics like Batman, Tar, Lancelot, etc.
      */
     public static void upgradeUnit(int i, int j) throws IOException, InterruptedException {
+        System.out.println("Upgrading unit...");
         // Location sa specific unit e merge sa gameboard
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j],
                 bottomRightCoordinates[i][j]);
@@ -288,6 +291,7 @@ public class GameBoard {
     }
 
     public GameBoard updateGameBoard(GameBoard gameBoard, int i1, int j1, int i2, int j2) {
+        System.out.println("Updating game board...");
         // IF EQUAL, JUST TURN TO NULL TO BE CALLED BY SELL UNIT
         if (i1 == i2 && j1 == j2) {
             gameBoard.setSquare(new Square(), i1, j1);
@@ -312,43 +316,59 @@ public class GameBoard {
         return gameBoard;
     }
 
-    public static HashMap<Integer, Integer> getNonEmptySquares() throws IOException {
+    /**
+     * compare square coordiantes in defaultGameBoard.png and gameState.png.
+     * If gameState.png's square is not the same with default gameBoard, it should add that to the HashMap.
+     * If it is the same, skip.
+     * Process those squares with validateRemainingSquares and if the specific square has the correct unit, remove it from the HashMap
+     * If it does not have the correct unit then keep in the HashMap
+     */
+    public static List<int[]> getNonEmptySquares() throws IOException {
+        System.out.println("Performing checks for valid squares...");
+        Screenshot.screenshotGameState();
+
         if (!MatchBasic.isIngame()) {
             System.out.println("Currently not in game...");
             return null;
         }
 
-        HashMap<Integer, Integer> nonEmptySquares = new HashMap<>();
+        System.out.println("Currently in game...");
+
+        List<int[]> nonEmptySquares = new ArrayList<>();
         BufferedImage baseState = ImageIO.read(new File("Resources/defaultGameBoard.png"));
         BufferedImage gameState = ImageIO.read(new File("Resources/GameState.png"));
 
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 6; j++) {
                 int topLeftX = topLeftCoordinates[i][j].getX();
                 int topLeftY = topLeftCoordinates[i][j].getY();
                 int bottomRightX = bottomRightCoordinates[i][j].getX();
                 int bottomRightY = bottomRightCoordinates[i][j].getY();
-                if (CompareImage.isMatchingRegion(baseState, gameState, topLeftX, topLeftY, bottomRightX, bottomRightY)) {
-                    nonEmptySquares.put(i, j);
+
+                if (!CompareImage.isMatchingRegion(baseState, gameState, topLeftX, topLeftY, bottomRightX, bottomRightY)) {
+                    nonEmptySquares.add(new int[]{i, j});
                 }
             }
         }
 
-        nonEmptySquares = validateRemainingSquares(nonEmptySquares);
+        validateRemainingSquares(nonEmptySquares);
         return nonEmptySquares;
     }
 
-    private static HashMap<Integer, Integer> validateRemainingSquares(HashMap<Integer, Integer> nonEmptySquares) {
+    /**
+     * Check the nonEmptySquares and remove squares that already have the correct units in them.
+     */
+    private static void validateRemainingSquares(List<int[]> nonEmptySquares) {
         if (nonEmptySquares == null || nonEmptySquares.isEmpty()) {
             System.out.println("No non-empty squares to validate.");
-            return nonEmptySquares;
+            return;
         }
 
-        Iterator<Map.Entry<Integer, Integer>> iterator = nonEmptySquares.entrySet().iterator();
+        Iterator<int[]> iterator = nonEmptySquares.iterator();
         while (iterator.hasNext()) {
-            Map.Entry<Integer, Integer> entry = iterator.next();
-            int i = entry.getKey();
-            int j = entry.getValue();
+            int[] square = iterator.next();
+            int i = square[0];
+            int j = square[1];
 
             String expectedUnit = getExpectedUnit(i, j);
             if (expectedUnit == null) {
@@ -360,8 +380,6 @@ public class GameBoard {
                 iterator.remove();
             }
         }
-
-        return nonEmptySquares;
     }
 
     private static String getExpectedUnit(int i, int j) {
@@ -383,10 +401,6 @@ public class GameBoard {
 
     public boolean isBoardComplete() {
         if(!getSquare(0, 0).getUnit().getName().equals("Frog Prince"))
-            return false;
-        if(!getSquare(1, 0).getUnit().getName().equals("Bandit"))
-            return false;
-        if(!getSquare(2, 0).getUnit().getName().equals("Bandit"))
             return false;
         if(!getSquare(1, 0).getUnit().getName().equals("Frog Prince"))
             return false;

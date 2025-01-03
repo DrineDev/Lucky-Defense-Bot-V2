@@ -67,7 +67,7 @@ public class ProcessUnit {
 
                 }else if (unit.getName().equals("Electro Robot")){
                     break;
-                }else{
+                } else{
                     for(int k = unit.getQuantity(); k > 1; --k)
                         gameBoard = sellUnit(gameBoard,i,j);
                 }

@@ -104,13 +104,16 @@ public class MatchBasic {
         Press.press(topLeft, bottomRight, action);
     }
 
-    public static void pressSummon10X() {
+    public static void pressSummon10X() throws InterruptedException {
         Coordinates topLeft = new Coordinates(175, 789);
         Coordinates bottomRight = new Coordinates(364, 880);
         String action = "Pressing Summon";
 
         Coordinates temp = Coordinates.makeRandomCoordinate(topLeft, bottomRight);
-        Press.press(temp, action);
+        for(int i = 0; i < 10; i++) {
+            Press.press(temp, action);
+            Thread.sleep(500);
+        }
     }
 
     public static void pressGamble() {
@@ -127,11 +130,12 @@ public class MatchBasic {
         Press.press(topLeft, bottomRight, action);
     }
 
-    public static void pressUpgrade() {
+    public static void pressUpgrade() throws InterruptedException {
         Coordinates topLeft = new Coordinates(175, 898);
         Coordinates bottomRight = new Coordinates(365, 946);
         String action = "Pressing Upgrade";
         Press.press(topLeft, bottomRight, action);
+        Thread.sleep(1500);
     }
 
     public static void pressGolem() {
@@ -229,6 +233,7 @@ public class MatchBasic {
 
         return luckyStonesValue;
     }
+
     public static boolean isBossClear() throws IOException {
         Screenshot.screenshotGameState();
         Coordinates coordinates = new Coordinates(0, 0);
@@ -238,6 +243,7 @@ public class MatchBasic {
 
         return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
+
     public static void pressSelect() throws IOException {
         Press.press(new Coordinates(172, 633), new Coordinates(367, 714), "Confirming selection...");
         Screenshot.screenshotGameState();

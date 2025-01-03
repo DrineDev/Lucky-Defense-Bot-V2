@@ -61,7 +61,7 @@ public class MythicalUnit extends Unit {
 
                     // FOR IRON MEOW
                     case "Iron Meow (evo)" -> temp.setName("Iron Meow(0)");
-                    case "Iron Meow (non evo" -> temp.setName("Iron Meow(1)");
+                    case "Iron Meow (non evo)" -> temp.setName("Iron Meow(1)");
                 }
 
                 return temp;
