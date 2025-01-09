@@ -414,6 +414,75 @@ public class GameBoard {
         return true;
     }
 
+    public boolean shouldSummon() throws IOException {
+        // Get the non-empty squares
+        List<int[]> nonEmptySquares = getNonEmptySquares();
+        if (nonEmptySquares == null || nonEmptySquares.isEmpty()) {
+            return true; // No units on the board, summon is required
+        }
+
+        // Check if the required Mythics are built
+        boolean hasFrogPrince1 = false, hasFrogPrince2 = false;
+        boolean hasDragon1 = false, hasDragon2 = false;
+        boolean hasElectroRobot = false;
+
+        for (int[] square : nonEmptySquares) {
+            int i = square[0];
+            int j = square[1];
+            String unitName = getSquare(i, j).getUnit().getName();
+
+            if (i == 0 && j == 0 && unitName.equals("Frog Prince")) hasFrogPrince1 = true;
+            if (i == 1 && j == 0 && unitName.equals("Frog Prince")) hasFrogPrince2 = true;
+            if (i == 1 && j == 1 && unitName.equals("Dragon")) hasDragon1 = true;
+            if (i == 1 && j == 2 && unitName.equals("Dragon")) hasDragon2 = true;
+            if (i == 0 && j == 2 && unitName.equals("Electro Robot")) hasElectroRobot = true;
+        }
+
+        if (hasFrogPrince1 && hasFrogPrince2 && hasDragon1 && hasDragon2 && hasElectroRobot) {
+            return false; // All required Mythics are built
+        }
+
+        // Count the required units from the non-empty squares
+        int wolfWarriors = 0, trees = 0, barbarians = 0, throwers = 0;
+        int eagleGenerals = 0, waterElementals = 0;
+
+        for (int[] square : nonEmptySquares) {
+            int i = square[0];
+            int j = square[1];
+            String unitName = getSquare(i, j).getUnit().getName();
+
+            switch (unitName) {
+                case "Wolf Warrior":
+                    wolfWarriors++;
+                    break;
+                case "Tree":
+                    trees++;
+                    break;
+                case "Barbarian":
+                    barbarians++;
+                    break;
+                case "Thrower":
+                    throwers++;
+                    break;
+                case "Eagle General":
+                    eagleGenerals++;
+                    break;
+                case "Water Elemental":
+                    waterElementals++;
+                    break;
+            }
+        }
+
+        // Check if there are enough ingredients
+        if (wolfWarriors >= 2 && trees >= 2 && barbarians >= 2 && throwers >= 2 &&
+                eagleGenerals >= 4 && waterElementals >= 2) {
+            return false; // Enough ingredients for Frog Princes and Dragons
+        }
+
+        return true; // Not enough ingredients or Mythics not built
+    }
+
+
     public int getTotalUnits(String unitName) {
         int totalQuantity = 0;
 

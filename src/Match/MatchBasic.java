@@ -105,14 +105,18 @@ public class MatchBasic {
     }
 
     public static void pressSummon10X() throws InterruptedException {
-        Coordinates topLeft = new Coordinates(175, 789);
-        Coordinates bottomRight = new Coordinates(364, 880);
-        String action = "Pressing Summon";
+//        Coordinates topLeft = new Coordinates(175, 789);
+//        Coordinates bottomRight = new Coordinates(364, 880);
+//        String action = "Pressing Summon";
+//
+//        Coordinates temp = Coordinates.makeRandomCoordinate(topLeft, bottomRight);
+//        for(int i = 0; i < 10; i++) {
+//            Press.press(temp, action);
+//            Thread.sleep(500);
+//        }
 
-        Coordinates temp = Coordinates.makeRandomCoordinate(topLeft, bottomRight);
         for(int i = 0; i < 10; i++) {
-            Press.press(temp, action);
-            Thread.sleep(500);
+            pressSummon();
         }
     }
 

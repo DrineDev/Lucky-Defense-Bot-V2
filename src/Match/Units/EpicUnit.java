@@ -24,7 +24,7 @@ public class EpicUnit extends Unit {
         BufferedImage subImage = null;
         try {
             subImage = ImageIO.read(new File("Resources/GameState.png"));
-            subImage = subImage.getSubimage(49, 35, 113, 112);
+            subImage = subImage.getSubimage(50, 36, 113, 112);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

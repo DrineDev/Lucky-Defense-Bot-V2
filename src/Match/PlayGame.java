@@ -22,32 +22,32 @@ public class PlayGame {
 
     public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
         while (true) {
-//            ButtonsHome.pressBattle();
-//            Thread.sleep(2000);
-//            ButtonsHome.pressMatch();
-//
-//            // WAIT FOR LOADING
-//            appendColoredText(mainFrame, "Waiting for game...", "red");
-//            while (MatchBasic.isInLobby()) {
-//                Screenshot.screenshotGameState();
-//            }
-//            while (MatchBasic.isFindingMatch()) {
-//                Screenshot.screenshotGameState();
-//            }
-//            while (MatchBasic.isLoading()) {
-//                Screenshot.screenshotGameState();
-//            }
+            ButtonsHome.pressBattle();
+            Thread.sleep(2000);
+            ButtonsHome.pressMatch();
+
+            // WAIT FOR LOADING
+            appendColoredText(mainFrame, "Waiting for game...", "red");
+            while (MatchBasic.isInLobby()) {
+                Screenshot.screenshotGameState();
+            }
+            while (MatchBasic.isFindingMatch()) {
+                Screenshot.screenshotGameState();
+            }
+            while (MatchBasic.isLoading()) {
+                Screenshot.screenshotGameState();
+            }
 
             GameBoard gameBoard = new GameBoard();
             System.out.println("Gameboard initialized...");
 
-//            System.out.println("7.5s timer started");
-//            Thread.sleep(7500);
-//
-//            // FIRST STEPS
-//            MatchBasic.pressSummon10X();
-//            Screenshot.screenshotGameState();
-//
+            System.out.println("7.5s timer started");
+            Thread.sleep(7500);
+
+            // FIRST STEPS
+            MatchBasic.pressSummon10X();
+            Screenshot.screenshotGameState();
+
             // GAME LOOP
             while (MatchBasic.isIngame()) {
 
@@ -73,14 +73,18 @@ public class PlayGame {
                     System.out.println("Emergency sell executing");
                 }
 
-                MatchBasic.pressSummon10X();
+                if (gameBoard.shouldSummon())
+                    MatchBasic.pressSummon10X();
+
                 gameBoard.saveBoardState();
 
                 if(gameBoard.isBoardComplete()) {
+                    MatchBasic.pressUpgrade();
+                    Thread.sleep(2500);
                     while (MatchBasic.isIngame()) {
-                        MatchBasic.pressUpgrade();
                         MatchBasic.pressUpgradeMythic();
                         waitForGolem(mainFrame);
+                        Thread.sleep(2000);
                     }
                     break;
                 }
