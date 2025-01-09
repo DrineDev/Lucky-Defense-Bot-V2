@@ -3,6 +3,9 @@ package Basic;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import Logger.Logger;
+
+import static Logger.Logger.log;
 
 public class Screenshot {
     private static final String SCREENSHOT_PATH = "Resources/GameState.png";
@@ -12,6 +15,7 @@ public class Screenshot {
      * @throws IOException
      */
     public static void screenshotGameState() throws IOException {
+        log("GameState.png updated...");
         Path outputPath = Paths.get(SCREENSHOT_PATH).toAbsolutePath();
         ProcessBuilder pb = new ProcessBuilder("adb", "exec-out", "screencap", "-p");
         pb.redirectOutput(outputPath.toFile());

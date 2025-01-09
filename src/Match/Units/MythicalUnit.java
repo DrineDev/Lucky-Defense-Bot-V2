@@ -20,21 +20,10 @@ public class MythicalUnit extends Unit {
     public static MythicalUnit isWhatUnit() {
         BufferedImage subImage = null;
         try {
-            File gameStateFile = new File("Resources/GameState.png");
-            LOGGER.info("GameState file exists: " + gameStateFile.exists());
-            LOGGER.info("GameState file path: " + gameStateFile.getAbsolutePath());
-
-            BufferedImage fullImage = ImageIO.read(gameStateFile);
-            subImage = fullImage.getSubimage(52, 46, 113, 112);
-            LOGGER.info("Subimage extracted successfully. Size: " + subImage.getWidth() + "x" + subImage.getHeight());
-
-            // Save subimage for debugging
-            ImageIO.write(subImage, "png", new File("Resources/Debug_Subimage.png"));
-            LOGGER.info("Debug subimage saved to Resources/Debug_Subimage.png");
+            subImage = ImageIO.read(new File("Resources/GameState.png"));
+            subImage = subImage.getSubimage(50, 36, 101, 98);
         } catch (IOException e) {
-            LOGGER.severe("Error reading GameState image: " + e.getMessage());
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
 
         MythicalUnit temp = new MythicalUnit();
@@ -47,32 +36,24 @@ public class MythicalUnit extends Unit {
                 "Pulse Generator", "Rocket Chu", "Vayne", "Watt"
         );
 
-        // Check regular mythical units
         for (String unitName : unitNames) {
             String imagePath = "Resources/Units/Mythical/" + unitName + ".png";
             if (CompareImage.compareImage(subImage, imagePath)) {
-                LOGGER.info("Match found: " + unitName);
-                temp.setName(unitName);
+                temp.setName(switch (unitName) {
+                    case "Dragon Egg" -> "Dragon";
+                    case "Iron Meow (evo)" -> "Iron Meow(0)";
+                    case "Iron Meow (non evo)" -> "Iron Meow(1)";
+                    default -> unitName;
+                });
                 temp.setQuantity(1); // Mythical units always have 1 quantity
-
-                // FOR DRAGON
-                switch (unitName) {
-                    case "Dragon Egg" -> temp.setName("Dragon");
-
-                    // FOR IRON MEOW
-                    case "Iron Meow (evo)" -> temp.setName("Iron Meow(0)");
-                    case "Iron Meow (non evo" -> temp.setName("Iron Meow(1)");
-                }
-
                 return temp;
             }
         }
 
-        // Special case for BatMan
+        // Special cases for Bat Man
         for (int form = 0; form <= 4; form++) {
             String imagePath = String.format("Resources/Units/Mythical/Bat Man%d.png", form);
             if (CompareImage.compareImage(subImage, imagePath)) {
-                LOGGER.info("Match found: Bat Man Form " + form);
                 temp.setName("Bat Man");
                 temp.setQuantity(1);
                 temp.setForm(form);
@@ -80,11 +61,10 @@ public class MythicalUnit extends Unit {
             }
         }
 
-        // Special case for Tar
+        // Special cases for Tar
         for (int form = 1; form <= 3; form++) {
             String imagePath = String.format("Resources/Units/Mythical/Tar%d.png", form);
             if (CompareImage.compareImage(subImage, imagePath)) {
-                LOGGER.info("Match found: Tar Form " + form);
                 temp.setName("Tar");
                 temp.setQuantity(1);
                 temp.setForm(form);
@@ -92,14 +72,13 @@ public class MythicalUnit extends Unit {
             }
         }
 
-        // Default fallback: No match found
-        LOGGER.warning("No match found, setting default: Tar with Form 4");
+        // Default fallback
         temp.setName("Tar");
         temp.setQuantity(1);
         temp.setForm(4);
-
         return temp;
     }
+
 
     public void setForm(int i) { form = i; }
 }

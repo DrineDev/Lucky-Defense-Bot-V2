@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static Logger.Logger.log;
+
 /**
  * The Shop class handles operations related to the shop interface in the game.
  * It initializes coordinates for shop items, handles mail receiving, and provides methods to swipe through the game interface.
@@ -37,7 +39,7 @@ public class Shop {
                 boolean isInitialized = true; // This variable is not used
             }
         } catch (IOException e) {
-            System.err.println("Failed to initialize coordinates: " + e.getMessage());
+            log("Failed to initialize coordinates: " + e.getMessage());
         }
     }
 
@@ -100,10 +102,10 @@ public class Shop {
             ButtonsHome.closeMailBox(); // Close the mailbox
 
             Screenshot.screenshotGameState(); // Take another screenshot of the game state
-            System.out.println("MailBox received...");
+            log("MailBox received.");
             return;
         }
-        System.out.println("MailBox receiving failed...");
+        log("MailBox receiving failed.");
     }
 
     /**
@@ -215,16 +217,16 @@ public class Shop {
                 // Find the coordinates of the refresh button in the game state image
                 Coordinates coords = CompareImage.findRefreshButtonInGameState(refreshButtonPath, gameStatePath);
                 if (coords.getX() != -1 && coords.getY() != -1) {
-                    System.out.println("Found refresh button: " + refreshButtonPath); // Log the found refresh button
+                    log("Found refresh button: " + refreshButtonPath + "."); // Log the found refresh button
                     return coords.getY(); // Return the y-coordinate of the found refresh button
                 }
             } catch (IOException e) {
-                System.err.println("Error reading refresh button: " + refreshButtonPath);
+                log("Error reading refresh button: " + refreshButtonPath + ".");
                 e.printStackTrace(); // Print stack trace for debugging
             }
         }
 
-        System.out.println("No refresh button found."); // Log when no refresh button is found
+        log("No refresh button found."); // Log when no refresh button is found
         return -1; // Return -1 if no refresh button is found
     }
 
@@ -257,7 +259,7 @@ public class Shop {
         for (String shopImage : shopImages) {
             String imagePath = String.format("Resources/ShopFiles/%s.png", shopImage);
             if (CompareImage.compareImage(croppedImage, imagePath)) {
-                System.out.println("Match found in Area " + (areaIndex) + " for shop item: " + shopImage);
+                log("Match found in Area " + (areaIndex) + " for shop item: " + shopImage + ".");
                 buyItem(areaIndex);
                 break; // Exit loop after a successful match
             }

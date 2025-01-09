@@ -12,10 +12,15 @@ import javax.imageio.ImageIO;
 
 import Basic.CompareImage;
 import Basic.Coordinates;
+import Basic.Screenshot;
 import Match.MatchBasic;
 import Match.Units.Unit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import static Logger.Logger.log;
+import static Match.Units.ProcessUnit.sellUnitMultipleTimes;
+
 
 public class GameBoard {
 
@@ -50,14 +55,14 @@ public class GameBoard {
      * Construct the 3x6 squares
      */
     private void initializeGameBoard() {
-        System.out.println("Initializing game board...");
+        log("Initializing game board...");
         gameBoard = new Square[3][6];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 6; j++) {
                 gameBoard[i][j] = new Square();
             }
         }
-        System.out.println("Game board initialization complete.");
+        log("Game board initialization complete.");
     }
 
     public static Square getSquare(int i, int j) {
@@ -69,12 +74,12 @@ public class GameBoard {
      */
     public void updateBoard(int i, int j) throws IOException, InterruptedException {
         if (gameBoard == null) {
-            System.out.println("Board is null...");
+            log("Board is null.");
         }
 
         String action = "Checking square " + i + ", " + j;
         gameBoard[i][j].updateSquare(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
-        System.out.println("Board " + i + " " + j + " updated...");
+        log("Board " + i + " " + j + " updated.");
     }
 
     /**
@@ -82,11 +87,11 @@ public class GameBoard {
      */
     public void saveBoardState() {
         if (gameBoard == null) {
-            System.out.println("Error: gameBoard is null. Cannot save board state.");
+            log("[Error] gameBoard is null. Cannot save board state.");
             return;
         }
 
-        System.out.println("Saving board state...");
+        log("Saving board state...");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         // Build a custom structure that better represents the state
@@ -111,8 +116,8 @@ public class GameBoard {
         // Convert the custom structure to JSON
         String json = gson.toJson(Collections.singletonMap("gameBoard", boardState));
 
-        System.out.println("JSON content to be saved:");
-        System.out.println(json);
+//        log("JSON content to be saved:");
+//        log(json);
 
         String filePath = "Resources/gameBoardState.json";
         File file = new File(filePath);
@@ -124,20 +129,20 @@ public class GameBoard {
             // Write the JSON to the file
             try (FileWriter writer = new FileWriter(file)) {
                 writer.write(json);
-                System.out.println("Board state saved successfully to: " + file.getAbsolutePath());
+                log("Board state saved successfully to: " + file.getAbsolutePath() + ".");
             }
 
             // Verify the file was written
             if (file.exists() && file.length() > 0) {
-                System.out.println("File exists and is not empty.");
+                log("File exists and is not empty.");
                 String content = new String(Files.readAllBytes(Paths.get(filePath)));
-                System.out.println("File content:");
-                System.out.println(content);
+//                log("File content:");
+//                log(content);
             } else {
-                System.out.println("Error: File does not exist or is empty after writing.");
+                log("[Error] File does not exist or is empty after writing.");
             }
         } catch (IOException e) {
-            System.out.println("Error saving board state: " + e.getMessage());
+            log("[Error] cannot save board state: " + e.getMessage() + ".");
             e.printStackTrace();
         }
     }
@@ -193,7 +198,7 @@ public class GameBoard {
         Coordinates sellRandomCoordinates = Coordinates.makeRandomCoordinate(sellTopLeft[i][j], sellBottomRight[i][j]);
 
         // click sell
-        System.out.println("Selling the unit at: " + sellRandomCoordinates);
+        log("Selling the unit at: " + sellRandomCoordinates + ".");
         Thread.sleep(500);
         Process process2 = Runtime.getRuntime()
                 .exec("adb shell input tap " + sellRandomCoordinates.getX() + " " + sellRandomCoordinates.getY());
@@ -207,6 +212,7 @@ public class GameBoard {
      * Merge units
      */
     public static void mergeUnit(int i, int j) throws IOException, InterruptedException {
+        log("Merging units at (" + i + ", " + j + ").");
         // Location sa specific unit e merge sa gameboard
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j],
                 bottomRightCoordinates[i][j]);
@@ -237,7 +243,6 @@ public class GameBoard {
                 mergeBottomRight[i][j]);
 
         // Click merge
-        System.out.println("Merging the unit at: " + mergeRandomCoordinates);
         Thread.sleep(500);
         Process process2 = Runtime.getRuntime()
                 .exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
@@ -247,6 +252,7 @@ public class GameBoard {
      * Upgrade units for mythics like Batman, Tar, Lancelot, etc.
      */
     public static void upgradeUnit(int i, int j) throws IOException, InterruptedException {
+        log("Upgrading unit at (" + i + ", " + j + ").");
         // Location sa specific unit e merge sa gameboard
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j],
                 bottomRightCoordinates[i][j]);
@@ -277,82 +283,90 @@ public class GameBoard {
                 mergeBottomRight[i][j]);
 
         // click unit
-        System.out.println("Clicking the unit to upgrade at: " + fromRandomCoordinates);
         Process process1 = Runtime.getRuntime()
                 .exec("adb shell input tap " + fromRandomCoordinates.getX() + " " + fromRandomCoordinates.getY());
         Thread.sleep(500); // Click merge
-        System.out.println("Upgrading the unit at: " + mergeRandomCoordinates);
         Process process2 = Runtime.getRuntime()
                 .exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
         Thread.sleep(500);
     }
 
     public GameBoard updateGameBoard(GameBoard gameBoard, int i1, int j1, int i2, int j2) {
-        // IF EQUAL, JUST TURN TO NULL TO BE CALLED BY SELL UNIT
+        log("Updating game board...");
+
+        // If the same square, clear it (for selling a unit)
         if (i1 == i2 && j1 == j2) {
             gameBoard.setSquare(new Square(), i1, j1);
             return gameBoard;
         }
 
-        // TEMP HOLDER FOR SQUARE AND UNIT
-        Square temp = new Square();
-        Unit tempUnit;
+        // Swap squares
+        Square sourceSquare = getSquare(i1, j1);
+        Square targetSquare = getSquare(i2, j2);
 
-        // I1 J1 TO TEMP
-        temp = getSquare(i1, j1);
-        // I1 J1 UNIT TO TEMP
-        tempUnit = getSquare(i1, j1).getUnit();
-
-        // PLACE SQUARE I2 J2 TO I1 J1
-        gameBoard.setSquare(getSquare(i2, j2), i1, j1);
-
-        // PUT TEMP TO I2 J2
-        gameBoard.setSquare(temp, i2, j2);
+        gameBoard.setSquare(targetSquare, i1, j1);
+        gameBoard.setSquare(sourceSquare, i2, j2);
 
         return gameBoard;
     }
 
-    public static HashMap<Integer, Integer> getNonEmptySquares() throws IOException {
+    /**
+     * compare square coordiantes in defaultGameBoard.png and gameState.png.
+     * If gameState.png's square is not the same with default gameBoard, it should add that to the HashMap.
+     * If it is the same, skip.
+     * Process those squares with validateRemainingSquares and if the specific square has the correct unit, remove it from the HashMap
+     * If it does not have the correct unit then keep in the HashMap
+     */
+    public static List<int[]> getNonEmptySquares() throws IOException {
+        log("Performing checks for valid squares...");
+        Screenshot.screenshotGameState();
+
         if (!MatchBasic.isIngame()) {
-            System.out.println("Currently not in game...");
+            log("Currently not in game.");
             return null;
         }
 
-        HashMap<Integer, Integer> nonEmptySquares = new HashMap<>();
+        log("Currently in game.");
+
+        List<int[]> nonEmptySquares = new ArrayList<>();
         BufferedImage baseState = ImageIO.read(new File("Resources/defaultGameBoard.png"));
         BufferedImage gameState = ImageIO.read(new File("Resources/GameState.png"));
 
-        for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 6; j++) {
                 int topLeftX = topLeftCoordinates[i][j].getX();
                 int topLeftY = topLeftCoordinates[i][j].getY();
                 int bottomRightX = bottomRightCoordinates[i][j].getX();
                 int bottomRightY = bottomRightCoordinates[i][j].getY();
-                if (CompareImage.isMatchingRegion(baseState, gameState, topLeftX, topLeftY, bottomRightX, bottomRightY)) {
-                    nonEmptySquares.put(i, j);
+
+                if (!CompareImage.isMatchingRegion(baseState, gameState, topLeftX, topLeftY, bottomRightX, bottomRightY)) {
+                    nonEmptySquares.add(new int[]{i, j});
                 }
             }
         }
 
-        nonEmptySquares = validateRemainingSquares(nonEmptySquares);
+        validateRemainingSquares(nonEmptySquares);
         return nonEmptySquares;
     }
 
-    private static HashMap<Integer, Integer> validateRemainingSquares(HashMap<Integer, Integer> nonEmptySquares) {
+    /**
+     * Check the nonEmptySquares and remove squares that already have the correct units in them.
+     */
+    private static void validateRemainingSquares(List<int[]> nonEmptySquares) {
         if (nonEmptySquares == null || nonEmptySquares.isEmpty()) {
-            System.out.println("No non-empty squares to validate.");
-            return nonEmptySquares;
+            log("No non-empty squares to validate.");
+            return;
         }
 
-        Iterator<Map.Entry<Integer, Integer>> iterator = nonEmptySquares.entrySet().iterator();
+        Iterator<int[]> iterator = nonEmptySquares.iterator();
         while (iterator.hasNext()) {
-            Map.Entry<Integer, Integer> entry = iterator.next();
-            int i = entry.getKey();
-            int j = entry.getValue();
+            int[] square = iterator.next();
+            int i = square[0];
+            int j = square[1];
 
             String expectedUnit = getExpectedUnit(i, j);
             if (expectedUnit == null) {
-                System.out.println("No expected unit for square: (" + i + ", " + j + ")");
+                log("No expected unit for square: (" + i + ", " + j + ")");
                 continue;
             }
 
@@ -360,8 +374,6 @@ public class GameBoard {
                 iterator.remove();
             }
         }
-
-        return nonEmptySquares;
     }
 
     private static String getExpectedUnit(int i, int j) {
@@ -384,11 +396,7 @@ public class GameBoard {
     public boolean isBoardComplete() {
         if(!getSquare(0, 0).getUnit().getName().equals("Frog Prince"))
             return false;
-        if(!getSquare(1, 0).getUnit().getName().equals("Bandit"))
-            return false;
-        if(!getSquare(2, 0).getUnit().getName().equals("Bandit"))
-            return false;
-        if(!getSquare(1, 0).getUnit().getName().equals("Frog Prince"))
+        if(!getSquare(0, 1).getUnit().getName().equals("Frog Prince"))
             return false;
         if(!getSquare(1, 1).getUnit().getName().equals("Dragon"))
             return false;
@@ -400,7 +408,76 @@ public class GameBoard {
         return true;
     }
 
-    public int getTotalUnits(String unitName) {
+    public boolean shouldSummon() throws IOException, InterruptedException {
+        // Get the non-empty squares
+        List<int[]> nonEmptySquares = getNonEmptySquares();
+        if (nonEmptySquares == null || nonEmptySquares.isEmpty()) {
+            return true; // No units on the board, summon is required
+        }
+
+        // Check if the required Mythics are built
+        boolean hasFrogPrince1 = false, hasFrogPrince2 = false;
+        boolean hasDragon1 = false, hasDragon2 = false;
+        boolean hasElectroRobot = false;
+
+        for (int[] square : nonEmptySquares) {
+            int i = square[0];
+            int j = square[1];
+            String unitName = getSquare(i, j).getUnit().getName();
+
+            if (i == 0 && j == 0 && unitName.equals("Frog Prince")) hasFrogPrince1 = true;
+            if (i == 1 && j == 0 && unitName.equals("Frog Prince")) hasFrogPrince2 = true;
+            if (i == 1 && j == 1 && unitName.equals("Dragon")) hasDragon1 = true;
+            if (i == 1 && j == 2 && unitName.equals("Dragon")) hasDragon2 = true;
+            if (i == 0 && j == 2 && unitName.equals("Electro Robot")) hasElectroRobot = true;
+        }
+
+        if (hasFrogPrince1 && hasFrogPrince2 && hasDragon1 && hasDragon2 && hasElectroRobot) {
+            return false; // All required Mythics are built
+        }
+
+        // Count the required units from the non-empty squares
+        int wolfWarriors = 0, trees = 0, barbarians = 0, throwers = 0;
+        int eagleGenerals = 0, waterElementals = 0;
+
+        for (int[] square : nonEmptySquares) {
+            int i = square[0];
+            int j = square[1];
+            String unitName = getSquare(i, j).getUnit().getName();
+
+            switch (unitName) {
+                case "Wolf Warrior":
+                    wolfWarriors++;
+                    break;
+                case "Tree":
+                    trees++;
+                    break;
+                case "Barbarian":
+                    barbarians++;
+                    break;
+                case "Thrower":
+                    throwers++;
+                    break;
+                case "Eagle General":
+                    eagleGenerals++;
+                    break;
+                case "Water Elemental":
+                    waterElementals++;
+                    break;
+            }
+        }
+
+        // Check if there are enough ingredients
+        if (wolfWarriors >= 2 && trees >= 2 && barbarians >= 2 && throwers >= 2 &&
+                eagleGenerals >= 4 && waterElementals >= 2) {
+            return false; // Enough ingredients for Frog Princes and Dragons
+        }
+
+        return true; // Not enough ingredients or Mythics not built
+    }
+
+
+    public static int getTotalUnits(String unitName) {
         int totalQuantity = 0;
 
         for (int i = 0; i < gameBoard.length; i++) {

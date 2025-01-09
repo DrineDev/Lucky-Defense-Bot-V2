@@ -38,32 +38,31 @@ public class Unit {
 
         // RARITY COLORS
         Color mythicalColor = new Color(181, 90, 45);
-        Color commonColor = new Color(176, 165, 136);
-        Color uncommonColor = new Color(59, 76, 136);
+        Color commonColor = new Color(177, 166, 137);
+        Color uncommonColor = new Color(60, 76, 135);
         Color epicColor = new Color(111, 56, 146);
         Color legendaryColor = new Color(219, 161, 50);
 
-        Coordinates checkCoordinates = new Coordinates(64, 147);
+        Coordinates checkCoordinates = new Coordinates(63, 121);
         Screenshot.screenshotGameState();
 
         try {
             Color currentColor = PixelColorChecker.getPixelColor("Resources/GameState.png", checkCoordinates);
 
-            if(PixelColorChecker.isMatchingColor(mythicalColor, currentColor, 5))
-                return 5;
-            if(PixelColorChecker.isMatchingColor(legendaryColor, currentColor, 5))
+            if(PixelColorChecker.isMatchingColor(legendaryColor, currentColor, 10))
                 return 4;
-            if(PixelColorChecker.isMatchingColor(epicColor, currentColor, 5))
+            else if(PixelColorChecker.isMatchingColor(epicColor, currentColor, 10))
                 return 3;
-            if(PixelColorChecker.isMatchingColor(uncommonColor, currentColor, 5))
+            else if(PixelColorChecker.isMatchingColor(uncommonColor, currentColor, 10))
                 return 2;
-            if(PixelColorChecker.isMatchingColor(commonColor, currentColor, 5))
+            else if(PixelColorChecker.isMatchingColor(commonColor, currentColor, 10))
                 return 1;
+            else return 5;
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return 0; // error
+        // error
     }
 
 

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import static Logger.Logger.log;
+
 public class UncommonUnit extends Unit {
 
     public UncommonUnit() {
@@ -23,7 +25,7 @@ public class UncommonUnit extends Unit {
         BufferedImage subImage = null;
         try {
             subImage = ImageIO.read(new File("Resources/GameState.png"));
-            subImage = subImage.getSubimage(52, 46, 113, 112);
+            subImage = subImage.getSubimage(50, 36, 101, 98);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -35,7 +37,7 @@ public class UncommonUnit extends Unit {
                 // Point to the new directory structure
                 String imagePath = String.format("Resources/Units/Uncommon/%s%d.png", unitName, quantity);
                 if (CompareImage.compareImage(subImage, imagePath)) {
-                    System.out.println("Match found: " + unitName + " " + quantity + "x");
+                    log("Match found: " + unitName + " " + quantity + "x");
                     temp.setName(unitName);
                     temp.setQuantity(quantity);
                     return temp;

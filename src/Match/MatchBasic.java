@@ -18,6 +18,8 @@ import org.opencv.imgcodecs.Imgcodecs;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 
+import static Logger.Logger.log;
+
 public class MatchBasic {
     static {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -35,6 +37,15 @@ public class MatchBasic {
         Press.press(new Coordinates(456, 162), new Coordinates(493, 196), "Closing Upgrade");
     }
 
+    public static boolean isMatchCancelled() {
+        Coordinates coordinates = new Coordinates(0, 0);
+        Color expectedColor = new Color(0, 0, 0);
+        String screenshotPath = "Resources/GameState.png";
+
+        int tolerance = 20;
+        return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
+    }
+
     public static boolean isFindingMatch() {
         Coordinates coordinates = new Coordinates(0, 0);
         Color expectedColor = new Color(90, 76, 65);
@@ -46,9 +57,9 @@ public class MatchBasic {
 
     public static boolean isInLobby() {
         Coordinates coordinates = new Coordinates(0, 0);
-        Color expectedColor = new Color(84, 123, 44);
+        Color expectedColor = new Color(140, 163, 61);
         String screenshotPath = "Resources/GameState.png";
-        int tolerance = 5;
+        int tolerance = 20;
 
         return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
@@ -85,13 +96,14 @@ public class MatchBasic {
 
     /**
      * Check if Golem can be summoned
+     * MUST PRESS GOLEM. THIS CHECKS 'CHALLENGE' BUTTON POPUP
      * @return
      */
     public static boolean isGolemPresent() {
-        Coordinates coordinates = new Coordinates(481, 223);
-        Color expectedColor = new Color(93, 71, 61);
+        Coordinates coordinates = new Coordinates(235, 611);
+        Color expectedColor = new Color(250, 219, 14);
         String screenshotPath = "Resources/GameState.png";
-        int tolerance = 20;
+        int tolerance = 1;
 
         return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
@@ -104,13 +116,12 @@ public class MatchBasic {
         Press.press(topLeft, bottomRight, action);
     }
 
-    public static void pressSummon10X() {
+    public static void pressSummon10X() throws InterruptedException {
         Coordinates topLeft = new Coordinates(175, 789);
         Coordinates bottomRight = new Coordinates(364, 880);
         String action = "Pressing Summon";
 
-        Coordinates temp = Coordinates.makeRandomCoordinate(topLeft, bottomRight);
-        Press.press(temp, action);
+        Press.press20x(topLeft, bottomRight, action);
     }
 
     public static void pressGamble() {
@@ -127,11 +138,12 @@ public class MatchBasic {
         Press.press(topLeft, bottomRight, action);
     }
 
-    public static void pressUpgrade() {
+    public static void pressUpgrade() throws InterruptedException {
         Coordinates topLeft = new Coordinates(175, 898);
         Coordinates bottomRight = new Coordinates(365, 946);
         String action = "Pressing Upgrade";
         Press.press(topLeft, bottomRight, action);
+        Thread.sleep(1500);
     }
 
     public static void pressGolem() {
@@ -202,14 +214,17 @@ public class MatchBasic {
 
     public static int checkLuckyStones() throws InterruptedException, IOException {
         pressGamble();
-        Thread.sleep(1500);
+        Thread.sleep(6000);
         Screenshot.screenshotGameState();
 
         // Load the GameState image
         Mat gameState = Imgcodecs.imread("Resources/GameState.png");
+        if (gameState.empty()) {
+            log("[Error] Failed to load GameState.png");
+            return 0; // Return 0 if the GameState image cannot be loaded
+        }
 
         // Define the coordinates for the sub-image
-        // Replace these with your actual coordinates
         int topLeftX = 194; // Example X coordinate for the top-left corner
         int topLeftY = 644; // Example Y coordinate for the top-left corner
         int bottomRightX = 264; // Example X coordinate for the bottom-right corner
@@ -219,16 +234,31 @@ public class MatchBasic {
         Rect roi = new Rect(topLeftX, topLeftY, bottomRightX - topLeftX, bottomRightY - topLeftY);
 
         // Crop the sub-image
-        Mat subImage = new Mat(gameState, roi);
+        Mat subImage;
+        try {
+            subImage = new Mat(gameState, roi);
+        } catch (Exception e) {
+            log("[Error] cannot cropping sub-image: " + e.getMessage());
+            return 0; // Return 0 if the cropping fails
+        }
 
         // Process the sub-image and convert it to an int
-        int luckyStonesValue;
-        luckyStonesValue = Integer.parseInt(processSubImage(subImage));
+        int luckyStonesValue = 0;
+        try {
+            String result = processSubImage(subImage);
+            if (result == null || result.isEmpty()) {
+                log("[Error] Failed to process sub-image: result is empty");
+            } else {
+                luckyStonesValue = Integer.parseInt(result);
+            }
+        } catch (Exception e) {
+            log("[Error] processing sub-image: " + e.getMessage());
+        }
 
         Thread.sleep(2000);
-
         return luckyStonesValue;
     }
+
     public static boolean isBossClear() throws IOException {
         Screenshot.screenshotGameState();
         Coordinates coordinates = new Coordinates(0, 0);
@@ -238,18 +268,23 @@ public class MatchBasic {
 
         return PixelColorChecker.checkColorMatch(coordinates, expectedColor, screenshotPath, tolerance);
     }
+
+    public static void pressReturn() throws IOException {
+        Press.press(new Coordinates(172, 633), new Coordinates(367, 714), "Pressing return...");
+        Screenshot.screenshotGameState();
+    }
+
     public static void pressSelect() throws IOException {
         Press.press(new Coordinates(172, 633), new Coordinates(367, 714), "Confirming selection...");
         Screenshot.screenshotGameState();
     }
+
     public static void pressMostRight() throws IOException {
         Press.press(new Coordinates(363, 314), new Coordinates(493, 479), "Selecting most right...");
         Screenshot.screenshotGameState();
     }
+
     public static boolean checkIfMax() throws InterruptedException, IOException {
-        pressGamble();
-        Thread.sleep(1500);
-        Screenshot.screenshotGameState();
 
         // Load the GameState image
         Mat gameState = Imgcodecs.imread("Resources/GameState.png");
@@ -283,7 +318,6 @@ public class MatchBasic {
             return firstNum == secondNum;
         }
 
-        closeGamble();
         // Return false if the format is incorrect
         return false;
     }

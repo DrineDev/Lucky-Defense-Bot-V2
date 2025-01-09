@@ -7,6 +7,8 @@ import Match.Units.*;
 
 import java.io.IOException;
 
+import static Logger.Logger.log;
+
 public class Square {
     Unit unit;
 
@@ -40,7 +42,7 @@ public class Square {
     public void updateSquare(Coordinates topLeft, Coordinates bottomRight, String action) throws IOException, InterruptedException {
         Thread.sleep(1000);
         Press.press(topLeft, bottomRight, action);
-        Thread.sleep(1000);
+        Thread.sleep(2000);
         Screenshot.screenshotGameState();
         int rarity = Unit.isWhatRarity();
         switch(rarity) {
@@ -60,7 +62,7 @@ public class Square {
                 unit = MythicalUnit.isWhatUnit();
                 break;
             default:
-                System.out.println("Failed to update square...");
+                log("[Error] Failed to update square.");
                 break;
         }
     }
