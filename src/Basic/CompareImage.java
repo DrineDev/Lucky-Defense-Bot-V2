@@ -5,17 +5,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.logging.Logger;
+import Logger.Logger;
 
 import javax.imageio.ImageIO;
 
+import static Logger.Logger.log;
+
 public class CompareImage {
 
-    private static final Logger LOGGER = Logger.getLogger(CompareImage.class.getName());
     private static final double SIMILARITY_THRESHOLD = 0.975; // 95% similarity required
     private static final int COLOR_TOLERANCE = 30; // Using the same tolerance as in your PixelColorChecker
-    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     /** Takes a BufferedImage and a string path to the image to compare against
      *  Checks if the specified path exists,
@@ -146,11 +145,10 @@ public class CompareImage {
      *   Calls isMatchingRegion to check if the sub-image matches at that position
      *   If a match is found, return coordinates, else return (-1, -1) */
     public static Coordinates findRefreshButtonInGameState(String refreshButtonPath, String gameStatePath) throws IOException {
-        String currentTime = LocalDateTime.now().format(dtf);
-        System.out.println("[" + currentTime + "]" + " Attempting to load GameState from: " + gameStatePath);
+        log("Attempting to load GameState from: " + gameStatePath);
         BufferedImage gameState = ImageIO.read(new File(gameStatePath));
 
-        System.out.println("[" + currentTime + "]" + " Attempting to load RefreshButton from: " + refreshButtonPath);
+        log("Attempting to load RefreshButton from: " + refreshButtonPath);
         BufferedImage refreshButton = ImageIO.read(new File(refreshButtonPath));
 
         if (gameState == null) {

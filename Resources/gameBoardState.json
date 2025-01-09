@@ -1,24 +1,60 @@
 {
   "gameBoard": [
     [
+      {
+        "quantity": 1,
+        "name": "Tar"
+      },
+      {
+        "quantity": 1,
+        "name": "Frog Prince"
+      },
+      {
+        "quantity": 3,
+        "name": "Electro Robot"
+      },
+      {
+        "quantity": 1,
+        "name": "Tar"
+      },
       null,
-      null,
-      null,
-      null,
-      null,
-      null
+      {
+        "quantity": 1,
+        "name": "Barbarian"
+      }
     ],
     [
+      {
+        "quantity": 1,
+        "name": "Tar"
+      },
+      {
+        "quantity": 1,
+        "name": "Dragon"
+      },
+      {
+        "quantity": 1,
+        "name": "Dragon"
+      },
+      {
+        "quantity": 3,
+        "name": "Shock Robot"
+      },
       null,
-      null,
-      null,
-      null,
-      null,
-      null
+      {
+        "quantity": 1,
+        "name": "Thrower"
+      }
     ],
     [
-      null,
-      null,
+      {
+        "quantity": 3,
+        "name": "Bandit"
+      },
+      {
+        "quantity": 1,
+        "name": "Shock Robot"
+      },
       null,
       null,
       null,

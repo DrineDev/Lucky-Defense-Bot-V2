@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static Logger.Logger.log;
+
 public class Quest {
 
     /**
@@ -15,14 +17,12 @@ public class Quest {
      * @throws InterruptedException
      */
 
-    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static void autoQuest() throws IOException, InterruptedException {
-        String currentTime = LocalDateTime.now().format(dtf);
 
         Screenshot.screenshotGameState();
         if(!HomeNotifications.checkQuestNotification()) {
-            System.out.println("[" + currentTime + "]" + " No quest notifications...");
+            log("No quest notifications.");
             return;
         }
 
@@ -42,7 +42,7 @@ public class Quest {
         // HERE
 
         if(!HomeNotifications.checkAchievementNotification()) {
-            System.out.println("[" + currentTime + "]" + " No achievement notifications...");
+            log("No achievement notifications.");
             ButtonsHome.closeQuest();
             Thread.sleep(3000);
             Screenshot.screenshotGameState();
@@ -55,7 +55,7 @@ public class Quest {
             Thread.sleep(1000);
         }
 
-        System.out.println("[" + currentTime + "]" + " Auto quests complete...");
+        log(" Auto quests complete.");
     }
 
 }

@@ -7,6 +7,7 @@ import Basic.Screenshot;
 import java.awt.*;
 import java.io.IOException;
 
+import static Logger.Logger.log;
 import static java.lang.Thread.sleep;
 
 public class Recruit {
@@ -28,7 +29,7 @@ public class Recruit {
     public static void recruit1X() throws IOException {
         Screenshot.screenshotGameState();
         if(HomeNotifications.checkRecruitNotification()) {
-            System.out.println("Not enough recruitment scrolls for 1X...");
+            log("Not enough recruitment scrolls for 1X.");
             return;
         }
 
@@ -51,7 +52,7 @@ public class Recruit {
             throw new RuntimeException(e);
         }
 
-        System.out.println("Finished recruiting 1x...");
+        log("Finished recruiting 1x.");
         ButtonsHome.closeRecruit();
         Screenshot.screenshotGameState();
     }
@@ -63,7 +64,7 @@ public class Recruit {
     public static void recruit10X() throws IOException {
         Screenshot.screenshotGameState();
         if(HomeNotifications.checkRecruitNotification()) {
-            System.out.println("Not enough recruitment scrolls for 10X...");
+            log("Not enough recruitment scrolls for 10X.");
             return;
         }
 
@@ -86,7 +87,7 @@ public class Recruit {
             throw new RuntimeException(e);
         }
 
-        System.out.println("Finished recruiting 10x...");
+        log("Finished recruiting 10x.");
         ButtonsHome.closeRecruit();
         Screenshot.screenshotGameState();
     }

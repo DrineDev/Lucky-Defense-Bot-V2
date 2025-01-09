@@ -5,12 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import static Logger.Logger.log;
 
 public class EmulatorBasic {
-
-    private static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     /**
      * Finds a specific file on the system starting from a directory.
@@ -49,7 +46,7 @@ public class EmulatorBasic {
             );
             Process process = processBuilder.start();
             process.waitFor();
-            System.out.println("[INFO] ADB path added successfully: " + adbPath);
+            log("[INFO] ADB path added successfully: " + adbPath);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -81,10 +78,10 @@ public class EmulatorBasic {
     public static boolean isMuMuPlayerAvailable() {
         Path muMuPath = findFile("C:\\", "MuMuPlayer.exe");
         if (muMuPath != null) {
-            System.out.println("[INFO] MuMuPlayer found at: " + muMuPath);
+            log("[INFO] MuMuPlayer found at: " + muMuPath);
             return true;
         }
-        System.out.println("[INFO] MuMuPlayer not found.");
+        log("[INFO] MuMuPlayer not found.");
         return false;
     }
 
@@ -92,8 +89,7 @@ public class EmulatorBasic {
      * Main method to open the emulator.
      */
     public static void openEmulator() {
-        String currentTime = LocalDateTime.now().format(dtf);
-        System.out.println("[" + currentTime + "] Starting emulator setup...");
+        log("Starting emulator setup...");
 
         boolean adbAvailable = isADBAvailable();
         boolean muMuAvailable = isMuMuPlayerAvailable();
@@ -103,9 +99,9 @@ public class EmulatorBasic {
             Path adbPath = findFile("C:\\", "adb.exe");
             if (adbPath != null) {
                 addToPath(adbPath.getParent().toString());
-                System.out.println("[INFO] ADB configured successfully.");
+                log("[INFO] ADB configured successfully.");
             } else {
-                System.out.println("[ERROR] ADB not found. Aborting...");
+                log("[ERROR] ADB not found. Aborting...");
                 return;
             }
         }
@@ -113,28 +109,28 @@ public class EmulatorBasic {
         // Find MuMuPlayer if not available
         Path muMuPath = findFile("C:\\", "MuMuPlayer.exe");
         if (muMuPath == null) {
-            System.out.println("[ERROR] MuMuPlayer.exe not found. Aborting...");
+            log("[ERROR] MuMuPlayer.exe not found. Aborting...");
             return;
         }
 
         try {
             // Open MuMuPlayer
             Process process = Runtime.getRuntime().exec(muMuPath.toString());
-            System.out.println("[" + currentTime + "] MuMuPlayer.exe launched.");
+            log("MuMuPlayer.exe launched.");
             Thread.sleep(5000);
 
             // Connect ADB
             process = Runtime.getRuntime().exec("adb connect 127.0.0.1:7555");
-            System.out.println("[" + currentTime + "] ADB connected to emulator.");
+            log("ADB connected to emulator.");
             Thread.sleep(5000);
 
             // Set emulator screen size
             process = Runtime.getRuntime().exec("adb shell wm size 540x960");
-            System.out.println("[" + currentTime + "] Emulator screen size set to 540x960.");
+            log("Emulator screen size set to 540x960.");
             Thread.sleep(5000);
 
         } catch (IOException | InterruptedException i) {
-            System.out.println("[" + currentTime + "] Process opening failed: " + i.getMessage());
+            log("Process opening failed: " + i.getMessage());
         }
     }
 }

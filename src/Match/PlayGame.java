@@ -1,5 +1,6 @@
 package Match;
 
+import Basic.Press;
 import Basic.Screenshot;
 import GUI.MainFrame;
 import Home.ButtonsHome;
@@ -16,97 +17,180 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
-public class PlayGame {
+import static Logger.Logger.log;
 
-    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
+public class PlayGame {
 
     public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
         while (true) {
-            ButtonsHome.pressBattle();
-            Thread.sleep(2000);
-            ButtonsHome.pressMatch();
-
-            // WAIT FOR LOADING
-            appendColoredText(mainFrame, "Waiting for game...", "red");
-            while (MatchBasic.isInLobby()) {
-                Screenshot.screenshotGameState();
-            }
-            while (MatchBasic.isFindingMatch()) {
-                Screenshot.screenshotGameState();
-            }
-            while (MatchBasic.isLoading()) {
-                Screenshot.screenshotGameState();
-            }
+//            Screenshot.screenshotGameState();
+//
+//            while(!MatchBasic.isInLobby()) Screenshot.screenshotGameState();
+//
+//            ButtonsHome.pressBattle();
+//            Thread.sleep(2000);
+//            ButtonsHome.pressMatch();
+//
+//            // Wait for loading or match cancellation
+//            log("Waiting for game...");
+//            waitForGameToStart();
+//
+//            // If match was cancelled, restart the process
+//            if (MatchBasic.isMatchCancelled()) {
+//                log("Match cancelled, restarting...");
+//                MatchBasic.pressReturn();
+//                continue;  // Restart the game loop from the top
+//            }
 
             GameBoard gameBoard = new GameBoard();
-            System.out.println("Gameboard initialized...");
+            log("Gameboard initialized...");
 
-            System.out.println("7.5s timer started");
-            Thread.sleep(7500);
+//            log("6.5s timer started");
+//            Thread.sleep(6500);
 
-            // FIRST STEPS
-            MatchBasic.pressSummon10X();
-            Screenshot.screenshotGameState();
+            // First steps
+            performEarlyBonusActions();
+            Thread.sleep(2000);
+            startGameRound(gameBoard);
 
-            // GAME LOOP
+            boolean upgradedSummoningLevel = false;
+
+            // Game loop
             while (MatchBasic.isIngame()) {
 
                 processBoard(gameBoard);
-                if (MythicBuilder.canBuild("Dragon", gameBoard)) {
-                    MatchBasic.pressAnywhere();
-                    Thread.sleep(750);
-                    MatchBasic.pressBuildFavoriteMythic();
+
+                if (gameBoard.isBoardComplete()) {
+                    finishGameRound();
+                    break;
                 }
 
-                if (MythicBuilder.canBuild("Frog Prince", gameBoard)) {
-                    MatchBasic.pressAnywhere();
-                    Thread.sleep(750);
-                    MatchBasic.pressBuildFavoriteMythic();
-                }
+                handleMythicBuilding(gameBoard);
 
                 gambleStones(gameBoard);
 
-                waitForGolem(mainFrame);
+                handleEmergencySell(gameBoard);
 
-                if (MatchBasic.checkIfMax()) {
-                    ProcessUnit.emergencySell(gameBoard);
-                    System.out.println("Emergency sell executing");
-                }
-
-                if (gameBoard.shouldSummon())
-                    MatchBasic.pressSummon10X();
+                upgradedSummoningLevel = handleSummoning(gameBoard, upgradedSummoningLevel);
 
                 gameBoard.saveBoardState();
-
-                if(gameBoard.isBoardComplete()) {
-                    MatchBasic.pressUpgrade();
-                    Thread.sleep(2500);
-                    while (MatchBasic.isIngame()) {
-                        MatchBasic.pressUpgradeMythic();
-                        waitForGolem(mainFrame);
-                        Thread.sleep(2000);
-                    }
-                    break;
-                }
             }
 
-            // MATCH IS FINISHED
-            appendColoredText(mainFrame, "Match is finished...", "red");
+            // Match finished
+            log("Match is finished.");
             MatchBasic.pressAnywhere();
             ButtonsHome.pressLobby();
+            while(!MatchBasic.isInLobby()) Screenshot.screenshotGameState();
+            Thread.sleep(2000);
         }
     }
 
-    private static void waitForGolem(MainFrame mainFrame) throws InterruptedException {
-        String currentTime = LocalDateTime.now().format(dtf);
+
+    private static void waitForGameToStart() throws InterruptedException, IOException {
+        // Wait for game to start or match to be canceled
+        while (true) {
+            if (MatchBasic.isMatchCancelled()) {
+                log("Match has been cancelled. Restarting the game...");
+                // Restart the waiting process if the match is cancelled
+                return; // Exit this method and start over
+            }
+
+            if (MatchBasic.isInLobby() || MatchBasic.isFindingMatch() || MatchBasic.isLoading()) {
+                Screenshot.screenshotGameState();
+                Thread.sleep(1000); // Add a small delay to avoid excessive CPU usage
+            } else {
+                break; // Break out of the loop once the game has started
+            }
+        }
+    }
+
+    private static void startGameRound(GameBoard gameBoard) throws InterruptedException, IOException {
+        MatchBasic.pressSummon10X();
+        Screenshot.screenshotGameState();
+    }
+
+    private static void performEarlyBonusActions() throws InterruptedException {
+        MatchBasic.pressUpgrade();
+        Thread.sleep(500);
+        MatchBasic.pressUpgradeCommon();
+        Thread.sleep(500);
+        MatchBasic.pressUpgradeEpic();
+        Thread.sleep(500);
+        MatchBasic.closeUpgrade();
+    }
+
+    public static void handleMythicBuilding(GameBoard gameBoard) throws InterruptedException {
+        if (MythicBuilder.canBuild("Dragon", gameBoard)) {
+            Thread.sleep(5000);
+            MatchBasic.pressAnywhere();
+            Thread.sleep(500);
+            MatchBasic.pressBuildFavoriteMythic();
+        }
+
+        if (MythicBuilder.canBuild("Frog Prince", gameBoard)) {
+            MatchBasic.pressAnywhere();
+            Thread.sleep(5000);
+            MatchBasic.pressAnywhere();
+            Thread.sleep(500);
+            MatchBasic.pressBuildFavoriteMythic();
+        }
+    }
+
+    private static void handleEmergencySell(GameBoard gameBoard) throws IOException, InterruptedException {
+        if (MatchBasic.checkIfMax()) {
+            ProcessUnit.emergencySell(gameBoard);
+            log("Executing emergency sell...");
+        }
+    }
+
+    private static boolean handleSummoning(GameBoard gameBoard, boolean upgradedSummoningLevel) throws InterruptedException, IOException {
+        if (gameBoard.shouldSummon()) {
+            if (!upgradedSummoningLevel) {
+                upgradedSummoningLevel = true;
+                upgradeSummoningLevel();
+            }
+
+            MatchBasic.pressSummon10X();
+        }
+        return upgradedSummoningLevel;
+    }
+
+    private static void upgradeSummoningLevel() throws InterruptedException {
+        MatchBasic.pressUpgrade();
+        Thread.sleep(500);
+        MatchBasic.pressUpgradeSummoning();
+        Thread.sleep(500);
+        MatchBasic.pressUpgradeSummoning();
+        Thread.sleep(500);
+        MatchBasic.pressUpgradeSummoning();
+        Thread.sleep(500);
+        MatchBasic.closeUpgrade();
+        Thread.sleep(500);
+    }
+
+    private static void finishGameRound() throws InterruptedException, IOException {
+        MatchBasic.pressUpgrade();
+        Thread.sleep(2500);
+        int timer = 2000;
+        while (MatchBasic.isIngame()) {
+            MatchBasic.pressUpgradeMythic();
+            waitForGolem();
+            Thread.sleep(timer);
+            timer += 1000;
+        }
+    }
+
+
+    public static void waitForGolem() throws InterruptedException, IOException {
+        MatchBasic.pressGolem();
+        Thread.sleep(1500);
+        Screenshot.screenshotGameState();
         if (!MatchBasic.isGolemPresent()) {
-            appendColoredText(mainFrame, "[" + currentTime + "]" + " Golem not found...\n", "red");
+            log("Golem not found.");
             return;
         }
 
-        appendColoredText(mainFrame, "[" + currentTime + "]" + " Golem can be challenged!\n", "green");
-        MatchBasic.pressGolem();
-        Thread.sleep(1500);
+        log("Golem can be challenged!");
         MatchBasic.challengeGolem();
     }
 
@@ -115,7 +199,7 @@ public class PlayGame {
         List<int[]> validSquares = GameBoard.getNonEmptySquares();
 
         if (validSquares == null || validSquares.isEmpty()) {
-            System.out.println("No valid squares found to process.");
+            log("[Error] No valid squares found to process.");
             return;
         }
 
@@ -138,8 +222,8 @@ public class PlayGame {
             }
 
             // Detect and process the unit if it exists at (i, j)
-            if (gameBoard.getSquare(i, j).getUnit() != null &&
-                    gameBoard.getSquare(i, j).getUnit().getName() != null) {
+            if (GameBoard.getSquare(i, j).getUnit() != null &&
+                    GameBoard.getSquare(i, j).getUnit().getName() != null) {
                 ProcessUnit.DetectUnitPlusProcess(gameBoard, i, j);
             }
         }
@@ -168,20 +252,23 @@ public class PlayGame {
     }
 
     private static void gambleStones(GameBoard gameBoard) throws InterruptedException, IOException {
-        // MatchBasic.closeUpgrade();
         Thread.sleep(500);
         checkForRewards();
         Screenshot.screenshotGameState();
+
         if (MatchBasic.checkIfMax())
             ProcessUnit.emergencySell(gameBoard);
 
         int luckyStones = MatchBasic.checkLuckyStones();
-        MatchBasic.pressGamble();
-        Thread.sleep(1500);
 
         for (int i = 0; i < luckyStones; i++) {
             MatchBasic.pressEpicGamble();
             checkForRewards();
+
+            if (i % 5 == 0) {
+                waitForGolem();
+            }
+
             Thread.sleep(500);
         }
 

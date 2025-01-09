@@ -7,6 +7,8 @@ import Match.Units.*;
 
 import java.io.IOException;
 
+import static Logger.Logger.log;
+
 public class Square {
     Unit unit;
 
@@ -60,7 +62,7 @@ public class Square {
                 unit = MythicalUnit.isWhatUnit();
                 break;
             default:
-                System.out.println("Failed to update square...");
+                log("[Error] Failed to update square.");
                 break;
         }
     }

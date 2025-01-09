@@ -18,6 +18,10 @@ import Match.Units.Unit;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import static Logger.Logger.log;
+import static Match.Units.ProcessUnit.sellUnitMultipleTimes;
+
+
 public class GameBoard {
 
     public static Square[][] gameBoard;
@@ -51,14 +55,14 @@ public class GameBoard {
      * Construct the 3x6 squares
      */
     private void initializeGameBoard() {
-        System.out.println("Initializing game board...");
+        log("Initializing game board...");
         gameBoard = new Square[3][6];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 6; j++) {
                 gameBoard[i][j] = new Square();
             }
         }
-        System.out.println("Game board initialization complete.");
+        log("Game board initialization complete.");
     }
 
     public static Square getSquare(int i, int j) {
@@ -70,12 +74,12 @@ public class GameBoard {
      */
     public void updateBoard(int i, int j) throws IOException, InterruptedException {
         if (gameBoard == null) {
-            System.out.println("Board is null...");
+            log("Board is null.");
         }
 
         String action = "Checking square " + i + ", " + j;
         gameBoard[i][j].updateSquare(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
-        System.out.println("Board " + i + " " + j + " updated...");
+        log("Board " + i + " " + j + " updated.");
     }
 
     /**
@@ -83,11 +87,11 @@ public class GameBoard {
      */
     public void saveBoardState() {
         if (gameBoard == null) {
-            System.out.println("Error: gameBoard is null. Cannot save board state.");
+            log("[Error] gameBoard is null. Cannot save board state.");
             return;
         }
 
-        System.out.println("Saving board state...");
+        log("Saving board state...");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         // Build a custom structure that better represents the state
@@ -112,8 +116,8 @@ public class GameBoard {
         // Convert the custom structure to JSON
         String json = gson.toJson(Collections.singletonMap("gameBoard", boardState));
 
-        System.out.println("JSON content to be saved:");
-        System.out.println(json);
+//        log("JSON content to be saved:");
+//        log(json);
 
         String filePath = "Resources/gameBoardState.json";
         File file = new File(filePath);
@@ -125,20 +129,20 @@ public class GameBoard {
             // Write the JSON to the file
             try (FileWriter writer = new FileWriter(file)) {
                 writer.write(json);
-                System.out.println("Board state saved successfully to: " + file.getAbsolutePath());
+                log("Board state saved successfully to: " + file.getAbsolutePath() + ".");
             }
 
             // Verify the file was written
             if (file.exists() && file.length() > 0) {
-                System.out.println("File exists and is not empty.");
+                log("File exists and is not empty.");
                 String content = new String(Files.readAllBytes(Paths.get(filePath)));
-                System.out.println("File content:");
-                System.out.println(content);
+//                log("File content:");
+//                log(content);
             } else {
-                System.out.println("Error: File does not exist or is empty after writing.");
+                log("[Error] File does not exist or is empty after writing.");
             }
         } catch (IOException e) {
-            System.out.println("Error saving board state: " + e.getMessage());
+            log("[Error] cannot save board state: " + e.getMessage() + ".");
             e.printStackTrace();
         }
     }
@@ -194,7 +198,7 @@ public class GameBoard {
         Coordinates sellRandomCoordinates = Coordinates.makeRandomCoordinate(sellTopLeft[i][j], sellBottomRight[i][j]);
 
         // click sell
-        System.out.println("Selling the unit at: " + sellRandomCoordinates);
+        log("Selling the unit at: " + sellRandomCoordinates + ".");
         Thread.sleep(500);
         Process process2 = Runtime.getRuntime()
                 .exec("adb shell input tap " + sellRandomCoordinates.getX() + " " + sellRandomCoordinates.getY());
@@ -208,7 +212,7 @@ public class GameBoard {
      * Merge units
      */
     public static void mergeUnit(int i, int j) throws IOException, InterruptedException {
-        System.out.println("Merging units...");
+        log("Merging units at (" + i + ", " + j + ").");
         // Location sa specific unit e merge sa gameboard
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j],
                 bottomRightCoordinates[i][j]);
@@ -239,7 +243,6 @@ public class GameBoard {
                 mergeBottomRight[i][j]);
 
         // Click merge
-        System.out.println("Merging the unit at: " + mergeRandomCoordinates);
         Thread.sleep(500);
         Process process2 = Runtime.getRuntime()
                 .exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
@@ -249,7 +252,7 @@ public class GameBoard {
      * Upgrade units for mythics like Batman, Tar, Lancelot, etc.
      */
     public static void upgradeUnit(int i, int j) throws IOException, InterruptedException {
-        System.out.println("Upgrading unit...");
+        log("Upgrading unit at (" + i + ", " + j + ").");
         // Location sa specific unit e merge sa gameboard
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j],
                 bottomRightCoordinates[i][j]);
@@ -280,38 +283,29 @@ public class GameBoard {
                 mergeBottomRight[i][j]);
 
         // click unit
-        System.out.println("Clicking the unit to upgrade at: " + fromRandomCoordinates);
         Process process1 = Runtime.getRuntime()
                 .exec("adb shell input tap " + fromRandomCoordinates.getX() + " " + fromRandomCoordinates.getY());
         Thread.sleep(500); // Click merge
-        System.out.println("Upgrading the unit at: " + mergeRandomCoordinates);
         Process process2 = Runtime.getRuntime()
                 .exec("adb shell input tap " + mergeRandomCoordinates.getX() + " " + mergeRandomCoordinates.getY());
         Thread.sleep(500);
     }
 
     public GameBoard updateGameBoard(GameBoard gameBoard, int i1, int j1, int i2, int j2) {
-        System.out.println("Updating game board...");
-        // IF EQUAL, JUST TURN TO NULL TO BE CALLED BY SELL UNIT
+        log("Updating game board...");
+
+        // If the same square, clear it (for selling a unit)
         if (i1 == i2 && j1 == j2) {
             gameBoard.setSquare(new Square(), i1, j1);
             return gameBoard;
         }
 
-        // TEMP HOLDER FOR SQUARE AND UNIT
-        Square temp = new Square();
-        Unit tempUnit;
+        // Swap squares
+        Square sourceSquare = getSquare(i1, j1);
+        Square targetSquare = getSquare(i2, j2);
 
-        // I1 J1 TO TEMP
-        temp = getSquare(i1, j1);
-        // I1 J1 UNIT TO TEMP
-        tempUnit = getSquare(i1, j1).getUnit();
-
-        // PLACE SQUARE I2 J2 TO I1 J1
-        gameBoard.setSquare(getSquare(i2, j2), i1, j1);
-
-        // PUT TEMP TO I2 J2
-        gameBoard.setSquare(temp, i2, j2);
+        gameBoard.setSquare(targetSquare, i1, j1);
+        gameBoard.setSquare(sourceSquare, i2, j2);
 
         return gameBoard;
     }
@@ -324,15 +318,15 @@ public class GameBoard {
      * If it does not have the correct unit then keep in the HashMap
      */
     public static List<int[]> getNonEmptySquares() throws IOException {
-        System.out.println("Performing checks for valid squares...");
+        log("Performing checks for valid squares...");
         Screenshot.screenshotGameState();
 
         if (!MatchBasic.isIngame()) {
-            System.out.println("Currently not in game...");
+            log("Currently not in game.");
             return null;
         }
 
-        System.out.println("Currently in game...");
+        log("Currently in game.");
 
         List<int[]> nonEmptySquares = new ArrayList<>();
         BufferedImage baseState = ImageIO.read(new File("Resources/defaultGameBoard.png"));
@@ -360,7 +354,7 @@ public class GameBoard {
      */
     private static void validateRemainingSquares(List<int[]> nonEmptySquares) {
         if (nonEmptySquares == null || nonEmptySquares.isEmpty()) {
-            System.out.println("No non-empty squares to validate.");
+            log("No non-empty squares to validate.");
             return;
         }
 
@@ -372,7 +366,7 @@ public class GameBoard {
 
             String expectedUnit = getExpectedUnit(i, j);
             if (expectedUnit == null) {
-                System.out.println("No expected unit for square: (" + i + ", " + j + ")");
+                log("No expected unit for square: (" + i + ", " + j + ")");
                 continue;
             }
 
@@ -402,7 +396,7 @@ public class GameBoard {
     public boolean isBoardComplete() {
         if(!getSquare(0, 0).getUnit().getName().equals("Frog Prince"))
             return false;
-        if(!getSquare(1, 0).getUnit().getName().equals("Frog Prince"))
+        if(!getSquare(0, 1).getUnit().getName().equals("Frog Prince"))
             return false;
         if(!getSquare(1, 1).getUnit().getName().equals("Dragon"))
             return false;
@@ -414,7 +408,7 @@ public class GameBoard {
         return true;
     }
 
-    public boolean shouldSummon() throws IOException {
+    public boolean shouldSummon() throws IOException, InterruptedException {
         // Get the non-empty squares
         List<int[]> nonEmptySquares = getNonEmptySquares();
         if (nonEmptySquares == null || nonEmptySquares.isEmpty()) {
@@ -483,7 +477,7 @@ public class GameBoard {
     }
 
 
-    public int getTotalUnits(String unitName) {
+    public static int getTotalUnits(String unitName) {
         int totalQuantity = 0;
 
         for (int i = 0; i < gameBoard.length; i++) {
