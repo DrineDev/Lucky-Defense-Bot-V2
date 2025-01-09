@@ -1,15 +1,11 @@
 package Basic;
 
-import GUI.MainFrame;
-
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import Logger.Logger;
 
 import static Logger.Logger.log;
 
@@ -32,13 +28,13 @@ public class PixelColorChecker {
 
         // Check if the image is loaded correctly
         if (image == null) {
-            log(" Failed to load the image. Please check the resource path: " + resourcePath + ".");
+            log("Failed to load the image. Please check the resource path: " + resourcePath + ".");
             return null;
         }
 
         // Ensure the coordinates are within the bounds of the image
         if (coordinates.getX() < 0 || coordinates.getY() < 0 || coordinates.getX() >= image.getWidth() || coordinates.getY() >= image.getHeight()) {
-            log(" Coordinates are out of bounds.");
+            log("Coordinates are out of bounds.");
             return null;
         }
 
@@ -78,14 +74,14 @@ public class PixelColorChecker {
 
             if (pixelColor != null) {
                 boolean isMatch = PixelColorChecker.isMatchingColor(pixelColor, expectedColor, tolerance);
-                log("Color match: " + isMatch + "Expected: " + expectedColor + "Actual: " + pixelColor + ".");
+//                log("Color match: " + isMatch + "Expected: " + expectedColor + "Actual: " + pixelColor + ".");
                 return isMatch;
             } else {
                 log("Failed to get pixel color.");
             }
 
         } catch (IOException e) {
-            log("Error checking color match.");
+            log("[Error] cannot check color match.");
         }
 
         return false;

@@ -23,30 +23,30 @@ public class PlayGame {
 
     public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
         while (true) {
-//            Screenshot.screenshotGameState();
-//
-//            while(!MatchBasic.isInLobby()) Screenshot.screenshotGameState();
-//
-//            ButtonsHome.pressBattle();
-//            Thread.sleep(2000);
-//            ButtonsHome.pressMatch();
-//
-//            // Wait for loading or match cancellation
-//            log("Waiting for game...");
-//            waitForGameToStart();
-//
-//            // If match was cancelled, restart the process
-//            if (MatchBasic.isMatchCancelled()) {
-//                log("Match cancelled, restarting...");
-//                MatchBasic.pressReturn();
-//                continue;  // Restart the game loop from the top
-//            }
+            Screenshot.screenshotGameState();
+
+            while(!MatchBasic.isInLobby()) Screenshot.screenshotGameState();
+
+            ButtonsHome.pressBattle();
+            Thread.sleep(2000);
+            ButtonsHome.pressMatch();
+
+            // Wait for loading or match cancellation
+            log("Waiting for game...");
+            waitForGameToStart();
+
+            // If match was cancelled, restart the process
+            if (MatchBasic.isMatchCancelled()) {
+                log("Match cancelled, restarting...");
+                MatchBasic.pressReturn();
+                continue;  // Restart the game loop from the top
+            }
 
             GameBoard gameBoard = new GameBoard();
             log("Gameboard initialized...");
 
-//            log("6.5s timer started");
-//            Thread.sleep(6500);
+            log("6.5s timer started");
+            Thread.sleep(6500);
 
             // First steps
             performEarlyBonusActions();
