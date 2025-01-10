@@ -6,6 +6,9 @@ import Basic.Screenshot;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Map;
+
+import static Logger.Logger.log;
 
 /**
  * General class
@@ -28,42 +31,41 @@ public class Unit {
      * @throws IOException
      */
     public static int isWhatRarity() throws IOException {
-        // MYTHICAL = 5
-        // LEGENDARY = 4;
-        // EPIC = 3;
-        // UNCOMMON = 2;
-        // COMMON = 1
-        // MUST PRESS UNIT IN SQUARE BEFORE EXECUTING
-        // MUST ALSO UPDATE GameState.png
+        // Define rarity levels
+        final int MYTHICAL = 5;
+        final int LEGENDARY = 4;
+        final int EPIC = 3;
+        final int UNCOMMON = 2;
+        final int COMMON = 1;
 
-        // RARITY COLORS
-        Color mythicalColor = new Color(181, 90, 45);
-        Color commonColor = new Color(177, 166, 137);
-        Color uncommonColor = new Color(60, 76, 135);
-        Color epicColor = new Color(111, 56, 146);
-        Color legendaryColor = new Color(219, 161, 50);
+        // Define rarity colors
+        Map<Integer, Color> rarityColors = Map.of(
+                MYTHICAL, new Color(181, 90, 45),
+                LEGENDARY, new Color(219, 161, 50),
+                EPIC, new Color(111, 56, 146),
+                UNCOMMON, new Color(60, 76, 134),
+                COMMON, new Color(177, 166, 137)
+        );
 
-        Coordinates checkCoordinates = new Coordinates(63, 121);
+        Coordinates checkCoordinates = new Coordinates(63, 121); // Location to check pixel color
         Screenshot.screenshotGameState();
 
         try {
+            // Get the current color at the specified coordinates
             Color currentColor = PixelColorChecker.getPixelColor("Resources/GameState.png", checkCoordinates);
 
-            if(PixelColorChecker.isMatchingColor(legendaryColor, currentColor, 10))
-                return 4;
-            else if(PixelColorChecker.isMatchingColor(epicColor, currentColor, 10))
-                return 3;
-            else if(PixelColorChecker.isMatchingColor(uncommonColor, currentColor, 10))
-                return 2;
-            else if(PixelColorChecker.isMatchingColor(commonColor, currentColor, 10))
-                return 1;
-            else return 5;
-
+            // Find the rarity that matches the color within tolerance
+            return rarityColors.entrySet().stream()
+                    .filter(entry -> PixelColorChecker.isMatchingColor(entry.getValue(), currentColor, 10))
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(MYTHICAL); // Default to Mythical if no match is found
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log("Error reading pixel color: " + e.getMessage());
+            throw e; // Re-throw the exception for higher-level handling
         }
-        // error
     }
+
 
 
     /** GETTERS & SETTERS */
