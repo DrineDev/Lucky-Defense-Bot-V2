@@ -55,16 +55,14 @@ public class RefreshButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Stop the current application logic
-        System.out.println("Stopping application...");
-        System.exit(0);
+        // Close current MainFrame
+        SwingUtilities.getWindowAncestor(this).dispose();
 
-        // Restart the application in a new thread
+        // Restart the application
         SwingUtilities.invokeLater(() -> {
             try {
-                // Simulate restarting the app
-                IntroFrame introFrame = new IntroFrame();
-                introFrame.setVisible(true);
+                String[] args = {}; // Pass any necessary arguments
+                Main.main(args); // Call the main method of your program
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

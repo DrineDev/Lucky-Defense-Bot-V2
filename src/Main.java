@@ -6,7 +6,10 @@ import Emulator.EmulatorBasic;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-        SwingUtilities.invokeLater(IntroFrame::new);
+    public static void main(String[] args) {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            IntroFrame introFrame = new IntroFrame();
+            introFrame.setVisible(true);
+        });
     }
 }
