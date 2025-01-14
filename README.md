@@ -82,6 +82,32 @@ These settings are critical for the bot to function correctly.
 
 ---
 
+## Update Instructions
+
+1. Open a terminal in the bot's project directory.
+2. Pull the latest updates from the repository:
+   ```bash
+   git pull origin dev
+   ```
+3. Restart the bot by running `Main.java` in IntelliJ IDEA.
+
+---
+
+## Reinstall Instructions
+
+1. Delete the existing bot directory:
+   ```bash
+   rm -rf Lucky-Defense-Bot-V2
+   ```
+   (For Windows, use File Explorer or `rmdir /s /q Lucky-Defense-Bot-V2` in the command prompt.)
+2. Re-clone the repository:
+   ```bash
+   git clone -b dev https://github.com/DrineDev/Lucky-Defense-Bot-V2.git
+   ```
+3. Follow the **Setup Instructions** to prepare and launch the bot again.
+
+---
+
 ## Feedback and Reporting Issues
 
 If you encounter any glitches or issues, please leave feedback or report them on the [GitHub Issues page](https://github.com/DrineDev/Lucky-Defense-Bot-V2/issues). Your input helps improve the project!
