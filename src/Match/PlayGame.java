@@ -67,9 +67,9 @@ public class PlayGame {
 
                 handleMythicBuilding(gameBoard);
 
-                gambleStones(gameBoard);
-
                 handleEmergencySell(gameBoard);
+
+                gambleStones(gameBoard);
 
                 upgradedSummoningLevel = handleSummoning(gameBoard, upgradedSummoningLevel);
 
@@ -137,10 +137,10 @@ public class PlayGame {
     }
 
     private static void handleEmergencySell(GameBoard gameBoard) throws IOException, InterruptedException {
-        if (MatchBasic.checkIfMax()) {
+//        if (MatchBasic.checkIfMax()) {
             ProcessUnit.emergencySell(gameBoard);
             log("Executing emergency sell...");
-        }
+//        }
     }
 
     private static boolean handleSummoning(GameBoard gameBoard, boolean upgradedSummoningLevel) throws InterruptedException, IOException {

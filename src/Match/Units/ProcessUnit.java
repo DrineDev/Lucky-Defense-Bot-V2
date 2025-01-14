@@ -18,28 +18,30 @@ public class ProcessUnit {
      */
     public static void DetectUnitPlusProcess(GameBoard gameboard, int i, int j) throws IOException, InterruptedException {
 
-        if (getSquare(i, j) != null && getSquare(i, j).getUnit() != null) {
-            Unit unit = getSquare(i, j).getUnit();
-                if (unit != null) {
-                    String unitName = unit.name;
-                    log("Processing unit: " + unitName + " at (" + i + ", " + j + ").");
+        if (getSquare(i, j).getUnit() == null) {
+            log("Square at (" + i + ", " + j + ") is empty or null.");
+            return;
+        }
 
-                    if (isLegendary(unitName)) {
-                        processUnitByRarity("Legendary", unit, i, j, gameboard);
-                    } else if (isEpic(unitName)) {
-                        processUnitByRarity("Epic", unit, i, j, gameboard);
-                    } else if (isRare(unitName)) {
-                        processUnitByRarity("Rare", unit, i, j, gameboard);
-                    } else if (isCommon(unitName)) {
-                        processUnitByRarity("Common", unit, i, j, gameboard);
-                    } else if (isMythic(unitName)) {
-                        processUnitByRarity("Mythic", unit, i, j, gameboard);
-                    } else {
-                        log("No matching rarity for unit: " + unitName + ".");
-                    }
-                }
-            } else
-                log("Square at (" + i + ", " + j + ") is empty or null.");
+        Unit unit = getSquare(i, j).getUnit();
+        if (unit != null) {
+            String unitName = unit.name;
+            log("Processing unit: " + unitName + " at (" + i + ", " + j + ").");
+
+            if (isLegendary(unitName)) {
+                processUnitByRarity("Legendary", unit, i, j, gameboard);
+            } else if (isEpic(unitName)) {
+                processUnitByRarity("Epic", unit, i, j, gameboard);
+            } else if (isRare(unitName)) {
+                processUnitByRarity("Rare", unit, i, j, gameboard);
+            } else if (isCommon(unitName)) {
+                processUnitByRarity("Common", unit, i, j, gameboard);
+            } else if (isMythic(unitName)) {
+                processUnitByRarity("Mythic", unit, i, j, gameboard);
+            } else {
+                log("No matching rarity for unit: " + unitName + ".");
+            }
+        }
     }
 
     /**
