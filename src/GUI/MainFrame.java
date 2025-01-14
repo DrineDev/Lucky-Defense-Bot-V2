@@ -35,15 +35,24 @@ public class MainFrame extends JFrame {
         JPanel buttonPanel = new JPanel(new GridBagLayout());
         buttonPanel.setBackground(new Color(0x654321));  // Set background color
 
+        // Add the Refresh button
+        JButton refreshButton = new RefreshButton(this);
+        refreshButton.setPreferredSize(new Dimension(100, 40));
+
         // Create GridBagConstraints
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 3, 10, 3);  // Padding between components
         gbc.anchor = GridBagConstraints.EAST;  // Align to the right
 
-        // Add the Exit button
-        gbc.gridx = 0;  // Column 0
-        gbc.gridy = 0;  // Row 0
+        // Add both buttons to the button panel
+        gbc.gridx = 0; // Column 0
+        gbc.gridy = 0; // Row 0
         buttonPanel.add(exitButton, gbc);
+
+        gbc.gridx = 1; // Column 1 (next to Exit button)
+        gbc.gridy = 0; // Row 0
+        buttonPanel.add(refreshButton, gbc);
+
 
         // Create a container panel for all components
         JPanel containerPanel = new JPanel();
