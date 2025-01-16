@@ -250,14 +250,13 @@ public class MythicBuilder {
     }
 
     // TODO : BUILD MYTHICAL IN GAME FUNCTIONS...
-    // ONLY WORKS FOR BATMAN...
     public static void buildMythic(String unit, GameBoard gameboard) throws InterruptedException {
-//        if(canBuild(unit, gameboard)) {
+        if (canBuild(unit, gameboard)) {
             MatchBasic.pressMythic();
             Thread.sleep(500);
             MatchBasic.pressBuildMythic();
             MatchBasic.closeMythic();
-//        }
+        }
     }
 }
 

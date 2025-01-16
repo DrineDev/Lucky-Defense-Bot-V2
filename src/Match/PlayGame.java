@@ -33,6 +33,7 @@ public class PlayGame {
                 Thread.sleep(INITIAL_GAME_DELAY);
 
                 if (!handleGameplay(gameBoard)) {
+                    safeReturnToLobby();
                     continue;  // If game ended unexpectedly, restart the loop
                 }
 
@@ -111,20 +112,9 @@ public class PlayGame {
                 return true;
             }
 
-            // Optimization: Only perform these actions if the board changed
-            if (boardChanged) {
-                handleMythicBuilding(gameBoard);
-                gambleStones(gameBoard);
-                upgradedSummoningLevel = handleSummoning(gameBoard, upgradedSummoningLevel);
-                idleCounter = 0;
-            } else {
-                idleCounter++;
-                if (idleCounter > 10) {  // If board hasn't changed for 10 cycles
-                    Thread.sleep(STANDARD_DELAY);  // Wait longer between checks
-                }
-            }
-
-            gameBoard.saveBoardState();
+            handleMythicBuilding(gameBoard);
+            gambleStones(gameBoard);
+            upgradedSummoningLevel = handleSummoning(gameBoard, upgradedSummoningLevel);
         }
 
         return false;
@@ -266,8 +256,6 @@ public class PlayGame {
     }
 
     private static void gambleStones(GameBoard gameBoard) throws InterruptedException, IOException {
-        checkForRewards();
-
         MatchBasic.pressGamble();
         Thread.sleep(500);
         Screenshot.screenshotGameState();
@@ -280,10 +268,13 @@ public class PlayGame {
 
             for (int i = 0; i < luckyStones; i++) {
                 MatchBasic.pressEpicGamble();
-                checkForRewards();
 
-                if (i % 7.5 == 0) {
+                if (i % 5 == 0) {
                     waitForGolem();
+                }
+
+                if (i % 4 == 0) {
+                    checkForRewards();
                 }
             }
 

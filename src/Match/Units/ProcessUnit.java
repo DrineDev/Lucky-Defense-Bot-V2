@@ -1,6 +1,8 @@
 package Match.Units;
 
+import Basic.Screenshot;
 import Match.GameBoard.GameBoard;
+import Match.MatchBasic;
 import Match.PlayGame;
 import static Logger.Logger.log;
 import static Match.GameBoard.GameBoard.*;
@@ -33,7 +35,6 @@ public class ProcessUnit {
     }
 
     private static void initializeUnitRarities() {
-        // Same as before...
         String[] mythicUnits = {"Bat Man", "Mama", "Ninja", "Graviton", "Orc Shaman",
                 "Kitty Mage", "Coldy", "Blob", "Monopoly Man", "Frog Prince", "Vayne",
                 "Lancelot", "Iron Meow(0)", "Iron Meow(1)", "Iron Meow(2)", "Dragon",
@@ -121,7 +122,7 @@ public class ProcessUnit {
             throws IOException, InterruptedException {
 
         List<Position> positions = optimalPositions.get(unit.getName());
-        boolean actionTaken = false;
+        boolean actionTaken;
 
         if (shouldSellBasedOnDependencies(unit, gameboard)) {
             sellUnitMultipleTimes(gameboard, i, j, unit.getQuantity());
@@ -133,10 +134,10 @@ public class ProcessUnit {
         }
 
         // Only check for rewards and golem if we actually did something
-//        if (actionTaken) {
-//            PlayGame.checkForRewards();
-//            PlayGame.waitForGolem();
-//        }
+        if (actionTaken) {
+            PlayGame.checkForRewards();
+            PlayGame.waitForGolem();
+        }
     }
 
     private static boolean handleMultipleOptimalPositions(Unit unit, int i, int j, List<Position> positions, GameBoard gameboard)
@@ -218,31 +219,40 @@ public class ProcessUnit {
     }
 
     public static void emergencySell(GameBoard gameBoard) throws IOException, InterruptedException {
+        MatchBasic.closeGamble();
+        Screenshot.screenshotGameState();
         boolean actionTaken = false;
         String[] priorityUnits = {"Bandit", "Thrower", "Barbarian", "Water Elemental",
                 "Shock Robot", "Wolf Warrior", "Tree", "Electro Robot", "Eagle General"};
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 6; j++) {
-                Unit unit = getSquare(i,j).getUnit();
-                if (unit == null) continue;
+        // Get non-empty squares
+        List<int[]> nonEmptySquares = getNonEmptySquares();
+        if (nonEmptySquares == null || nonEmptySquares.isEmpty()) {
+            log("No non-empty squares found.");
+            return;
+        }
 
-                boolean isPriority = false;
-                for (String priorityUnit : priorityUnits) {
-                    if (unit.getName().equals(priorityUnit)) {
-                        isPriority = true;
-                        break;
-                    }
+        for (int[] square : nonEmptySquares) {
+            int i = square[0];
+            int j = square[1];
+            Unit unit = gameBoard.getSquare(i, j).getUnit();
+            if (unit == null) continue;
+
+            boolean isPriority = false;
+            for (String priorityUnit : priorityUnits) {
+                if (unit.getName().equals(priorityUnit)) {
+                    isPriority = true;
+                    break;
                 }
+            }
 
-                if (!isPriority) {
-                    if (unit.getQuantity() == 3) {
-                        mergeUnit(i,j);
-                        actionTaken = true;
-                    } else {
-                        sellUnitMultipleTimes(gameBoard, i, j, unit.getQuantity() - 1);
-                        actionTaken = true;
-                    }
+            if (!isPriority) {
+                if (unit.getQuantity() == 3) {
+                    mergeUnit(i, j);
+                    actionTaken = true;
+                } else {
+                    sellUnitMultipleTimes(gameBoard, i, j, unit.getQuantity() - 1);
+                    actionTaken = true;
                 }
             }
         }
@@ -251,7 +261,10 @@ public class ProcessUnit {
             PlayGame.checkForRewards();
             PlayGame.waitForGolem();
         }
+
+        MatchBasic.pressGamble();
     }
+
 
     public static void sellUnitMultipleTimes(GameBoard gameBoard, int i, int j, int quantity) throws IOException, InterruptedException {
         for(int k = 0; k < quantity; k++) {
@@ -262,14 +275,11 @@ public class ProcessUnit {
     private static boolean shouldSellBasedOnDependencies(Unit unit, GameBoard gameboard) {
         switch (unit.getName()) {
             case "Wolf Warrior":
-            case "Tree":
+            case "Tree", "Thrower", "Barbarian":
                 return getTotalUnits("Frog Prince") == 2;
             case "Eagle General":
             case "Water Elemental":
                 return getTotalUnits("Dragon") == 2;
-            case "Thrower":
-            case "Barbarian":
-                return getTotalUnits("Frog Prince") == 2;
             default:
                 return false;
         }
