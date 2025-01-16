@@ -19,7 +19,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import static Logger.Logger.log;
-import static Match.Units.ProcessUnit.sellUnitMultipleTimes;
 
 
 public class GameBoard {
@@ -71,8 +70,10 @@ public class GameBoard {
 
     /**
      * Keep the values to 3x6 Squares
+     *
+     * @return
      */
-    public void updateBoard(int i, int j) throws IOException, InterruptedException {
+    public boolean updateBoard(int i, int j) throws IOException, InterruptedException {
         if (gameBoard == null) {
             log("Board is null.");
         }
@@ -80,6 +81,7 @@ public class GameBoard {
         String action = "Checking square " + i + ", " + j;
         gameBoard[i][j].updateSquare(topLeftCoordinates[i][j], bottomRightCoordinates[i][j], action);
         log("Board " + i + " " + j + " updated.");
+        return true;
     }
 
     /**
@@ -175,23 +177,24 @@ public class GameBoard {
         Coordinates fromRandomCoordinates = Coordinates.makeRandomCoordinate(topLeftCoordinates[i][j],
                 bottomRightCoordinates[i][j]);
 
-        // Top left coordinates of sell button 3x6 array siya like the grid in game
+        // Top left coordinates of sell button 3x6 array (adjusted width, same height)
         Coordinates[][] sellTopLeft = {
-                { new Coordinates(95, 404), new Coordinates(160, 404), new Coordinates(224, 404),
-                        new Coordinates(286, 404), new Coordinates(348, 404), new Coordinates(412, 404) }, // Row A
-                { new Coordinates(98, 451), new Coordinates(161, 451), new Coordinates(225, 451),
-                        new Coordinates(285, 451), new Coordinates(345, 451), new Coordinates(410, 451) }, // Row B
-                { new Coordinates(95, 503), new Coordinates(161, 503), new Coordinates(225, 503),
-                        new Coordinates(285, 503), new Coordinates(345, 503), new Coordinates(410, 503) } // Row C
+                { new Coordinates(95, 404), new Coordinates(160, 404), new Coordinates(225, 404),
+                        new Coordinates(290, 404), new Coordinates(355, 404), new Coordinates(420, 404) }, // Row A
+                { new Coordinates(98, 451), new Coordinates(161, 451), new Coordinates(226, 451),
+                        new Coordinates(290, 451), new Coordinates(355, 451), new Coordinates(420, 451) }, // Row B
+                { new Coordinates(95, 500), new Coordinates(161, 503), new Coordinates(226, 503),
+                        new Coordinates(290, 503), new Coordinates(355, 503), new Coordinates(420, 503) }  // Row C
         };
-        // Bottom right coordinates of sell button 3x6 array siya like the grid in game
+
+        // Bottom right coordinates of sell button 3x6 array (adjusted width, same height)
         Coordinates[][] sellBottomRight = {
-                { new Coordinates(131, 434), new Coordinates(191, 434), new Coordinates(253, 434),
-                        new Coordinates(318, 434), new Coordinates(380, 434), new Coordinates(442, 434) }, // Row A
-                { new Coordinates(128, 483), new Coordinates(192, 483), new Coordinates(254, 483),
-                        new Coordinates(318, 483), new Coordinates(380, 483), new Coordinates(442, 483) }, // Row B
-                { new Coordinates(130, 533), new Coordinates(192, 533), new Coordinates(254, 533),
-                        new Coordinates(318, 533), new Coordinates(380, 533), new Coordinates(442, 533) } // Row C
+                { new Coordinates(135, 434), new Coordinates(195, 434), new Coordinates(255, 434),
+                        new Coordinates(320, 434), new Coordinates(385, 434), new Coordinates(445, 434) }, // Row A
+                { new Coordinates(133, 483), new Coordinates(195, 483), new Coordinates(255, 483),
+                        new Coordinates(320, 483), new Coordinates(385, 483), new Coordinates(445, 483) }, // Row B
+                { new Coordinates(135, 536), new Coordinates(195, 533), new Coordinates(255, 533),
+                        new Coordinates(320, 533), new Coordinates(385, 533), new Coordinates(445, 533) }  // Row C
         };
 
         // Generate a random cell within the given top left and bottom right coordinates

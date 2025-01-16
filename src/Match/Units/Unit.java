@@ -48,7 +48,6 @@ public class Unit {
         );
 
         Coordinates checkCoordinates = new Coordinates(63, 121); // Location to check pixel color
-        Screenshot.screenshotGameState();
 
         try {
             // Get the current color at the specified coordinates

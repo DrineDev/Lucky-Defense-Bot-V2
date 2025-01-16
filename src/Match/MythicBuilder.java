@@ -18,32 +18,30 @@ import java.util.List;
 
 public class MythicBuilder {
 
-    /** All MYTHICS ELEMENTS */
-    private List<String> Batman = Arrays.asList("Tiger Master", "Tree", "Thrower", "Thrower");
-    private List<String> Blob = Arrays.asList("Hunter", "Eagle General", "Bandit");
-    private List<String> Bomba = Arrays.asList("Tiger Master", "Wolf Warrior", "Barbarian");
-    private List<String> Mama = Arrays.asList("Hunter", "Tree", "Electro Robot");
-    private List<String> Coldy = Arrays.asList("Storm Giant", "Sandman", "Water Elemental");
-    private List<String> Dragon = Arrays.asList("Eagle General", "Eagle General", "Water Elemental");
-    private List<String> Ninja = Arrays.asList("Wolf Warrior", "Paladin", "Demon Soldier");
-    private List<String> OrcShaman = Arrays.asList("Hunter", "Electro Robot", "Demon Soldier");
-    private List<String> PulseGenerator = Arrays.asList("Electro Robot", "Tree", "Archer", "Archer");
-    private List<String> Indy = Arrays.asList("Sheriff", "Wolf Warrior", "Sandman");
-    private List<String> Watt = Arrays.asList("Storm Giant", "Electro Robot", "Demon Soldier");
-    private List<String> Tar = Arrays.asList("Wolf Warrior", "Hunter", "Sandman", "Barbarian");
-    private List<String> Graviton = Arrays.asList("Electro Robot", "Shock Robot", "Thrower", "Thrower");
-    private List<String> RocketChu = Arrays.asList("War Machine", "Shock Robot", "Thrower");
-    private List<String> Vayne = Arrays.asList("Storm Giant", "Hunter", "Ranger", "Archer");
-    private List<String> MonopolyMan = Arrays.asList("Wolf Warrior", "Tree", "Demon Soldier");
-    private List<String> IronMeow = Arrays.asList("War Machine", "Bandit", "Bandit");
-    private List<String> Lancelot = Arrays.asList("Sheriff", "Hunter", "Paladin");
-    private List<String> KittyMage = Arrays.asList("Eagle General", "Archer", "Water Elemental", "Water Elemental");
-    private List<String> FrogPrince = Arrays.asList("Wolf Warrior", "Tree", "Barbarian", "Thrower");
+//    /** All MYTHICS ELEMENTS */
+//    private List<String> Batman = Arrays.asList("Tiger Master", "Tree", "Thrower", "Thrower");
+//    private List<String> Blob = Arrays.asList("Hunter", "Eagle General", "Bandit");
+//    private List<String> Bomba = Arrays.asList("Tiger Master", "Wolf Warrior", "Barbarian");
+//    private List<String> Mama = Arrays.asList("Hunter", "Tree", "Electro Robot");
+//    private List<String> Coldy = Arrays.asList("Storm Giant", "Sandman", "Water Elemental");
+//    private List<String> Dragon = Arrays.asList("Eagle General", "Eagle General", "Water Elemental");
+//    private List<String> Ninja = Arrays.asList("Wolf Warrior", "Paladin", "Demon Soldier");
+//    private List<String> OrcShaman = Arrays.asList("Hunter", "Electro Robot", "Demon Soldier");
+//    private List<String> PulseGenerator = Arrays.asList("Electro Robot", "Tree", "Archer", "Archer");
+//    private List<String> Indy = Arrays.asList("Sheriff", "Wolf Warrior", "Sandman");
+//    private List<String> Watt = Arrays.asList("Storm Giant", "Electro Robot", "Demon Soldier");
+//    private List<String> Tar = Arrays.asList("Wolf Warrior", "Hunter", "Sandman", "Barbarian");
+//    private List<String> Graviton = Arrays.asList("Electro Robot", "Shock Robot", "Thrower", "Thrower");
+//    private List<String> RocketChu = Arrays.asList("War Machine", "Shock Robot", "Thrower");
+//    private List<String> Vayne = Arrays.asList("Storm Giant", "Hunter", "Ranger", "Archer");
+//    private List<String> MonopolyMan = Arrays.asList("Wolf Warrior", "Tree", "Demon Soldier");
+//    private List<String> IronMeow = Arrays.asList("War Machine", "Bandit", "Bandit");
+//    private List<String> Lancelot = Arrays.asList("Sheriff", "Hunter", "Paladin");
+//    private List<String> KittyMage = Arrays.asList("Eagle General", "Archer", "Water Elemental", "Water Elemental");
+//    private List<String> FrogPrince = Arrays.asList("Wolf Warrior", "Tree", "Barbarian", "Thrower");
 
     /**
      * Check if a Mythic can be built by reading the GameBoardState.Json
-     * @param name
-     * @return
      */
     public static boolean canBuild(String name, GameBoard gameBoard) {
 
@@ -80,8 +78,6 @@ public class MythicBuilder {
 
     /**
      * Helper method to flatten gameBoard and get all the units
-     * @param gameBoard
-     * @return map of unit names to their quantities
      */
     private static Map<String, Integer> getAllUnitsFromBoard(GameBoard gameBoard) {
         Map<String, Integer> units = new HashMap<>();
@@ -89,7 +85,7 @@ public class MythicBuilder {
         // Iterate over the 3x6 grid of squares in the gameBoard
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 6; j++) {
-                Unit unit = gameBoard.getSquare(i, j).getUnit();
+                Unit unit = GameBoard.getSquare(i, j).getUnit();
 
                 if (unit != null) {
                     String unitName = unit.getName();
@@ -107,8 +103,6 @@ public class MythicBuilder {
 
     /**
      * Helper method to check if Mythic ca nbe built, to be called by canBuild()
-     * @param name
-     * @return
      */
     private static Map<String, Integer> getRequirementsForUnit(String name) {
         Map<String, Integer> requirements = new HashMap<>();
@@ -222,8 +216,6 @@ public class MythicBuilder {
 
     /**
      * Helper method to flatten gameBoard and get all the units
-     * @param gameBoard
-     * @return
      */
     private static Map<String, Integer> getAllUnitsFromBoard(List<List<Map<String, Object>>> gameBoard) {
         Map<String, Integer> units = new HashMap<>();
@@ -259,10 +251,13 @@ public class MythicBuilder {
 
     // TODO : BUILD MYTHICAL IN GAME FUNCTIONS...
     // ONLY WORKS FOR BATMAN...
-    public static void buildMythic(String unit, GameBoard gameboard) {
-        if(canBuild(unit, gameboard)) {
-            MatchBasic.pressBuildFavoriteMythic();
-        }
+    public static void buildMythic(String unit, GameBoard gameboard) throws InterruptedException {
+//        if(canBuild(unit, gameboard)) {
+            MatchBasic.pressMythic();
+            Thread.sleep(500);
+            MatchBasic.pressBuildMythic();
+            MatchBasic.closeMythic();
+//        }
     }
 }
 

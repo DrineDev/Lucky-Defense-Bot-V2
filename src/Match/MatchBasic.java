@@ -97,7 +97,6 @@ public class MatchBasic {
     /**
      * Check if Golem can be summoned
      * MUST PRESS GOLEM. THIS CHECKS 'CHALLENGE' BUTTON POPUP
-     * @return
      */
     public static boolean isGolemPresent() {
         Coordinates coordinates = new Coordinates(235, 611);
@@ -208,15 +207,11 @@ public class MatchBasic {
         Press.press(new Coordinates(39, 823), new Coordinates(129, 858), "Upgrading Common");
     }
 
-    public static void pressBuildFavoriteMythic() {
-        Press.press(new Coordinates(30, 175), new Coordinates(91, 237), "Building favorite mythic");
+    public static void pressBuildMythic() {
+        Press.press(new Coordinates(264, 600), new Coordinates(381, 635), "Building favorite mythic");
     }
 
     public static int checkLuckyStones() throws InterruptedException, IOException {
-        pressGamble();
-        Thread.sleep(6000);
-        Screenshot.screenshotGameState();
-
         // Load the GameState image
         Mat gameState = Imgcodecs.imread("Resources/GameState.png");
         if (gameState.empty()) {
@@ -246,7 +241,7 @@ public class MatchBasic {
         int luckyStonesValue = 0;
         try {
             String result = processSubImage(subImage);
-            if (result == null || result.isEmpty()) {
+            if (result.isEmpty()) {
                 log("[Error] Failed to process sub-image: result is empty");
             } else {
                 luckyStonesValue = Integer.parseInt(result);
@@ -270,7 +265,7 @@ public class MatchBasic {
     }
 
     public static void pressReturn() throws IOException {
-        Press.press(new Coordinates(172, 633), new Coordinates(367, 714), "Pressing return...");
+        Press.press(new Coordinates(176, 570), new Coordinates(363, 635), "Pressing return...");
         Screenshot.screenshotGameState();
     }
 

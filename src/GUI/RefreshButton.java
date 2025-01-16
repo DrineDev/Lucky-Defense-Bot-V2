@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 public class RefreshButton extends JButton implements ActionListener {
 
@@ -55,19 +56,62 @@ public class RefreshButton extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Close current MainFrame
-        SwingUtilities.getWindowAncestor(this).dispose();
+        // Disable the button to prevent multiple clicks
+        this.setEnabled(false);
 
-        // Restart the application
+        // Create a confirmation dialog
+        int result = JOptionPane.showConfirmDialog(
+                mainFrame,
+                "Are you sure you want to restart the application?",
+                "Confirm Restart",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (result == JOptionPane.YES_OPTION) {
+            restartApplication();
+        } else {
+            // Re-enable the button if user cancels
+            this.setEnabled(true);
+        }
+    }
+
+    private void restartApplication() {
         SwingUtilities.invokeLater(() -> {
             try {
-                String[] args = {}; // Pass any necessary arguments
-                Main.main(args); // Call the main method of your program
+                String javaHome = System.getProperty("java.home");
+                String javaBin = javaHome + "/bin/java";
+                String classpath = System.getProperty("java.class.path");
+                String className = Main.class.getName();
+                String libPath = "lib\\OpenCV";
+
+                ProcessBuilder builder = new ProcessBuilder(
+                        javaBin,
+                        "-Djava.library.path=" + libPath,
+                        "-cp", classpath,
+                        className
+                );
+                builder.directory(new File(System.getProperty("user.dir")));
+                builder.environment().put("PATH", System.getenv("PATH") + ";" + libPath);
+
+                builder.start();
+
+                mainFrame.dispose();
+                System.exit(0);
             } catch (Exception ex) {
                 ex.printStackTrace();
+                JOptionPane.showMessageDialog(
+                        mainFrame,
+                        "Failed to restart the application: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                this.setEnabled(true);
             }
         });
     }
+
+
 
     @Override
     protected void paintComponent(Graphics g) {
