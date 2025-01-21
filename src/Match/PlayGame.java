@@ -17,6 +17,7 @@ public class PlayGame {
     private static final int INITIAL_GAME_DELAY = 4000;
     private static final int SHORT_DELAY = 500;
     private static final int STANDARD_DELAY = 1000;
+    private static int upgradeCost = 2;
 
     public static void playGame(MainFrame mainFrame) throws IOException, InterruptedException {
         while (true) {
@@ -113,7 +114,7 @@ public class PlayGame {
             }
 
             handleMythicBuilding(gameBoard);
-            gambleStones(gameBoard);
+            upgradeCost = gambleStones(gameBoard, upgradeCost);
             upgradedSummoningLevel = handleSummoning(gameBoard, upgradedSummoningLevel);
         }
 
@@ -226,10 +227,13 @@ public class PlayGame {
         int timer = 2000;
         while (MatchBasic.isIngame()) {
             MatchBasic.pressUpgradeMythic();
+            upgradeCost++;
             waitForGolem();
             Thread.sleep(timer);
             timer += 1000;
         }
+
+        upgradeCost = 2;
     }
 
     public static void waitForGolem() throws InterruptedException, IOException {
@@ -255,7 +259,7 @@ public class PlayGame {
         }
     }
 
-    private static void gambleStones(GameBoard gameBoard) throws InterruptedException, IOException {
+    private static int gambleStones(GameBoard gameBoard, int upgradeCost) throws InterruptedException, IOException {
         MatchBasic.pressGamble();
         Thread.sleep(500);
         Screenshot.screenshotGameState();
@@ -265,6 +269,10 @@ public class PlayGame {
             ProcessUnit.emergencySell(gameBoard);
         } else {
             int luckyStones = MatchBasic.checkLuckyStones();
+
+            if (luckyStones > 20) {
+                upgradeCost = upgradeMythicLevel(upgradeCost);
+            }
 
             for (int i = 0; i < luckyStones; i++) {
                 MatchBasic.pressEpicGamble();
@@ -280,6 +288,24 @@ public class PlayGame {
 
             MatchBasic.closeGamble();
         }
+
+        return upgradeCost;
+    }
+
+    private static int upgradeMythicLevel(int upgradeCost) throws InterruptedException {
+        MatchBasic.closeGamble();
+        Thread.sleep(500);
+        MatchBasic.pressUpgrade();
+        Thread.sleep(500);
+        MatchBasic.pressUpgradeMythic();
+        Thread.sleep(100);
+        MatchBasic.pressUpgradeMythic();
+        Thread.sleep(100);
+        MatchBasic.closeUpgrade();
+        Thread.sleep(500);
+        MatchBasic.pressGamble();
+        upgradeCost += 2;
+        return upgradeCost;
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
