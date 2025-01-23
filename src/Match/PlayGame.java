@@ -177,6 +177,7 @@ public class PlayGame {
     }
 
     private static void startGameRound(GameBoard gameBoard) throws InterruptedException, IOException {
+        MatchBasic.press2X();
         MatchBasic.pressSummon10X();
         Screenshot.screenshotGameState();
     }
