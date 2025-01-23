@@ -193,10 +193,17 @@ public class PlayGame {
     }
 
     public static void handleMythicBuilding(GameBoard gameBoard) throws InterruptedException {
-        MythicBuilder.buildMythic("Dragon", gameBoard);
+        buildFrog(gameBoard);
+        buildDragon(gameBoard);
+    }
+
+    public static void buildFrog(GameBoard gameBoard) throws InterruptedException {
         MythicBuilder.buildMythic("Frog Prince", gameBoard);
     }
 
+    public static void buildDragon(GameBoard gameBoard) throws InterruptedException {
+        MythicBuilder.buildMythic("Dragon", gameBoard);
+    }
     private static boolean handleSummoning(GameBoard gameBoard, boolean upgradedSummoningLevel) throws InterruptedException, IOException {
         if (gameBoard.shouldSummon()) {
             if (!upgradedSummoningLevel) {
