@@ -30,7 +30,7 @@ Lucky Defense Bot V2 is an automation project designed to farm resources in the 
    - Add Git to your environment PATH following similar steps as ADB.
 
 4. **IntelliJ IDEA Community Edition**
-   - Download and install IntelliJ IDEA Community Edition from [JetBrains](https://www.jetbrains.com/idea/download/).
+   - Download and install IntelliJ IDEA Community Edition from [JetBrains](https://www.jetbrains.com/idea/download/). gwapo kaayo ko
 
 ---
 
